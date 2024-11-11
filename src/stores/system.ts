@@ -73,9 +73,9 @@ export const useSystemStore = defineStore('system', () => {
     }
   }
   const startUp = async () => {
-   return await Promise.all([await getMenu(),await getUserInfo(),await getNoticeList()])
-
-    
+    await getMenu()
+    await getUserInfo()
+    await getNoticeList()
   }
   return {
     menuTree,

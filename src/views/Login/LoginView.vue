@@ -1,5 +1,5 @@
 <template>
-  <div class="login" v-loading="loading">
+  <div class="login">
     <div
       class="login-bg"
       :style="{
@@ -58,10 +58,9 @@ import { reactive, ref, onMounted } from 'vue'
 import { useSystemStore } from '@/stores/system'
 import { storeToRefs } from 'pinia'
 import api from './api'
-import { useRouter } from 'vue-router'
 import auth from '@/utils/auth'
-import jump from '@/utils/jump'
 import { UserOutlined, LockOutlined, SafetyOutlined } from '@ant-design/icons-vue'
+import jump from '@/utils/jump'
 const systemStore = useSystemStore()
 const { startUp } = systemStore
 const { themeCfg, systemSetting, menuTree } = storeToRefs(systemStore)
@@ -70,8 +69,6 @@ const authForm = reactive({
   password: 'test',
   captcha: ''
 })
-const loading = ref(false)
-const router = useRouter()
 const onLogin = () => {
   api.login(authForm).then((res) => {
     const { code, data } = res

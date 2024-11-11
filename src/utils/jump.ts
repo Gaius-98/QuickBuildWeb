@@ -6,35 +6,21 @@ export default (data: Partial<ResMenuItem>) => {
     case 'front':
       if (openType == '_self') {
         router.push({
-          path: address
+          path: address,
+          query:{
+            menuId:data.id
+          }
         })
       } else if (openType == '_blank') {
         window.open(address, '_blank')
       }
       break
-    case 'page':
-      break
-    case 'form':
-      router.push({
-        path: '/apply/form',
-        query: {
-          id: address
-        }
-      })
-      break
-    case 'table':
-      router.push({
-        path: '/apply/table',
-        query: {
-          id: address
-        }
-      })
-      break
     case 'iframe':
       router.push({
         path: '/apply/iframe',
         query: {
-          id: encodeURIComponent(address!)
+          id: encodeURIComponent(address!),
+          menuId:data.id
         }
       })
       break

@@ -40,5 +40,6 @@ const layout: Obj<Component> = {
   horizontal: defineAsyncComponent(() => import('@/layout/LayoutType/HorizontalSplitLayout.vue')),
   vertical: defineAsyncComponent(() => import('@/layout/LayoutType/VerticalStackLayout.vue'))
 }
+startUp()
 </script>
 <style scoped lang="scss"></style>
