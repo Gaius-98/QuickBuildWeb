@@ -1,6 +1,6 @@
-import { h, toRefs, ref, inject } from 'vue'
+import { h, toRefs, ref, inject,computed } from 'vue'
 import type { Prop } from 'vue'
-import type { SchemaProperties, ControlType, Schema, SchemaLayout, FormFieldInfo } from './ISchema'
+import type { SchemaProperties, ControlType, Schema, SchemaLayout, FormFieldInfo } from '@/model'
 import type { Obj } from '@/model'
 import {
   Input,
@@ -21,6 +21,7 @@ import { getDeepValue, setDeepValue } from '@/utils/tools'
 import { GuPubSub } from 'gaius-utils'
 import { defineExpose } from 'vue'
 import { cloneDeep } from 'lodash-es'
+import './SchemaForm.css'
 const createUIControl = (
   formData: Obj<any>,
   key: string,
@@ -32,6 +33,7 @@ const createUIControl = (
   switch (type) {
     case 'string':
       Node = h(Input, {
+        size:ctx.size,
         ...component,
         value: getDeepValue(formData, key),
         onChange: (e: Event) => {
@@ -47,6 +49,7 @@ const createUIControl = (
       break
     case 'textarea':
       Node = h(Textarea, {
+        size:ctx.size,
         ...component,
         value: getDeepValue(formData, key),
         onChange: (e: Event) => {
@@ -62,6 +65,7 @@ const createUIControl = (
       break
     case 'select':
       Node = h(Select, {
+        size:ctx.size,
         ...component,
         options: ctx.options[key] || [],
         value: getDeepValue(formData, key),
@@ -74,6 +78,7 @@ const createUIControl = (
       break
     case 'number':
       Node = h(InputNumber, {
+        size:ctx.size,
         ...component,
         value: getDeepValue(formData, key),
         onChange: (value: any) => {
@@ -85,6 +90,7 @@ const createUIControl = (
       break
     case 'date':
       Node = h(DatePicker, {
+        size:ctx.size,
         ...component,
         value: getDeepValue(formData, key),
         onChange: (value: any) => {
@@ -97,6 +103,7 @@ const createUIControl = (
       break
     case 'tree':
       Node = h(TreeSelect, {
+        size:ctx.size,
         ...component,
         options: ctx.options[key] || [],
         value: getDeepValue(formData, key),
@@ -110,6 +117,7 @@ const createUIControl = (
       Node = h(
         RadioGroup,
         {
+          size:ctx.size,  
           ...component,
           value: getDeepValue(formData, key),
           onChange: (e: RadioChangeEvent) => {
@@ -137,6 +145,7 @@ const createUIControl = (
       break
     case 'switch':
       Node = h(Switch, {
+        size:ctx.size,
         checked: getDeepValue(formData, key),
         onChange(value: any) {
           setDeepValue(formData, key, value)
@@ -147,6 +156,7 @@ const createUIControl = (
       break
     default:
       Node = h(Input, {
+        size:ctx.size,
         ...component,
         value: getDeepValue(formData, key),
         onChange: (e: Event) => {
@@ -180,6 +190,7 @@ const createSchemaFormItem = (
       throw new Error(`${name} is not registered,provide('sfProvideEL','${name}',Component)`)
     }
     childrenNode = h(ctx.sfProvideEL[name], {
+      size:ctx.size,
       ...itemProps,
       formData,
       value: getDeepValue(formData, key),
@@ -206,7 +217,7 @@ const createSchemaFormItem = (
         label,
         name: key,
         rules,
-        tooltip
+        tooltip,
       },
       {
         default: () => [childrenNode]
@@ -218,19 +229,21 @@ const createSchemaFormItem = (
 const SchemaForm = {
   name: 'SchemaForm',
   props: {
-    layout: {
-      type: Object as Prop<SchemaLayout>
-    },
-    properties: {
-      type: Object as Prop<SchemaProperties>
+    schema:{
+      type:Object as Prop<Schema>
     },
     formData: {
       type: Object as Prop<Obj<any>>,
       required: true
+    },
+    size:{
+      type:String,
+      
     }
   },
   setup(props: Schema) {
-    const { layout, properties, formData } = toRefs(props)
+    const { schema, formData,size } = toRefs(props)
+    const { layout,properties } = toRefs(schema.value)
     const sfProvideEL = inject('sfProvideEL')
     const options = ref<Obj<any>>({})
     const linkData = Object.entries(properties.value).filter(([, propItem]) => {
@@ -288,6 +301,28 @@ const SchemaForm = {
     }
     const visibleInfo = ref<Obj<boolean>>({})
     setVisibleInfo()
+    const formSize = computed(()=>{
+      const StyleConfig:Obj<string> = {
+        '--schema-gap':'',
+        '--schema-height':''
+      }
+      switch (size.value) {
+        case 'middle':
+          StyleConfig['--schema-gap'] = '24px'
+          StyleConfig['--schema-height'] = '32px'
+          break;
+        case 'large':
+          StyleConfig['--schema-gap'] = '36px'
+          StyleConfig['--schema-height'] = '40px'
+          break;
+        case 'small':
+          StyleConfig['--schema-gap'] = '4px'
+          StyleConfig['--schema-height'] = '25px'
+          break;  
+
+      }
+      return StyleConfig
+    })
     return {
       layout,
       properties,
@@ -298,13 +333,19 @@ const SchemaForm = {
       pubSub,
       sfProvideEL,
       onChange,
-      expose
+      expose,
+      size,
+      formSize
     }
   },
   render: (ctx: any) => {
     return h(
       Form,
-      { ...ctx.layout },
+      { ...ctx.layout,
+        style:{
+          ...ctx.formSize
+        }
+       },
       {
         default: () => [
           ...Object.entries(ctx.properties as Obj<SchemaProperties>).map(

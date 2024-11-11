@@ -37,13 +37,19 @@ export interface SchemaProperties {
     [key: string]: any
   }
 }
-export interface Schema {
+export interface SchemaProp {
   layout?: SchemaLayout
   properties: Obj<SchemaProperties>
+}
+export interface Schema {
+  schema:SchemaProp
   formData?: Obj<any>
+  size:Size
 }
 export interface FormFieldInfo {
   formData: Obj<any>
   field: string
   value: any
 }
+
+export type Size = 'large'|'middle'|'small'

@@ -1,0 +1,9 @@
+.ant-form-item{
+    margin-bottom:var(--schema-gap)
+}
+:where(.css-dev-only-do-not-override-1hsjdkk).ant-form-item .ant-form-item-label>label {
+    height:var(--schema-height)
+}
+:where(.css-dev-only-do-not-override-1hsjdkk).ant-form-item .ant-form-item-control-input{
+    min-height:var(--schema-height)
+}

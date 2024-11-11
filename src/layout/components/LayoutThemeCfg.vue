@@ -1,25 +1,10 @@
 <template>
   <a-divider>主题配置</a-divider>
-  <schema-form
-    :layout="globalSchema.layout"
-    :properties="globalSchema.properties"
-    :form-data="themeCfg"
-  >
-  </schema-form>
+  <schema-form :schema="globalSchema" :form-data="themeCfg"> </schema-form>
   <a-divider>顶栏配置</a-divider>
-  <schema-form
-    :layout="headerSchema.layout"
-    :properties="headerSchema.properties"
-    :form-data="themeCfg"
-  >
-  </schema-form>
+  <schema-form :schema="headerSchema" :form-data="themeCfg"> </schema-form>
   <a-divider>菜单配置</a-divider>
-  <schema-form
-    :layout="menuSchema.layout"
-    :properties="menuSchema.properties"
-    :form-data="themeCfg"
-  >
-  </schema-form>
+  <schema-form :schema="menuSchema" :form-data="themeCfg"> </schema-form>
 </template>
 
 <script lang="ts" setup>
@@ -28,9 +13,9 @@ import { useSystemStore } from '@/stores/system'
 import { storeToRefs } from 'pinia'
 import { LayoutCategory, ThemeCategory } from '@/model'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
-import type { Schema } from '@/components/SchemaForm/ISchema'
+import type { SchemaProp } from '@/model'
 
-const globalSchema = ref<Schema>({
+const globalSchema = ref<SchemaProp>({
   layout: {
     labelAlign: 'left',
     layout: 'horizontal',
@@ -61,7 +46,7 @@ const globalSchema = ref<Schema>({
     }
   }
 })
-const headerSchema = ref<Schema>({
+const headerSchema = ref<SchemaProp>({
   layout: {
     labelAlign: 'left',
     layout: 'horizontal',
@@ -88,7 +73,7 @@ const headerSchema = ref<Schema>({
     }
   }
 })
-const menuSchema = ref<Schema>({
+const menuSchema = ref<SchemaProp>({
   layout: {
     labelAlign: 'left',
     layout: 'horizontal',
