@@ -7,18 +7,13 @@
     :height="80"
     disabled
   ></code-editor>
-  <schema-form
-    :layout="schema.layout"
-    :properties="schema.properties"
-    v-model:formData="formData"
-    ref="form"
-  ></schema-form>
+  <schema-form :schema="schema" v-model:formData="formData" ref="form"></schema-form>
 </template>
 
 <script lang="ts" setup>
 import { ref, watchEffect } from 'vue'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
-import type { Schema } from '@/components/SchemaForm/ISchema'
+import type { SchemaProp } from '@/model'
 
 import CodeEditor from './../../components/CodeEditor.vue'
 
@@ -33,7 +28,7 @@ const validatePass2 = async (_rule: any, value: string) => {
 }
 
 const form = ref()
-const schema = ref<Schema>({
+const schema = ref<SchemaProp>({
   layout: {
     labelAlign: 'left',
     layout: 'horizontal',

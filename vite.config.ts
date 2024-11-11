@@ -32,13 +32,13 @@ export default defineConfig({
     proxy: {
       //开发环境
       '/dev': {
-        target: 'http://localhost:8899',
+        target: 'http://localhost:18899',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/dev/, '')
       },
       //生产环境
       '/prod': {
-        target: 'http://120.26.161.36:8899/',
+        target: 'http://120.26.161.36:18899/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/prod/, '')
       }

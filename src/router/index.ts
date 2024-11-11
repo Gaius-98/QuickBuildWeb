@@ -80,7 +80,48 @@ const routes = [
             }
           ]
         },
+        //
+        {
+            path:'/data',
+            name:'data',
+            component: () => import('@/layout/BlankView.vue'),
+            children:[
+              {
+                path:'dataset',
+                name:'dataset',
+                component:()=>import('@/views/Data/DataSet/index.vue')
+              },
+              {
+                path:'datasource',
+                name:'datasource',
+                component:()=>import('@/views/Data/DataSource/index.vue')
+              }
+            ]          
+        },
+        //
+        {
+          path:'/lowcode',
+          name:'lowcode',
+          component:() => import('@/layout/BlankView.vue'),
+          children:[
             {
+              path:'form',
+              name:'form',
+              component:()=>import('@/views/LowCode/Form/index.vue')
+            },
+            {
+              path:'table',
+              name:'table',
+              component:()=>import('@/views/LowCode/Table/index.vue')
+            },
+            {
+              path:'dashboard',
+              name:'dashboard',
+              component:()=>import('@/views/LowCode/Dashboard/index.vue')
+            }
+          ]
+        },
+        {
           path: '/apply',
           name: 'apply',
           children: [
@@ -106,6 +147,7 @@ const routes = [
       name: 'login',
       component: () => import('@/views/Login/LoginView.vue')
     },
+
 
   ]
 const router = createRouter({
