@@ -107,7 +107,7 @@ const routes = [
             {
               path:'form',
               name:'form',
-              component:()=>import('@/views/LowCode/Form/index.vue')
+              component:()=>import('@/views/LowCode/Form/FormList/FormList.vue')
             },
             {
               path:'table',
@@ -147,7 +147,18 @@ const routes = [
       name: 'login',
       component: () => import('@/views/Login/LoginView.vue')
     },
-
+    {
+      path:'/design',
+      name:'design',
+      component: () =>import('@/layout/BlankView.vue'),
+      children:[
+        {
+          path:'form',
+          name:'form-design',
+          component: () =>import('@/views/LowCode/Form/FormEditor/FormEditor.vue'),
+        }
+      ]
+    }
 
   ]
 const router = createRouter({

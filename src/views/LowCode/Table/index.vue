@@ -1,4 +1,4 @@
-<template></template>
+<template>table</template>
 
 <script lang="ts" setup>
 import { reactive, toRefs, ref } from 'vue'

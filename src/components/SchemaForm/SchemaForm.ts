@@ -1,6 +1,6 @@
 import { h, toRefs, ref, inject,computed } from 'vue'
 import type { Prop } from 'vue'
-import type { SchemaProperties, ControlType, Schema, SchemaLayout, FormFieldInfo } from '@/model'
+import type { SchemaProperties, SchemaControlType, Schema, SchemaLayout, FormFieldInfo } from '@/model'
 import type { Obj } from '@/model'
 import {
   Input,
@@ -25,7 +25,7 @@ import './SchemaForm.css'
 const createUIControl = (
   formData: Obj<any>,
   key: string,
-  type: ControlType,
+  type: SchemaControlType,
   ctx: any,
   component?: Obj<any>
 ) => {
@@ -238,11 +238,11 @@ const SchemaForm = {
     },
     size:{
       type:String,
-      
+      default:'middle'
     }
   },
   setup(props: Schema) {
-    const { schema, formData,size } = toRefs(props)
+    const { schema, formData, size } = toRefs(props)
     const { layout,properties } = toRefs(schema.value)
     const sfProvideEL = inject('sfProvideEL')
     const options = ref<Obj<any>>({})

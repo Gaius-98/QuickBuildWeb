@@ -1,5 +1,5 @@
 import type { Obj } from '@/model'
-
+import { Size } from '@/model'
 export interface SchemaLayout {
   labelAlign?: 'left' | 'right'
   labelCol?: {
@@ -14,7 +14,7 @@ export interface SchemaLayout {
   }
   layout?: 'horizontal' | 'vertical' | 'inline'
 }
-export type ControlType =
+export type SchemaControlType =
   | 'string'
   | 'date'
   | 'number'
@@ -28,7 +28,7 @@ export interface SchemaProperties {
   required?: boolean
   rules?: any[] | Obj<any>
   tooltip?: string
-  type: ControlType
+  type: SchemaControlType
   show?: boolean | string
   component?: {
     name?: string
@@ -44,7 +44,7 @@ export interface SchemaProp {
 export interface Schema {
   schema:SchemaProp
   formData?: Obj<any>
-  size:Size
+  size:SchemaSize
 }
 export interface FormFieldInfo {
   formData: Obj<any>
@@ -52,4 +52,4 @@ export interface FormFieldInfo {
   value: any
 }
 
-export type Size = 'large'|'middle'|'small'
+export type SchemaSize = keyof typeof Size
