@@ -1,6 +1,6 @@
 <template>
   <a-divider>主题配置</a-divider>
-  <schema-form :schema="globalSchema" :form-data="themeCfg"> </schema-form>
+  <schema-form :schema="globalSchema" :form-data="themeCfg" size="small"> </schema-form>
   <a-divider>顶栏配置</a-divider>
   <schema-form :schema="headerSchema" :form-data="themeCfg"> </schema-form>
   <a-divider>菜单配置</a-divider>

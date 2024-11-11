@@ -344,7 +344,8 @@ const SchemaForm = {
       { ...ctx.layout,
         style:{
           ...ctx.formSize
-        }
+        },
+        class:['schema-form']
        },
       {
         default: () => [
