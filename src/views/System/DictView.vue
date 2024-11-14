@@ -181,17 +181,7 @@ import { message, type FormInstance, type PaginationProps } from 'ant-design-vue
 import type { SystemDictItem, SystemDictTypeItem } from '@/model'
 import type { DictPageParams } from './api/dict'
 import { PlusOutlined } from '@ant-design/icons-vue'
-const VNodes = defineComponent({
-  props: {
-    vnodes: {
-      type: Object,
-      required: true
-    }
-  },
-  render() {
-    return this.vnodes
-  }
-})
+
 const dictParamsForm = reactive<DictPageParams>({
   keyword: '',
   dictType: '',
