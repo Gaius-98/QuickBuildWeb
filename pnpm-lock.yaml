@@ -7,6 +7,9 @@ dependencies:
   '@codemirror/lang-javascript':
     specifier: ^6.2.2
     version: 6.2.2
+  '@codemirror/lang-sql':
+    specifier: ^6.8.0
+    version: 6.8.0(@codemirror/view@6.26.3)
   '@commitlint/cli':
     specifier: ^19.2.1
     version: 19.2.1(@types/node@20.11.28)(typescript@5.4.2)
@@ -242,6 +245,19 @@ packages:
       '@codemirror/view': 6.26.3
       '@lezer/common': 1.2.1
       '@lezer/javascript': 1.4.16
+    dev: false
+
+  /@codemirror/lang-sql@6.8.0(@codemirror/view@6.26.3):
+    resolution: {integrity: sha512-aGLmY4OwGqN3TdSx3h6QeA1NrvaYtF7kkoWR/+W7/JzB0gQtJ+VJxewlnE3+VImhA4WVlhmkJr109PefOOhjLg==}
+    dependencies:
+      '@codemirror/autocomplete': 6.16.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1)
+      '@codemirror/language': 6.10.1
+      '@codemirror/state': 6.4.1
+      '@lezer/common': 1.2.1
+      '@lezer/highlight': 1.2.0
+      '@lezer/lr': 1.4.0
+    transitivePeerDependencies:
+      - '@codemirror/view'
     dev: false
 
   /@codemirror/language@6.10.1:

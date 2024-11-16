@@ -8,7 +8,12 @@
           placeholder="请输入数据源名称"
           @search="getTree"
         />
-        <a-button :icon="h(PlusOutlined)" @click="onOpenDataSourceModal('add')"> </a-button>
+        <a-button
+          :icon="h(PlusOutlined)"
+          @click="onOpenDataSourceModal('add')"
+          v-has-perm="'lowcode:datasource:add'"
+        >
+        </a-button>
       </div>
 
       <a-tree
@@ -33,9 +38,15 @@
               <EllipsisOutlined style="transform: rotate(90deg)" />
               <template #overlay>
                 <a-menu @click="({ key }: any) => onContextMenuClick(item.id, key)">
-                  <a-menu-item key="view">查看</a-menu-item>
-                  <a-menu-item key="edit">编辑</a-menu-item>
-                  <a-menu-item key="remove">删除</a-menu-item>
+                  <a-menu-item key="view" v-has-perm="'lowcode:datasource:detail'"
+                    >查看</a-menu-item
+                  >
+                  <a-menu-item key="edit" v-has-perm="'lowcode:datasource:update'"
+                    >编辑</a-menu-item
+                  >
+                  <a-menu-item key="remove" v-has-perm="'lowcode:datasource:remove'"
+                    >删除</a-menu-item
+                  >
                 </a-menu>
               </template>
             </a-dropdown>
@@ -57,12 +68,7 @@
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key == 'action'">
-              <a-button
-                type="link"
-                v-has-perm="'system:notice:update'"
-                @click="onAddDataSet(record.tableName)"
-                >创建数据集</a-button
-              >
+              <a-button type="link" @click="onAddDataSet(record.tableName)">创建数据集</a-button>
             </template>
           </template>
           <template #expandedRowRender="{ record }">
@@ -139,7 +145,9 @@
     </a-form>
     <template #footer>
       <div v-if="modalSourceType != 'view'">
-        <a-button @click="testConnect">测试连接</a-button>
+        <a-button @click="testConnect" v-has-perm="'lowcode:datasource:connection'"
+          >测试连接</a-button
+        >
         <a-button @click="resetForm">取消</a-button>
         <a-button type="primary" :loading="loading" @click="onConfirm">确定</a-button>
       </div>
@@ -153,7 +161,8 @@ import { message, type FormInstance, type PaginationProps, Modal } from 'ant-des
 import type { DataSourceTable, LowCodeDataSource, SystemDictTypeItem } from '@/model'
 import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons-vue'
 import api from './api'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const treeData = ref<LowCodeDataSource[]>([])
 const tableData = ref<DataSourceTable[]>([])
 const columns = ref([
@@ -358,7 +367,15 @@ onMounted(() => {
   getTree()
 })
 const onAddDataSet = (tableName: string) => {
-  console.log(selectKeys.value[0], tableName)
+  const urlCfg = router.resolve({
+    path: '/design/dataset',
+    query: {
+      type: 'add',
+      datasourceId: selectKeys.value[0],
+      tableName
+    }
+  })
+  window.open(urlCfg.href, '_blank')
 }
 </script>
 <style scoped lang="scss">

@@ -147,6 +147,7 @@ const routes = [
       name: 'login',
       component: () => import('@/views/Login/LoginView.vue')
     },
+
     {
       path:'/design',
       name:'design',
@@ -156,6 +157,11 @@ const routes = [
           path:'form',
           name:'form-design',
           component: () =>import('@/views/LowCode/Form/FormEditor/FormEditor.vue'),
+        },{
+          path:'dataset',
+          name:'dataset-design',
+          component:()=>import('@/views/Data/DataSet/design/index.vue'),
+          props: (route:RouteLocationNormalized) => route.query
         }
       ]
     }

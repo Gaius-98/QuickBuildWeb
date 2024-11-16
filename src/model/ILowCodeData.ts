@@ -25,3 +25,28 @@ export interface DataSourceTableField {
   columnName: string;
   columnComment: string;
 }
+
+export interface DatasetParamsConfig {
+  id:string
+  paramsName:string
+  paramsDefaultValue:string
+  paramsType:string
+
+}
+export interface LowCodeDataset {
+  id?:string
+  datasourceId:string
+  datasetName:string
+  execSql:string
+  remark?:string
+  status:string
+  createTime?:Date
+  paramsConfig:DatasetParamsConfig[]
+}
+export interface LowCodeDatasetLog {
+  datasourceId: string;
+  execSql: string;
+  status: string;
+  errMsg: string;
+  executionTime: string;
+}
