@@ -15,7 +15,7 @@
 import { Codemirror } from 'vue-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import { reactive, toRefs, ref } from 'vue'
-
+import { githubLight, githubDark } from '@uiw/codemirror-theme-github'
 interface Props {
   height: number
   prepend?: string
@@ -27,6 +27,6 @@ const props = withDefaults(defineProps<Props>(), {
 const { height, prepend, append } = toRefs(props)
 const value = defineModel<string>('value', { required: true })
 
-const extensions = [javascript()]
+const extensions = [javascript(), githubDark]
 </script>
 <style scoped lang="scss"></style>

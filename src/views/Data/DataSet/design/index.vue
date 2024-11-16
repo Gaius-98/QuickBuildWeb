@@ -9,7 +9,6 @@
           v-model:value="formData.datasetName"
           :bordered="false"
           class="dataset-name"
-          size="small"
         ></a-input>
       </template>
       <template #extra>
@@ -21,17 +20,15 @@
     <div class="container">
       <div class="left-part">
         <div class="search-tree">
-          <div class="tree-top">
-            <a-select
-              v-model:value="formData.datasourceId"
-              :options="datasourceList"
-              :fieldNames="{ label: 'datasourceName', value: 'id' }"
-              style="width: 100%"
-              @change="onChangeDatasource()"
-            >
-            </a-select>
-            <a-divider />
-          </div>
+          <a-select
+            v-model:value="formData.datasourceId"
+            :options="datasourceList"
+            :fieldNames="{ label: 'datasourceName', value: 'id' }"
+            style="width: 100%"
+            @change="onChangeDatasource()"
+          >
+          </a-select>
+          <a-divider style="margin: 8px 0" />
           <a-input-search
             v-model:value="keyword"
             style="margin-bottom: 8px"
@@ -46,11 +43,11 @@
               key: 'tableName',
               children: 'children'
             }"
-            style="height: calc(100% - 100px); overflow-y: auto"
+            style="height: calc(100%); overflow-y: auto"
           >
             <template #title="item">
               <div
-                style="width: 160px; display: flex; justify-content: space-between"
+                style="width: 200px; display: flex; justify-content: space-between"
                 :title="item.tableName"
               >
                 <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
@@ -77,11 +74,17 @@
       </div>
       <div class="right-part">
         <div class="tools-area">
-          <a-button @click="onRun()">运行</a-button>
+          <a-button @click="onRun()" type="text" :icon="h(PlayCircleOutlined)">运行</a-button>
+          <a-divider type="vertical" />
+          <a-button @click="formatSql()" type="text" :icon="h(HighlightOutlined)">美化</a-button>
+          <a-divider type="vertical" />
+          <a-button @click="onOpenParamsModal()" type="text" :icon="h(SettingOutlined)"
+            >参数</a-button
+          >
         </div>
         <div class="sql-area">
           <codemirror
-            :style="{ height: '300px' }"
+            :style="{ height: '350px' }"
             :indent-with-tab="true"
             :tab-size="2"
             :extensions="extensions"
@@ -92,11 +95,12 @@
           <a-tabs v-model:activeKey="activeKey" @change="onChangeTable">
             <a-tab-pane key="result" tab="执行结果">
               <a-table
+                style="width: 100%"
                 v-if="resultData && resultData.length > 0"
                 size="small"
                 :scroll="{
-                  x: '1200px',
-                  y: '300px'
+                  x: 'max-content',
+                  y: '280px'
                 }"
                 :data-source="resultData"
                 :columns="resultColumns"
@@ -107,8 +111,7 @@
             <a-tab-pane key="history" tab="历史记录">
               <a-table
                 :scroll="{
-                  x: '1200px',
-                  y: '300px'
+                  y: '280px'
                 }"
                 size="small"
                 :data-source="logData"
@@ -156,25 +159,88 @@
         }"
       ></a-table>
     </a-modal>
+    <a-modal
+      title="参数配置"
+      v-model:open="paramsModal"
+      width="800px"
+      height="400px"
+      :footer="null"
+    >
+      <a-button
+        type="primary"
+        style="margin-bottom: 5px"
+        @click="onAddParams()"
+        :icon="h(PlusOutlined)"
+        >新增</a-button
+      >
+      <a-table
+        :columns="paramsColumns"
+        :data-source="formData.paramsConfig"
+        :scroll="{
+          y: '300px'
+        }"
+        :pagination="false"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="['paramsName', 'paramsDefaultValue'].includes(column.key)">
+            <a-input v-model:value="record[column.dataIndex]" />
+          </template>
+          <template v-if="column.key == 'paramsType'">
+            <a-select
+              style="width: 100%"
+              v-model:value="record[column.dataIndex]"
+              :options="[
+                {
+                  label: '字符串',
+                  value: 'string'
+                }
+              ]"
+            />
+          </template>
+          <template v-if="column.key == 'action'">
+            <a-popconfirm
+              title="确定要删除吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="onRemoveParams(record)"
+            >
+              <a-button type="link" danger v-has-perm="'system:user:remove'">删除</a-button>
+            </a-popconfirm>
+          </template>
+        </template>
+      </a-table>
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, toRefs, ref, onMounted, computed } from 'vue'
+import { reactive, toRefs, ref, onMounted, computed, h } from 'vue'
 import datasourceApi from '../../DataSource/api'
 import { Codemirror } from 'vue-codemirror'
+import { vscodeLight } from '@uiw/codemirror-theme-vscode'
+import { v4 as uuid } from 'uuid'
 import api from '../api'
 import { sql, type SQLConfig } from '@codemirror/lang-sql'
+import { format } from 'sql-formatter'
 import type {
   DataSourceTable,
   DataSourceTableField,
   LowCodeDataset,
   LowCodeDatasetLog,
   LowCodeDataSource,
-  Obj
+  Obj,
+  DatasetParamsConfig
 } from '@/model'
 import { message, type PaginationProps } from 'ant-design-vue'
-import { InfoCircleOutlined, CopyOutlined } from '@ant-design/icons-vue'
+import {
+  InfoCircleOutlined,
+  CopyOutlined,
+  HighlightOutlined,
+  PlayCircleOutlined,
+  SettingOutlined,
+  PlusOutlined
+} from '@ant-design/icons-vue'
+import { paginationProps } from 'ant-design-vue/es/pagination'
 interface Props {
   type: 'edit' | 'add'
   id?: string
@@ -182,16 +248,11 @@ interface Props {
   tableName?: string
 }
 const tableList = ref<DataSourceTable[]>([])
-
-const extensions = [
-  sql({
-    tables: [
-      {
-        label: 'sy'
-      }
-    ]
-  })
-]
+const schema = ref<Record<string, string[]>>({})
+const extensions = ref<any[]>([])
+const formatSql = () => {
+  formData.value.execSql = format(formData.value.execSql, { language: 'mysql' })
+}
 const formData = ref<LowCodeDataset>({
   datasetName: '',
   datasourceId: '',
@@ -202,6 +263,7 @@ const formData = ref<LowCodeDataset>({
 const props = withDefaults(defineProps<Props>(), {
   type: 'add'
 })
+const paramsModal = ref(false)
 const { type, id, datasourceId, tableName } = toRefs(props)
 const onChangeDatasource = () => {
   datasourceApi.getTableInfo(formData.value.datasourceId).then((res) => {
@@ -210,11 +272,24 @@ const onChangeDatasource = () => {
       tableList.value = data
     }
   })
+  datasourceApi.getSchema(formData.value.datasourceId).then((res) => {
+    const { code, data, msg } = res
+    if (code == 200) {
+      schema.value = data
+      extensions.value = [
+        sql({
+          schema: schema.value
+        }),
+        vscodeLight
+      ]
+    }
+  })
 }
+formData.value.datasetName = formData.value.datasetName || '未命名'
 if (datasourceId.value) {
   formData.value.datasourceId = datasourceId.value
   onChangeDatasource()
-  formData.value.datasetName = formData.value.datasetName || '未命名'
+
   if (tableName.value) {
     formData.value.execSql = `select * from ${tableName.value}`
   }
@@ -308,7 +383,9 @@ const onRun = () => {
         return {
           title: key,
           key,
-          dataIndex: key
+          dataIndex: key,
+          ellipsis: true,
+          width: 200
         }
       })
     }
@@ -337,22 +414,20 @@ const logColumns = ref([
     title: '执行sql',
     key: 'execSql',
     dataIndex: 'execSql',
-    width: '200px',
     ellipsis: true
   },
   {
     title: '耗时',
     key: 'executionTime',
-    dataIndex: 'executionTime',
-    width: '200px'
+    dataIndex: 'executionTime'
   },
   {
     title: '执行结果',
     key: 'status',
-    dataIndex: 'status',
-    width: '200px'
+    dataIndex: 'status'
   }
 ])
+
 const getLogList = () => {
   logParams.value.keyword = formData.value.datasourceId
   api.getLogList(logParams.value).then((res) => {
@@ -365,6 +440,44 @@ const getLogList = () => {
   })
 }
 const activeKey = ref('result')
+const onOpenParamsModal = () => {
+  paramsModal.value = true
+}
+const paramsColumns = ref([
+  {
+    title: '参数名',
+    key: 'paramsName',
+    dataIndex: 'paramsName'
+  },
+  {
+    title: '参数类型',
+    key: 'paramsType',
+    dataIndex: 'paramsType'
+  },
+  {
+    title: '参数默认值',
+    key: 'paramsDefaultValue',
+    dataIndex: 'paramsDefaultValue'
+  },
+  {
+    title: '操作',
+    key: 'action',
+    dataIndex: 'action'
+  }
+])
+const onAddParams = () => {
+  let id = uuid()
+  formData.value.paramsConfig.push({
+    id,
+    paramsDefaultValue: '',
+    paramsType: 'string',
+    paramsName: ''
+  })
+}
+const onRemoveParams = (record: DatasetParamsConfig) => {
+  let idx = formData.value.paramsConfig.findIndex((e) => e.id == record.id)
+  formData.value.paramsConfig.splice(idx, 1)
+}
 </script>
 <style scoped lang="scss">
 .dataset-design {
@@ -372,28 +485,44 @@ const activeKey = ref('result')
   flex-direction: column;
   height: 100vh;
   width: 100%;
+
   .dataset-name {
     &:hover {
-      background-color: #ccc;
+      background-color: #e0f7fa;
     }
   }
   .container {
     flex: 1;
     display: flex;
+    padding: 10px 10px 0;
 
     .left-part {
-      flex: 1;
+      width: 240px;
+      margin-right: 10px;
+      padding: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       .search-tree {
-        width: 240px;
-        height: 100%;
+        width: 100%;
+        height: calc(100% - 10px);
         background-color: #fff;
-        margin-right: 10px;
-        padding: 10px;
       }
     }
     .right-part {
-      flex: 5;
+      flex: 1;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+
+      height: calc(100% - 20px);
+      .tools-area {
+        margin-bottom: $gap;
+      }
+      .result {
+        width: auto;
+        overflow: hidden;
+        max-width: 1620px;
+      }
     }
   }
 }
 </style>
+;

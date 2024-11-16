@@ -67,5 +67,14 @@ export default {
                 tableName
             }
         })
+    },
+    getSchema(id:string){
+        return request<Record<string,string[]>>({
+            method: 'get',
+            url: 'datasource/getSchema',
+            params: {
+                id
+            }
+        })
     }
 }
