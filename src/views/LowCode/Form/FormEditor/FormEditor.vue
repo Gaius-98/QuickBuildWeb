@@ -1,36 +1,37 @@
 <template>
-  <a-page-header
-    :title="title"
-    :subTitle="desc"
-    @back="goBack"
-    :ghost="false"
-    style="padding: 10px 24px"
-  >
-    <template #extra>
-      <a-space>
-        <a-button @click="onDownload" v-if="id"> 导出 </a-button>
-        <a-button @click="onOpenPreviewModal" class="preview-btn"> 预览 </a-button>
-        <a-button @click="onOpenSaveModal" type="primary" class="save-btn"> 保存 </a-button>
-      </a-space>
-    </template>
-    <template #tags>
-      <a-tag color="#87d068" v-if="extraFormConfig.status">启用</a-tag>
-      <a-tag color="#f50" v-else>停用</a-tag>
-    </template>
-  </a-page-header>
-  <div class="form-design" v-loading.fullscreen="saveLoading">
-    <material-area class="left-part"></material-area>
-    <div class="middle-part">
-      <a-form v-bind="formConfig" class="middle-part-content">
-        <material-view v-model="formCfgItemList"></material-view>
-      </a-form>
+  <div class="form-design">
+    <a-page-header
+      :title="title"
+      :subTitle="desc"
+      @back="goBack"
+      :ghost="false"
+      style="border: 1px solid rgb(235, 237, 240); padding: 10px 24px"
+    >
+      <template #extra>
+        <a-space>
+          <a-button @click="onOpenPreviewModal" class="preview-btn"> 预览 </a-button>
+          <a-button @click="onOpenSaveModal" type="primary" class="save-btn"> 保存 </a-button>
+        </a-space>
+      </template>
+      <template #tags>
+        <a-tag color="#87d068" v-if="extraFormConfig.status">启用</a-tag>
+        <a-tag color="#f50" v-else>停用</a-tag>
+      </template>
+    </a-page-header>
+    <div class="form-design-container" v-loading.fullscreen="saveLoading">
+      <material-area class="left-part"></material-area>
+      <div class="middle-part">
+        <a-form v-bind="formConfig" class="middle-part-content">
+          <material-view v-model="formCfgItemList"></material-view>
+        </a-form>
+      </div>
+      <material-cfg class="right-part"></material-cfg>
     </div>
-    <material-cfg class="right-part"></material-cfg>
   </div>
   <a-modal v-model:open="show" title="保存" @ok="onConfirm">
     <schema-form :schema="schema" :form-data="extraFormConfig"></schema-form>
   </a-modal>
-  <a-modal v-model:open="previewShow" title="预览">
+  <a-modal v-model:open="previewShow" title="预览" width="1000px" height="800px" :footer="null">
     <low-code-form :formData="formData" :schema="{ formCfgItemList, formConfig }"></low-code-form>
   </a-modal>
   <a-tour v-model:current="current" :open="open" :steps="steps" @close="open = false" />
@@ -195,30 +196,30 @@ const formData = ref({})
 const onOpenPreviewModal = () => {
   previewShow.value = true
 }
-const onDownload = () => {
-  api.getTemplate(id.value!).then((res) => {
-    const { code, data, msg } = res
-    if (code == 200) {
-      downloadFile(data, extraFormConfig.value.name, 'vue')
-    }
-  })
-}
 </script>
 <style scoped lang="scss">
 .form-design {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+.form-design-container {
   display: grid;
-  grid-template-columns: 1fr 6fr 2fr;
-  gap: 10px;
-  height: calc(100vh - 70px);
-  margin-top: 10px;
-  background-color: #ccc;
+  grid-template-columns: 1fr 6fr 1fr;
+  gap: $gap;
+  height: calc(100vh - 80px);
+  padding: 10px 10px 0;
   .left-part {
     padding: 20px;
     background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
   .middle-part {
     display: flex;
     flex-direction: column;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
     .middle-part-header {
       display: flex;
       justify-content: flex-end;
@@ -234,6 +235,7 @@ const onDownload = () => {
   .right-part {
     padding: 0 20px 0 20px;
     background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
 }
 </style>

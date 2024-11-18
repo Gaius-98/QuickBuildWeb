@@ -157,6 +157,7 @@ const routes = [
           path:'form',
           name:'form-design',
           component: () =>import('@/views/LowCode/Form/FormEditor/FormEditor.vue'),
+          props: (route:RouteLocationNormalized) => route.query
         },{
           path:'dataset',
           name:'dataset-design',

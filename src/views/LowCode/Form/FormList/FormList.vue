@@ -28,11 +28,6 @@
               <a-image :src="item.img" height="130px" />
             </template>
             <template #actions>
-              <DownloadOutlined
-                key="download"
-                @click="onDownload(item.id!, item.name)"
-                title="下载"
-              />
               <EditOutlined key="edit" title="编辑" @click="onJumpEdit(item.id!)" />
               <a-popconfirm
                 title="确定要删除吗?"
@@ -54,13 +49,17 @@
           :scroll="{ y: 470 }"
         >
           <template #bodyCell="{ column, record }">
+            <template v-if="column.key == 'id'">
+              <span v-copy="record.id">
+                {{ record.id }}
+                <CopyOutlined style="cursor: pointer" @click="onCopy()" />
+              </span>
+            </template>
             <template v-if="column.key == 'status'">
               <a-tag color="#87d068" v-if="record.status">启用</a-tag>
               <a-tag color="#f50" v-else>停用</a-tag>
             </template>
             <template v-if="column.key == 'action'">
-              <a-button type="link" @click="onDownload(record.id!, record.name)">下载</a-button>
-              <a-divider type="vertical" />
               <a-button type="link" @click="onJumpEdit(record.id!)">编辑</a-button>
               <a-divider type="vertical" />
               <a-popconfirm
@@ -91,9 +90,9 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted, h } from 'vue'
-import { EditOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons-vue'
 import api from '../api/form'
-import type { FormInstance } from 'ant-design-vue'
+import { message, type FormInstance } from 'ant-design-vue'
 import type { LCFormCfg, PageParams } from '@/model'
 import { useRouter } from 'vue-router'
 import { downloadFile } from '@/utils/tools'
@@ -101,9 +100,10 @@ import { SwapOutlined } from '@ant-design/icons-vue'
 const router = useRouter()
 const columns = ref([
   {
-    title: 'id',
+    title: '表单id',
     key: 'id',
-    dataIndex: 'id'
+    dataIndex: 'id',
+    ellipsis: true
   },
   {
     title: '表单名称',
@@ -122,16 +122,23 @@ const columns = ref([
     dataIndex: 'status',
     width: 100
   },
+
+  {
+    title: '备注',
+    key: 'remark',
+    dataIndex: 'remark',
+    ellipsis: true
+  },
   {
     title: '创建时间',
     key: 'createTime',
     dataIndex: 'createTime'
   },
-
   {
     title: '操作',
     key: 'action',
-    dataIndex: 'action'
+    dataIndex: 'action',
+    width: '200px'
   }
 ])
 const paramsForm = reactive<PageParams>({
@@ -146,6 +153,9 @@ const searchFormRef = ref<FormInstance>()
 const onClear = () => {
   searchFormRef.value?.resetFields()
   getList()
+}
+const onCopy = () => {
+  message.success('复制成功！')
 }
 const type = ref<'visual' | 'table'>('table')
 const onToggleType = () => {
@@ -163,17 +173,19 @@ const getList = () => {
   })
 }
 const onOpenAdd = () => {
-  router.push({
+  const urlCfg = router.resolve({
     path: '/design/form'
   })
+  window.open(urlCfg.href, '_blank')
 }
 const onJumpEdit = (id: string) => {
-  router.push({
+  const urlCfg = router.resolve({
     path: '/design/form',
     query: {
       id
     }
   })
+  window.open(urlCfg.href, '_blank')
 }
 const onDelete = (id: string) => {
   api.remove(id).then((res) => {
@@ -183,14 +195,7 @@ const onDelete = (id: string) => {
     }
   })
 }
-const onDownload = (id: string, name: string) => {
-  api.getTemplate(id).then((res) => {
-    const { code, data, msg } = res
-    if (code == 200) {
-      downloadFile(data, name, 'vue')
-    }
-  })
-}
+
 onMounted(() => {
   getList()
 })

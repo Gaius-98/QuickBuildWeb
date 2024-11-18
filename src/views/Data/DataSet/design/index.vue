@@ -2,7 +2,7 @@
   <div class="dataset-design">
     <a-page-header
       style="border: 1px solid rgb(235, 237, 240); padding: 10px 24px"
-      @back="() => null"
+      @back="goBack()"
     >
       <template #title>
         <a-input
@@ -241,6 +241,7 @@ import {
   PlusOutlined
 } from '@ant-design/icons-vue'
 import { paginationProps } from 'ant-design-vue/es/pagination'
+import { useRouter } from 'vue-router'
 interface Props {
   type: 'edit' | 'add'
   id?: string
@@ -367,6 +368,10 @@ const onOpenColumnInfo = (tableName: string) => {
   })
   modalOpen.value = true
 }
+const router = useRouter()
+const goBack = () => {
+  router.go(-1)
+}
 const onCopy = () => {
   message.success('复制成功')
 }
@@ -492,7 +497,7 @@ const onRemoveParams = (record: DatasetParamsConfig) => {
     }
   }
   .container {
-    flex: 1;
+    height: calc(100vh - 80px);
     display: flex;
     padding: 10px 10px 0;
 

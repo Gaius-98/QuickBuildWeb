@@ -1,10 +1,11 @@
 <template>
-  <a-tabs v-model:activeKey="activeKey">
+  <a-tabs v-model:activeKey="activeKey" size="small">
     <a-tab-pane key="item" tab="控件配置">
       <schema-form
         v-if="curControlCfg.id"
         :schema="schema"
         :formData="curControlCfg"
+        size="small"
         :key="curControlCfg.id"
       >
       </schema-form>
@@ -13,7 +14,7 @@
       </div>
     </a-tab-pane>
     <a-tab-pane key="form" tab="表单配置">
-      <schema-form :schema="formSchema" :formData="formConfig"> </schema-form>
+      <schema-form :schema="formSchema" :formData="formConfig" size="small"> </schema-form>
     </a-tab-pane>
   </a-tabs>
 </template>
