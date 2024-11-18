@@ -64,7 +64,7 @@ const formSchema = ref<SchemaProp>({
       }
     },
     layout: {
-      label: '响应式布局',
+      label: '布局方式',
       type: 'radio',
       component: {
         dataSource: [
