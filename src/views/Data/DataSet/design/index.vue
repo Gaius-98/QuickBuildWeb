@@ -240,8 +240,7 @@ import {
   SettingOutlined,
   PlusOutlined
 } from '@ant-design/icons-vue'
-import { paginationProps } from 'ant-design-vue/es/pagination'
-import { useRouter } from 'vue-router'
+
 interface Props {
   type: 'edit' | 'add'
   id?: string
@@ -368,9 +367,9 @@ const onOpenColumnInfo = (tableName: string) => {
   })
   modalOpen.value = true
 }
-const router = useRouter()
+
 const goBack = () => {
-  router.go(-1)
+  window.open('/data/dataset', 'quick-build')
 }
 const onCopy = () => {
   message.success('复制成功')
