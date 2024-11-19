@@ -28,6 +28,7 @@
               <a-image :src="item.img" height="130px" />
             </template>
             <template #actions>
+              <EyeOutlined key="view" title="预览" @click="onOpenPreviewModal(item.id!)" />
               <EditOutlined key="edit" title="编辑" @click="onJumpEdit(item.id!)" />
               <a-popconfirm
                 title="确定要删除吗?"
@@ -60,6 +61,8 @@
               <a-tag color="#f50" v-else>停用</a-tag>
             </template>
             <template v-if="column.key == 'action'">
+              <a-button type="link" @click="onOpenPreviewModal(record.id!)">预览</a-button>
+              <a-divider type="vertical" />
               <a-button type="link" @click="onJumpEdit(record.id!)">编辑</a-button>
               <a-divider type="vertical" />
               <a-popconfirm
@@ -85,18 +88,21 @@
         @change="getList()"
       />
     </a-card>
+    <a-modal v-model:open="previewShow" title="预览" width="1000px" height="800px" :footer="null">
+      <low-code-form-id :formData="formData" :id="currentFormId"></low-code-form-id>
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted, h } from 'vue'
-import { EditOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, DeleteOutlined, CopyOutlined, EyeOutlined } from '@ant-design/icons-vue'
 import api from '../api/form'
 import { message, type FormInstance } from 'ant-design-vue'
 import type { LCFormCfg, PageParams } from '@/model'
 import { useRouter } from 'vue-router'
-import { downloadFile } from '@/utils/tools'
 import { SwapOutlined } from '@ant-design/icons-vue'
+import LowCodeFormId from '@/components/LowCodeForm/LowCodeFormId.vue'
 const router = useRouter()
 const columns = ref([
   {
@@ -138,7 +144,7 @@ const columns = ref([
     title: '操作',
     key: 'action',
     dataIndex: 'action',
-    width: '200px'
+    width: '250px'
   }
 ])
 const paramsForm = reactive<PageParams>({
@@ -195,7 +201,13 @@ const onDelete = (id: string) => {
     }
   })
 }
-
+const previewShow = ref(false)
+const formData = ref({})
+const currentFormId = ref('')
+const onOpenPreviewModal = (id: string) => {
+  previewShow.value = true
+  currentFormId.value = id
+}
 onMounted(() => {
   getList()
 })
