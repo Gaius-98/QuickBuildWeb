@@ -1,22 +1,24 @@
 <template>
   <div class="form-design">
     <a-page-header
-      :title="title"
       :subTitle="desc"
       @back="goBack"
       :ghost="false"
       style="border: 1px solid rgb(235, 237, 240); padding: 10px 24px"
     >
+      <template #title>
+        <a-input v-model:value="extraFormConfig.name" :bordered="false" class="form-name"></a-input>
+      </template>
       <template #extra>
         <a-space>
           <a-button @click="onOpenPreviewModal" class="preview-btn"> 预览 </a-button>
-          <a-button @click="onOpenSaveModal" type="primary" class="save-btn"> 保存 </a-button>
+          <a-button @click="onConfirm()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
       </template>
-      <template #tags>
+      <!-- <template #tags>
         <a-tag color="#87d068" v-if="extraFormConfig.status">启用</a-tag>
         <a-tag color="#f50" v-else>停用</a-tag>
-      </template>
+      </template> -->
     </a-page-header>
     <div class="form-design-container" v-loading.fullscreen="saveLoading">
       <material-area class="left-part"></material-area>
@@ -28,9 +30,6 @@
       <material-cfg class="right-part"></material-cfg>
     </div>
   </div>
-  <a-modal v-model:open="show" title="保存" @ok="onConfirm">
-    <schema-form :schema="schema" :form-data="extraFormConfig"></schema-form>
-  </a-modal>
   <a-modal v-model:open="previewShow" title="预览" width="1000px" height="800px" :footer="null">
     <low-code-form :formData="formData" :schema="{ formCfgItemList, formConfig }"></low-code-form>
   </a-modal>
@@ -44,13 +43,12 @@ import MaterialCfg from './components/MaterialCfg.vue'
 import { reactive, toRefs, ref, computed } from 'vue'
 import { useFormDesignStore } from '@/stores/formDesign'
 import { storeToRefs } from 'pinia'
-import SchemaForm from '@/components/SchemaForm/SchemaForm'
-import type { Schema, SchemaProp } from '@/model'
+
 import LowCodeForm from '@/components/LowCodeForm/LowCodeForm.vue'
 import api from '../api/form'
 import { useRouter } from 'vue-router'
-import { downloadFile } from '@/utils/tools'
-import common from '@/api/common'
+
+window.name = 'form-design'
 interface Props {
   id?: string
 }
@@ -120,76 +118,18 @@ if (id.value) {
   })
   open.value = true
 }
-const title = computed(() => {
-  return id.value ? extraFormConfig.value.name : '新建表单'
-})
+
 const desc = computed(() => {
   return id.value ? extraFormConfig.value.description : ''
 })
-const show = ref(false)
-const schema = ref<SchemaProp>({
-  layout: {
-    labelAlign: 'left',
-    layout: 'horizontal',
-    labelCol: {
-      span: 4
-    }
-  },
-  properties: {
-    name: {
-      type: 'string',
-      label: '表单名称'
-    },
-    description: {
-      type: 'string',
-      label: '备注'
-    },
-    belong: {
-      type: 'radio',
-      label: '归属',
-      component: {
-        buttonStyle: 'solid',
-        asyncData: async () => {
-          const { code, data, msg } = await common.getDict(['belong'])
-          if (code == 200) {
-            return data['belong']
-          } else {
-            return []
-          }
-        }
-      }
-    },
-    status: {
-      type: 'radio',
-      label: '状态',
-      component: {
-        buttonStyle: 'solid',
-        dataSource: [
-          {
-            label: '启用',
-            value: 1
-          },
-          {
-            label: '停用',
-            value: 0
-          }
-        ]
-      }
-    }
-  }
-})
-const onOpenSaveModal = () => {
-  show.value = true
-}
-const router = useRouter()
+
 const goBack = () => {
-  router.go(-1)
+  window.open('/lowcode/form', 'quick-build')
 }
 const onConfirm = () => {
   onSave().then(() => {
     goBack()
   })
-  show.value = false
 }
 const previewShow = ref(false)
 const formData = ref({})
@@ -203,6 +143,11 @@ const onOpenPreviewModal = () => {
   flex-direction: column;
   height: 100vh;
   width: 100%;
+  .form-name {
+    &:hover {
+      background-color: #e0f7fa;
+    }
+  }
 }
 .form-design-container {
   display: grid;
