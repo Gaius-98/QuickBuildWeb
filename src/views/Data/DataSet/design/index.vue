@@ -228,7 +228,7 @@
             :indent-with-tab="true"
             :tab-size="2"
             :extensions="extensions"
-            :model-value="format(logDetail.execSql!, { language: 'mysql' })"
+            :model-value="logDetail.execSql"
             :disabled="true"
           />
         </a-descriptions-item>
