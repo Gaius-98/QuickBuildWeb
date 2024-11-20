@@ -129,6 +129,7 @@ const collectDictKey = () => {
 collectDictKey()
 const getDict = () => {
   if (dictKeys.value.length > 0) {
+    console.log(dictKeys.value)
     common.getDict(dictKeys.value).then((res) => {
       const { code, data, msg } = res
       if (code == 200) {

@@ -15,10 +15,6 @@
           <a-button @click="onConfirm()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
       </template>
-      <!-- <template #tags>
-        <a-tag color="#87d068" v-if="extraFormConfig.status">启用</a-tag>
-        <a-tag color="#f50" v-else>停用</a-tag>
-      </template> -->
     </a-page-header>
     <div class="form-design-container" v-loading.fullscreen="saveLoading">
       <material-area class="left-part"></material-area>
@@ -31,7 +27,11 @@
     </div>
   </div>
   <a-modal v-model:open="previewShow" title="预览" width="1000px" height="800px" :footer="null">
-    <low-code-form :formData="formData" :schema="{ formCfgItemList, formConfig }"></low-code-form>
+    <low-code-form
+      :formData="formData"
+      :schema="{ formCfgItemList, formConfig }"
+      v-if="previewShow"
+    ></low-code-form>
   </a-modal>
   <a-tour v-model:current="current" :open="open" :steps="steps" @close="open = false" />
 </template>
@@ -46,7 +46,6 @@ import { storeToRefs } from 'pinia'
 
 import LowCodeForm from '@/components/LowCodeForm/LowCodeForm.vue'
 import api from '../api/form'
-import { useRouter } from 'vue-router'
 
 window.name = 'form-design'
 interface Props {
@@ -66,27 +65,32 @@ const steps = [
   {
     title: '物料区',
     description: '选择您需要的表单控件',
-    target: () => document.querySelector('.left-part')
+    target: () => document.querySelector('.left-part'),
+    placement: 'right'
   },
   {
     title: '设计区',
     description: '将物料区的表单控件拖拽到此区域,可以按照你需要的方式进行布局。',
-    target: () => document.querySelector('.middle-part')
+    target: () => document.querySelector('.middle-part-content'),
+    placement: 'top'
   },
   {
     title: '配置区',
     description: '对设计区选中的控件进行配置',
-    target: () => document.querySelector('.right-part')
+    target: () => document.querySelector('.right-part'),
+    placement: 'left'
   },
   {
     title: '查看实际效果',
     description: '对已经配置完成的表单进行预览',
-    target: () => document.querySelector('.preview-btn')
+    target: () => document.querySelector('.preview-btn'),
+    placement: 'left'
   },
   {
     title: '最后',
     description: '保存您刚刚的配置',
-    target: () => document.querySelector('.save-btn')
+    target: () => document.querySelector('.save-btn'),
+    placement: 'left'
   }
 ]
 
@@ -100,7 +104,7 @@ if (id.value) {
 } else {
   setFormDetail({
     id: '',
-    name: '',
+    name: '未命名',
     description: '',
     schema: {
       formCfgItemList: [],
@@ -151,7 +155,7 @@ const onOpenPreviewModal = () => {
 }
 .form-design-container {
   display: grid;
-  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-columns: 1fr 9fr 2fr;
   gap: $gap;
   height: calc(100vh - 80px);
   padding: 10px 10px 0;
