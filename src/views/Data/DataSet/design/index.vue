@@ -129,6 +129,9 @@
                     <a-tag color="#87d068" v-if="record.status == '1'">成功</a-tag>
                     <a-tag color="#f50" v-else>失败</a-tag>
                   </template>
+                  <template v-if="column.key == 'action'">
+                    <a-button type="link" @click="onOpenLogDetail(record)">查看</a-button>
+                  </template>
                 </template>
               </a-table>
             </a-tab-pane>
@@ -204,11 +207,38 @@
               cancel-text="取消"
               @confirm="onRemoveParams(record)"
             >
-              <a-button type="link" danger v-has-perm="'system:user:remove'">删除</a-button>
+              <a-button type="link" danger>删除</a-button>
             </a-popconfirm>
           </template>
         </template>
       </a-table>
+    </a-modal>
+    <a-modal title="日志明细" v-model:open="logOpen" width="900px" :footer="null">
+      <a-descriptions size="small" :column="2" style="width: 800px">
+        <a-descriptions-item label="执行结果" :span="1">
+          <a-tag color="#87d068" v-if="logDetail.status == '1'">成功</a-tag>
+          <a-tag color="#f50" v-else>失败</a-tag>
+        </a-descriptions-item>
+        <a-descriptions-item label="执行耗时" :span="1"
+          >{{ logDetail.executionTime }}ms</a-descriptions-item
+        >
+        <a-descriptions-item label="执行语句" :span="2">
+          <codemirror
+            :style="{ height: '200px', width: '100%' }"
+            :indent-with-tab="true"
+            :tab-size="2"
+            :extensions="extensions"
+            :model-value="format(logDetail.execSql!, { language: 'mysql' })"
+            :disabled="true"
+          />
+        </a-descriptions-item>
+
+        <a-descriptions-item label="错误日志" :span="2">
+          <span style="color: red">
+            {{ logDetail.errMsg }}
+          </span>
+        </a-descriptions-item>
+      </a-descriptions>
     </a-modal>
   </div>
 </template>
@@ -241,6 +271,8 @@ import {
   PlusOutlined
 } from '@ant-design/icons-vue'
 
+import SchemaForm from '@/components/SchemaForm/SchemaForm'
+import type { SchemaProp } from '@/model'
 interface Props {
   type: 'edit' | 'add'
   id?: string
@@ -429,9 +461,54 @@ const logColumns = ref([
     title: '执行结果',
     key: 'status',
     dataIndex: 'status'
+  },
+  {
+    title: '操作',
+    key: 'action',
+    dataIndex: 'action',
+    wdith: '100px'
   }
 ])
-
+const logSchema = ref<SchemaProp>({
+  layout: {
+    labelAlign: 'left',
+    layout: 'horizontal',
+    labelCol: {
+      style: {
+        width: '100px'
+      }
+    }
+  },
+  properties: {
+    execSql: {
+      type: 'string',
+      label: '执行语句',
+      component: {
+        name: 'code-editor'
+      }
+    },
+    status: {
+      type: 'select',
+      label: '执行结果',
+      component: {
+        dataSource: [
+          {
+            label: '成功',
+            value: '1'
+          },
+          {
+            label: '失败',
+            value: '0'
+          }
+        ]
+      }
+    },
+    errMsg: {
+      type: 'textarea',
+      label: '错误日志'
+    }
+  }
+})
 const getLogList = () => {
   logParams.value.keyword = formData.value.datasourceId
   api.getLogList(logParams.value).then((res) => {
@@ -442,6 +519,11 @@ const getLogList = () => {
       logTotal.value = data.total
     }
   })
+}
+const logOpen = ref(false)
+const logDetail = ref<Partial<LowCodeDatasetLog>>({})
+const onOpenLogDetail = (record: LowCodeDatasetLog) => {
+  ;(logOpen.value = true), (logDetail.value = record)
 }
 const activeKey = ref('result')
 const onOpenParamsModal = () => {
