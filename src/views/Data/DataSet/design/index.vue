@@ -219,9 +219,9 @@
           <a-tag color="#87d068" v-if="logDetail.status == '1'">成功</a-tag>
           <a-tag color="#f50" v-else>失败</a-tag>
         </a-descriptions-item>
-        <a-descriptions-item label="执行耗时" :span="1"
-          >{{ logDetail.executionTime }}ms</a-descriptions-item
-        >
+        <a-descriptions-item label="执行耗时" :span="1">{{
+          logDetail.executionTime
+        }}</a-descriptions-item>
         <a-descriptions-item label="执行语句" :span="2">
           <codemirror
             :style="{ height: '200px', width: '100%' }"
