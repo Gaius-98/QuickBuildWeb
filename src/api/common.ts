@@ -39,5 +39,29 @@ export default {
       method: 'get',
 
     })
-  }
+  },
+  getDatasetDict:()=>{
+    return request<DictItem[]>({
+      url: 'dataset/dict',
+      method: 'get',
+    })
+  },
+  getFieldByDatasetId:(id:string)=>{
+    return request<string[]>({
+      url: 'dataset/getField',
+      method: 'get',
+      params:{
+        id
+      }
+    })
+  },
+  getPreviewByDatasetId:(id:string)=>{
+        return request<Obj<any>[]>({
+            method: 'get',
+            url: 'dataset/runById',
+            params:{
+              id
+            }
+        })
+    },
 }

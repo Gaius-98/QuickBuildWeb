@@ -158,7 +158,14 @@ const routes = [
           name:'form-design',
           component: () =>import('@/views/LowCode/Form/FormEditor/FormEditor.vue'),
           props: (route:RouteLocationNormalized) => route.query
-        },{
+        },
+        {
+          path:'table',
+          name:'table-design',
+          component: () =>import('@/views/LowCode/Table/TableDesign/TableDesign.vue'),
+          props: (route:RouteLocationNormalized) => route.query
+        },
+        {
           path:'dataset',
           name:'dataset-design',
           component:()=>import('@/views/Data/DataSet/design/index.vue'),
