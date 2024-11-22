@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import type { Obj,SystemOrgTree,SystemUserNotice,ResPage } from '@/model'
+import type { Obj,SystemOrgTree,SystemUserNotice,ResPage,LowCodeDataSource,DataSourceTable,DataSourceTableField } from '@/model'
 export type DictTypes = string[]
 export interface DictItem {
   value: string
@@ -61,6 +61,44 @@ export default {
             url: 'dataset/runById',
             params:{
               id
+            }
+        })
+  },
+  getDataSourceDict:()=>{
+        return request<LowCodeDataSource[]>({
+            method: 'get',
+            url: 'datasource/list',
+            params:{
+                keyword:''
+            }
+        })
+    },
+     getTableInfo:(id:string)=>{
+        return request<DataSourceTable[]>({
+            method: 'get',
+            url: 'datasource/getAllTable',
+            params: {
+                id
+            }
+        })
+    },
+    getColumnInfo:(id:string,tableName:string)=>{
+        return request<DataSourceTableField[]>({
+            method: 'get',
+            url: 'datasource/getColumnByTable',
+            params: {
+                id,
+                tableName
+            }
+        })
+    },
+    getSourceData:(id:string,tableName:string)=>{
+        return request<Obj<any>[]>({
+            method: 'get',
+            url: 'datasource/run',
+            params: {
+                id,
+                tableName
             }
         })
     },
