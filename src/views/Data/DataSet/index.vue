@@ -172,7 +172,7 @@ onMounted(() => {
     const { code, data, msg } = res
 
     if (code == 200) {
-      sourceList.value = data.data
+      sourceList.value = data
     }
   })
 })

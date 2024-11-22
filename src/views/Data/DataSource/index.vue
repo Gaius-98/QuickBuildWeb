@@ -186,7 +186,6 @@ const columns = ref([
   }
 ])
 const loading = ref(false)
-const total = ref(0)
 
 const searchValue = ref('')
 const getTree = () => {
@@ -194,8 +193,7 @@ const getTree = () => {
     const { code, data } = res
     loading.value = false
     if (code == 200) {
-      treeData.value = data.data
-      total.value = data.total
+      treeData.value = data
     }
   })
 }

@@ -359,7 +359,7 @@ onMounted(() => {
   datasourceApi.getList('').then((res) => {
     const { code, data } = res
     if (code == 200) {
-      datasourceList.value = data.data
+      datasourceList.value = data
     }
   })
 })

@@ -2,7 +2,7 @@ import request from "@/utils/request";
 import type { LowCodeDataSource,PageParams,ResPage,DataSourceTable,DataSourceTableField } from "@/model";
 export default {
     getList:(keyword:string)=>{
-        return request<ResPage<LowCodeDataSource[]>>({
+        return request<LowCodeDataSource[]>({
             method: 'get',
             url: 'datasource/list',
             params:{
