@@ -31,6 +31,7 @@ import CustomTableHeader from './components/CustomColumnHeader.vue'
 import agPubSub from './utils/AgPubSub'
 import CustomOptCell from './components/CustomOptCell.vue'
 import CustomAddColumnHeader from './components/CustomAddColumn.vue'
+import CustomCellRender from './components/CustomCellRender.vue'
 agPubSub.onSubscribe('removeEvent', (params: IHeaderParams) => {
   let colId = params.column.getColId()
   let column = columns.value.find((col) => col.dataIndex == colId)
@@ -57,9 +58,13 @@ const colDefs = computed<ColDef[]>(() => {
       field: col.dataIndex,
       colId: col.dataIndex,
       headerName: col.title,
-      pinned: col.fixed,
+      pinned: col.fixed == 'none' ? undefined : col.fixed,
       lockVisible: true,
-      headerComponent: CustomTableHeader
+      headerComponent: CustomTableHeader,
+      cellRenderer: CustomCellRender,
+      cellRendererParams: {
+        type: col.type
+      }
     } as ColDef
   })
   cols.push({

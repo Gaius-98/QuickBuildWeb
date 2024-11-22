@@ -14,7 +14,10 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
     global: {
       bordered: false,
     },
-    datasetId:'',
+    datasource:{
+      tableName:'',
+      sourceId:''
+    },
     filter:{
         show:true
     },
@@ -24,6 +27,7 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
   const currentColumn = ref<Partial<LCTableColumnCfg>>({})
   const onAddColumn = () => {
     const randomStr = new Date().getTime().toString().slice(-4)
+    console.log(tableCfg.value.columns)
     tableCfg.value.columns.push({
       id: uuid(),
       dataIndex: 'field' + randomStr,
@@ -55,6 +59,9 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
     
     saveLoading.value = false
   }
+  const onSetColumns = (data:{ label: string; value: string }[]) =>{
+    columnFields.value = data
+  }
   return {
     tableCfg,
     currentColumn,
@@ -65,6 +72,7 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
     onRefreshData,
     saveLoading,
     onSave,
-    columnFields
+    columnFields,
+    onSetColumns
   }
 })

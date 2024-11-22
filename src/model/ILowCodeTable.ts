@@ -8,7 +8,10 @@ export interface LowCodeTable {
   global: Partial<LCTableGlobalCfg>,
   filter:Partial<LowCodeFilterCfg>,
   action:Partial<LCTableInteractionCfg>[],
-  datasetId: string
+  datasource:{
+    sourceId:string,
+    tableName:string
+  }
 }
 
 export interface LowCodeWidget{
@@ -40,7 +43,8 @@ export enum AlignType {
 }
 export enum FixedType {
   left = 'left',
-  right = 'right'
+  right = 'right',
+  none = 'none'
 }
 export enum ColumnType {
   text = 'text',

@@ -10,12 +10,23 @@
       </template>
       <template #extra>
         <a-space class="extra">
-          <a-form-item label="选择数据集">
+          <a-form-item label="选择数据源">
             <a-select
-              v-model:value="tableCfg.datasetId"
-              :options="datasetList"
+              v-model:value="tableCfg.datasource.sourceId"
+              :options="dataSourceList"
               style="width: 180px"
-              @change="onChangeDataset()"
+              :fieldNames="{ label: 'datasourceName', value: 'id' }"
+              @change="getTableInfo()"
+            >
+            </a-select>
+          </a-form-item>
+          <a-form-item label="选择表名">
+            <a-select
+              v-model:value="tableCfg.datasource.tableName"
+              :options="tableNameList"
+              style="width: 180px"
+              :fieldNames="{ label: 'tableName', value: 'tableName' }"
+              @change="getFieldInfo()"
             >
             </a-select>
           </a-form-item>
@@ -83,7 +94,9 @@
           </ag-table>
         </div>
       </div>
-      <div class="right-part"></div>
+      <div class="right-part">
+        <table-cfg></table-cfg>
+      </div>
     </div>
   </div>
 </template>
@@ -97,21 +110,22 @@ import { VueDraggableNext } from 'vue-draggable-next'
 import { DragOutlined } from '@ant-design/icons-vue'
 import { useTableDesignStore } from '@/stores/tableDesign'
 import { storeToRefs } from 'pinia'
-import type { LCTableColumnCfg, Obj } from '@/model'
+import type { DataSourceTable, LCTableColumnCfg, LowCodeDataSource, Obj } from '@/model'
 import commonApi, { type DictItem } from '@/api/common'
+import TableCfg from './TableCfg.vue'
 
-const datasetList = ref<DictItem[]>([])
+const dataSourceList = ref<LowCodeDataSource[]>([])
 onMounted(() => {
-  commonApi.getDatasetDict().then((res) => {
+  commonApi.getDataSourceDict().then((res) => {
     const { code, data, msg } = res
     if (code == 200) {
-      datasetList.value = data
+      dataSourceList.value = data
     }
   })
 })
 const tableStore = useTableDesignStore()
 const { tableCfg, columnFields } = storeToRefs(tableStore)
-const { onSelectColumn, onRemoveColumn, onAddColumn, onRefreshData } = tableStore
+const { onSelectColumn, onRemoveColumn, onAddColumn, onRefreshData, onSetColumns } = tableStore
 window.name = 'table-design'
 
 const widgetList = ref([
@@ -172,26 +186,47 @@ const onRemove = (columnData: LCTableColumnCfg) => {
 const fields = ref<string[]>([])
 const tableData = ref<Obj<any>[]>([])
 const getPreviewData = () => {
-  commonApi.getPreviewByDatasetId(tableCfg.value.datasetId).then((res) => {
+  commonApi
+    .getSourceData(tableCfg.value.datasource.sourceId, tableCfg.value.datasource.tableName)
+    .then((res) => {
+      const { code, data, msg } = res
+      if (code == 200) {
+        tableData.value = data
+      }
+    })
+}
+const tableNameList = ref<DataSourceTable[]>([])
+const getTableInfo = () => {
+  commonApi.getTableInfo(tableCfg.value.datasource.sourceId).then((res) => {
     const { code, data, msg } = res
-
     if (code == 200) {
-      tableData.value = data
+      tableNameList.value = data
     }
   })
 }
-const onChangeDataset = () => {
-  commonApi.getFieldByDatasetId(tableCfg.value.datasetId).then((res) => {
-    const { code, data, msg } = res
-    if (code == 200) {
-      fields.value = data
-      tableCfg.value.columns = fields.value.map((e) => ({
-        dataIndex: e,
-        id: e,
-        title: e
-      }))
-    }
-  })
+const getFieldInfo = () => {
+  commonApi
+    .getColumnInfo(tableCfg.value.datasource.sourceId, tableCfg.value.datasource.tableName)
+    .then((res) => {
+      const { code, data, msg } = res
+      if (code == 200) {
+        tableCfg.value.columns = data.map((e) => ({
+          dataIndex: e.columnName,
+          title: e.columnComment || e.columnName,
+          id: e.columnName,
+          width: 200,
+          type: 'text',
+          align: 'left',
+          fixed: 'none'
+        }))
+        onSetColumns(
+          data.map((e) => ({
+            label: e.columnComment ? `${e.columnComment}(${e.columnName})` : e.columnName,
+            value: e.columnName
+          }))
+        )
+      }
+    })
   getPreviewData()
 }
 </script>
