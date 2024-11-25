@@ -20,6 +20,7 @@ export interface LowCodeWidget{
    field:string
    dict?:string 
    defaultValue?:string
+   label:string
 }
 export interface LowCodeFilterCfg {
     show:boolean
@@ -75,16 +76,12 @@ export interface LCTableInteractionCfg  {
   name: string
   //按钮位置
   position: 'row' | 'header'
-  // 点击是否请求接口
-  request: boolean
-  //接口地址
-  interfaceUrl: string
-  //处理函数
-  AfterHandleFunc: string
-  //点击事件类型
-  event: 'modal' | 'link'
-  //链接地址
-  linkUrl: string
+  //事件流id
+  eventFlowId:string
+}
+
+export interface EventFlow {
+
 }
 export interface LCTableGlobalCfg {
   bordered: boolean

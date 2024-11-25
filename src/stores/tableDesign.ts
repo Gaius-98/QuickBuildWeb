@@ -19,7 +19,8 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       sourceId:''
     },
     filter:{
-        show:true
+        show:true,
+        widgetList:[]
     },
     action:[]
   })
