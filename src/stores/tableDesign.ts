@@ -48,8 +48,27 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       data.splice(idx, 1)
     }
   }
+  const onAddBtn = (position?:"row"|"header") =>{
+    tableCfg.value.action.push({
+      id: new Date().getTime().toString(),
+      name: '测试',
+      position: position,
+      eventFlowId: ''
+    })
+  }
+  const onRemoveBtn = (id:string) =>{
+   const idx =   tableCfg.value.action.findIndex(e=>(e.id == id))
+   if(idx != -1){
+    tableCfg.value.action.splice(idx,1)
+   }
+  }
 
- 
+  const onRemoveWidget = (id:string) =>{
+   const idx =   tableCfg.value.filter.widgetList!.findIndex(e=>(e.id == id))
+   if(idx != -1){
+    tableCfg.value.filter.widgetList!.splice(idx,1)
+   }
+  }
   const onRefreshData = async (handlerFunc?: string) => {
     
   }
@@ -57,8 +76,11 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
   const onSave = async () => {
     saveLoading.value = true
 
-    
+    setTimeout(() => {
+      console.log(tableCfg.value)
     saveLoading.value = false
+      
+    }, 2000);
   }
   const onSetColumns = (data:{ label: string; value: string }[]) =>{
     columnFields.value = data
@@ -74,6 +96,9 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
     saveLoading,
     onSave,
     columnFields,
-    onSetColumns
+    onSetColumns,
+    onAddBtn,
+    onRemoveBtn,
+    onRemoveWidget
   }
 })

@@ -1,19 +1,19 @@
 <template>
   <div class="custom-opt-cell">
     <div class="btn" v-for="btn in rowBtnList" :key="btn.id">
-      <a @click="onClickRowBtn('row', btn)">
+      <a @click="onClickRowBtn(btn)">
         {{ btn.name }}
       </a>
       <a-popconfirm
         title="确定要删除此按钮的配置吗?"
         ok-text="确定"
         cancel-text="取消"
-        @confirm="onRemoveBtn(btn)"
+        @confirm="onRemoveBtn(btn.id!)"
       >
         <CloseCircleOutlined class="remove-btn" />
       </a-popconfirm>
     </div>
-    <PlusOutlined style="cursor: pointer" @click="onClickRowBtn('row')" />
+    <PlusOutlined style="cursor: pointer" @click="onAddRowBtn()" />
   </div>
 </template>
 
@@ -29,14 +29,12 @@ const store = useTableDesignStore()
 const { tableCfg } = storeToRefs(store)
 const rowBtnList = computed(() => tableCfg.value.action?.filter((e) => e.position == 'row'))
 
-const onClickRowBtn = (position: 'row' | 'header', data?: Partial<LCTableInteractionCfg>) => {
-  agPubSub.onPublish('action', {
-    position,
-    data
-  })
+const { onAddBtn, onRemoveBtn } = store
+const onClickRowBtn = (data?: Partial<LCTableInteractionCfg>) => {
+  agPubSub.onPublish('open-btn-modal', data)
 }
-const onRemoveBtn = (btn: Partial<LCTableInteractionCfg>) => {
-  agPubSub.onPublish('remove-btn', btn)
+const onAddRowBtn = () => {
+  onAddBtn('row')
 }
 </script>
 <style scoped lang="scss"></style>

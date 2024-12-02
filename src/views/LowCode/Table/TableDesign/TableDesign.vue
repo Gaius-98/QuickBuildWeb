@@ -1,5 +1,5 @@
 <template>
-  <div class="table-design">
+  <div class="table-design" v-loading.fullscreen="saveLoading">
     <a-page-header
       @back="goBack"
       :ghost="false"
@@ -59,6 +59,14 @@
                   <a-select v-else-if="item.type == 'select'"></a-select>
                   <a-date-picker v-else></a-date-picker>
                 </a-form-item>
+                <a-popconfirm
+                  title="确定要删除此按钮的配置吗?"
+                  ok-text="确定"
+                  cancel-text="取消"
+                  @confirm="onRemoveWidget(item.id!)"
+                >
+                  <CloseCircleOutlined class="remove-btn" @click.stop="() => {}" />
+                </a-popconfirm>
               </div>
               <div class="add widget-item">
                 <a-button type="primary" @click="onClickAddWidget()"> 添加控件 </a-button>
@@ -79,14 +87,21 @@
             >
               <div
                 class="button-item"
-                v-for="item in tableCfg.action"
+                v-for="item in tableCfg.action.filter((e) => e.position == 'header')"
                 :key="item.id"
-                @click="onOpenBtnModal(item)"
               >
                 <DragOutlined class="move-handle" style="cursor: pointer" />
-                <a-button>
+                <a-button @click="onOpenBtnModal(item)">
                   {{ item.name }}
                 </a-button>
+                <a-popconfirm
+                  title="确定要删除此按钮的配置吗?"
+                  ok-text="确定"
+                  cancel-text="取消"
+                  @confirm="onRemoveBtn(item.id!)"
+                >
+                  <CloseCircleOutlined class="remove-btn" />
+                </a-popconfirm>
               </div>
               <div class="add button-item">
                 <a-button type="primary" @click="onClickAddBtn()"> 添加按钮 </a-button>
@@ -98,7 +113,7 @@
           <ag-table
             v-model:columns="tableCfg.columns"
             :tableData="tableData"
-            :height="300"
+            :height="600"
             @onRemove="onRemove"
             @onClick="onClickColumn"
           >
@@ -106,7 +121,8 @@
         </div>
       </div>
       <div class="right-part">
-        <table-cfg></table-cfg>
+        <div>全局配置</div>
+        <schema-form :schema="globalSchema" :formData="tableCfg.global"> </schema-form>
       </div>
     </div>
   </div>
@@ -155,13 +171,28 @@
   >
     <schema-form :formData="currentWidgetCfg" :schema="widgetSchema"> </schema-form>
   </a-drawer>
+  <a-drawer
+    title="列配置"
+    placement="right"
+    :closable="false"
+    :open="columnShow"
+    @close="columnShow = false"
+  >
+    <table-cfg></table-cfg>
+  </a-drawer>
 </template>
 
 <script lang="ts" setup>
 import { reactive, toRefs, ref, onMounted } from 'vue'
 import AgTable from './AgTable/AgTable.vue'
 import { VueDraggableNext } from 'vue-draggable-next'
-import { DragOutlined, ExportOutlined, SyncOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import {
+  DragOutlined,
+  ExportOutlined,
+  SyncOutlined,
+  PlusOutlined,
+  CloseCircleOutlined
+} from '@ant-design/icons-vue'
 import { useTableDesignStore } from '@/stores/tableDesign'
 import { storeToRefs } from 'pinia'
 import type { DataSourceTable, LCTableColumnCfg, LowCodeDataSource, Obj } from '@/model'
@@ -170,6 +201,11 @@ import TableCfg from './TableCfg.vue'
 import type { LCTableInteractionCfg } from '@/model'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
 import type { SchemaProp } from '@/model'
+import agPubSub from './AgTable/utils/AgPubSub'
+
+agPubSub.onSubscribe('open-btn-modal', (data: any) => {
+  onOpenBtnModal(data)
+})
 const dataSourceList = ref<LowCodeDataSource[]>([])
 onMounted(() => {
   commonApi.getDataSourceDict().then((res) => {
@@ -180,57 +216,19 @@ onMounted(() => {
   })
 })
 const tableStore = useTableDesignStore()
-const { tableCfg, columnFields } = storeToRefs(tableStore)
+const { tableCfg, columnFields, saveLoading } = storeToRefs(tableStore)
 
-const { onSelectColumn, onRemoveColumn, onAddColumn, onRefreshData, onSetColumns } = tableStore
+const {
+  onSelectColumn,
+  onRemoveBtn,
+  onRemoveColumn,
+  onSetColumns,
+  onRemoveWidget,
+  onAddBtn,
+  onSave
+} = tableStore
 window.name = 'table-design'
 
-const widgetList = ref([
-  {
-    label: '测试1',
-    prop: 'test1',
-    type: 'input'
-  },
-  {
-    label: '测试2',
-    prop: 'test2',
-    type: 'select'
-  },
-  {
-    label: '测试3',
-    prop: 'test3',
-    type: 'input'
-  },
-  {
-    label: '测试4',
-    prop: 'test4',
-    type: 'select'
-  },
-  {
-    label: '测试5',
-    prop: 'tes5',
-    type: 'input'
-  },
-  {
-    label: '测试6',
-    prop: 'test6',
-    type: 'select'
-  }
-])
-const btnList = ref<LCTableInteractionCfg[]>([
-  {
-    name: '新增',
-    id: 'add',
-    position: 'header',
-    eventFlowId: ''
-  },
-  {
-    name: '批量编辑',
-    id: 'edit',
-    position: 'header',
-    eventFlowId: ''
-  }
-])
 const onClickAddWidget = () => {
   tableCfg.value.filter.widgetList?.push({
     id: new Date().getTime().toString(),
@@ -238,9 +236,7 @@ const onClickAddWidget = () => {
     label: '文本',
     field: 'field'
   })
-  console.log(tableCfg.value)
 }
-const onSave = () => {}
 
 const goBack = () => {
   window.open('/lowcode/table', 'quick-build')
@@ -248,6 +244,7 @@ const goBack = () => {
 
 const onClickColumn = (columnData: LCTableColumnCfg) => {
   onSelectColumn(columnData.id, tableCfg.value.columns)
+  columnShow.value = true
 }
 const onRemove = (columnData: LCTableColumnCfg) => {
   onRemoveColumn(columnData.id, tableCfg.value.columns)
@@ -299,13 +296,9 @@ const getFieldInfo = () => {
   getPreviewData()
 }
 const onClickAddBtn = () => {
-  tableCfg.value.action.push({
-    id: new Date().getTime().toString(),
-    name: '测试',
-    position: 'header',
-    eventFlowId: ''
-  })
+  onAddBtn('header')
 }
+
 const currentBtnCfg = ref<LCTableInteractionCfg>({
   id: '',
   name: '',
@@ -396,10 +389,24 @@ const widgetSchema = ref<SchemaProp>({
     }
   }
 })
+const globalSchema = ref<SchemaProp>({
+  layout: {
+    layout: 'horizontal',
+    labelAlign: 'right',
+    labelCol: { style: { width: '80px' } }
+  },
+  properties: {
+    bordered: {
+      type: 'switch',
+      label: '边框'
+    }
+  }
+})
 const onOpenWidget = (cfg: any) => {
   currentWidgetCfg.value = cfg
   widgetShow.value = true
 }
+const columnShow = ref(false)
 </script>
 <style scoped lang="scss">
 .table-design {
