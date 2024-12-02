@@ -40,7 +40,7 @@ const loading ={
                 el.appendChild(mask)
             }
         },
-        update(el:HTMLElement, binding:DirectiveBinding){
+        updated(el:HTMLElement, binding:DirectiveBinding){
             const {value,modifiers,} = binding
             if(modifiers.fullscreen){
                 el = document.body
@@ -52,7 +52,10 @@ const loading ={
               }else{
                 Reflect.deleteProperty(el.style,'position')
               }
+              if(el.contains(mask)){
                 el.removeChild(mask)
+
+              }
             }else{
                 el.setAttribute('old-position',el.style.position)
                 el.style.position = 'relative'
