@@ -113,16 +113,12 @@
           <ag-table
             v-model:columns="tableCfg.columns"
             :tableData="tableData"
-            :height="600"
+            :height="550"
             @onRemove="onRemove"
             @onClick="onClickColumn"
           >
           </ag-table>
         </div>
-      </div>
-      <div class="right-part">
-        <div>全局配置</div>
-        <schema-form :schema="globalSchema" :formData="tableCfg.global"> </schema-form>
       </div>
     </div>
   </div>
@@ -389,19 +385,7 @@ const widgetSchema = ref<SchemaProp>({
     }
   }
 })
-const globalSchema = ref<SchemaProp>({
-  layout: {
-    layout: 'horizontal',
-    labelAlign: 'right',
-    labelCol: { style: { width: '80px' } }
-  },
-  properties: {
-    bordered: {
-      type: 'switch',
-      label: '边框'
-    }
-  }
-})
+
 const onOpenWidget = (cfg: any) => {
   currentWidgetCfg.value = cfg
   widgetShow.value = true
@@ -426,7 +410,6 @@ const columnShow = ref(false)
   }
   .table-design-container {
     display: grid;
-    grid-template-columns: 5fr 1fr;
     gap: $gap;
     height: calc(100vh - 80px);
     padding: 10px 10px 0;
