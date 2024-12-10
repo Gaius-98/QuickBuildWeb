@@ -43,7 +43,7 @@
               key: 'tableName',
               children: 'children'
             }"
-            style="height: calc(100%); overflow-y: auto"
+            height="740"
           >
             <template #title="item">
               <div
