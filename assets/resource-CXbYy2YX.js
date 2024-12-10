@@ -1,0 +1,1 @@
+import{r}from"./index-D1y16s1V.js";const o={getList:e=>r({method:"get",url:"upload/list",params:e}),remove:e=>r({method:"get",url:"upload/remove",params:{id:e}}),add:e=>r({method:"post",url:"upload/images",data:e})};export{o as a};
