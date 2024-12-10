@@ -25,7 +25,7 @@
       cancel-text="取消"
       @confirm="onPushRemove()"
     >
-      <DeleteOutlined class="remove" style="width: 20px" />
+      <DeleteOutlined class="remove" style="width: 20px" @click.stop="() => {}" />
     </a-popconfirm>
   </div>
 </template>
