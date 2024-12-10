@@ -87,11 +87,15 @@ const colDefs = computed<ColDef[]>(() => {
 
 const afterColumnMoved = (ev: ColumnMovedEvent) => {
   if (!ev.finished) return
-  let newColumns = ev.api.getColumnState().map((e) => {
-    return columns.value.find((col) => {
+  let newColumns: Partial<LCTableColumnCfg>[] = []
+  ev.api.getColumnState().forEach((e) => {
+    let columnDef = columns.value.find((col) => {
       return col.dataIndex == e.colId
     })
-  }) as Partial<LCTableColumnCfg>[]
+    if (columnDef) {
+      newColumns.push(columnDef)
+    }
+  })
   columns.value = newColumns
 }
 const afterResized = (ev: ColumnResizedEvent) => {
