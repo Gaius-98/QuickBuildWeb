@@ -170,6 +170,12 @@ const routes = [
           name:'dataset-design',
           component:()=>import('@/views/Data/DataSet/design/index.vue'),
           props: (route:RouteLocationNormalized) => route.query
+        },
+        {
+          path:'flow',
+          name:'flow',
+          component:()=>import('@/views/Flow/FlowView.vue'),
+          props: (route:RouteLocationNormalized) => route.query
         }
       ]
     }

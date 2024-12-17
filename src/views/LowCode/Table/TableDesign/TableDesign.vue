@@ -147,12 +147,12 @@
           <template #suffixIcon>
             <SyncOutlined style="color: #000" title="刷新" />
             <ExportOutlined
-              @click="onClickEditFlow()"
+              @click="onClickEditFlow(currentBtnCfg.eventFlowId)"
               style="color: #000"
               title="编辑事件流"
               v-if="currentBtnCfg.eventFlowId"
             />
-            <PlusOutlined style="color: #000" title="新增事件流" v-else />
+            <PlusOutlined style="color: #000" title="新增事件流" @click="onClickAddFlow()" v-else />
           </template>
         </a-select>
       </a-form-item>
@@ -197,8 +197,10 @@ import TableCfg from './TableCfg.vue'
 import type { LCTableInteractionCfg } from '@/model'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
 import type { SchemaProp } from '@/model'
+import { useRouter } from 'vue-router'
 import agPubSub from './AgTable/utils/AgPubSub'
 
+const router = useRouter()
 agPubSub.onSubscribe('open-btn-modal', (data: any) => {
   onOpenBtnModal(data)
 })
@@ -320,10 +322,19 @@ const onOpenBtnModal = (btnCfg: any) => {
   currentBtnCfg.value = btnCfg
   btnCfgShow.value = true
 }
-const onClickEditFlow = () => {
-  console.log('click')
+const onClickEditFlow = (id: string) => {
+  router.push({
+    path: '/design/flow',
+    query: {
+      id
+    }
+  })
 }
-
+const onClickAddFlow = () => {
+  router.push({
+    path: '/design/flow'
+  })
+}
 const currentWidgetCfg = ref({})
 const widgetShow = ref(false)
 const widgetSchema = ref<SchemaProp>({

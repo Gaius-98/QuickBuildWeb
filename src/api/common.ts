@@ -5,6 +5,10 @@ export interface DictItem {
   value: string
   label: string
 }
+export interface FormListItem {
+  name:string
+  id:string
+}
 export default {
   getDict: (data: DictTypes) => {
     return request<Obj<DictItem[]>>({
@@ -102,4 +106,10 @@ export default {
             }
         })
     },
+    getFormDict:()=>{
+      return request<FormListItem[]>({
+        method:'get',
+        url:'/form/dict',
+      })
+    }
 }

@@ -67,6 +67,7 @@ declare module 'vue' {
     AWatermark: typeof import('ant-design-vue/es')['Watermark']
     CodeEditor: typeof import('./src/components/CodeEditor.vue')['default']
     ColorPicker: typeof import('./src/components/ColorPicker.vue')['default']
+    EditTable: typeof import('./src/components/EditTable.vue')['default']
     EventFlow: typeof import('./src/components/EventFlow/EventFlow.vue')['default']
     IconSelect: typeof import('./src/components/IconSelect/IconSelect.vue')['default']
     IframeView: typeof import('./src/components/IframeView.vue')['default']

@@ -8,6 +8,7 @@ import { DndPanel, SelectionSelect } from '@logicflow/extension'
 import '@logicflow/core/lib/style/index.css'
 import '@logicflow/extension/lib/style/index.css'
 import { reactive, toRefs, ref, onMounted } from 'vue'
+const emits = defineEmits(['onClickEle'])
 
 const lf = ref<LogicFlow>()
 const container = ref()
@@ -16,7 +17,6 @@ interface Props {
   data: LogicFlow.GraphConfigData
 }
 const props = withDefaults(defineProps<Props>(), {
-  list: () => [],
   dndList: () => [
     {
       type: 'circle',
@@ -33,6 +33,9 @@ const props = withDefaults(defineProps<Props>(), {
   ]
 })
 const { dndList, data } = toRefs(props)
+const onClickElement = (data: any) => {
+  emits('onClickEle', data)
+}
 onMounted(() => {
   LogicFlow.use(DndPanel)
   LogicFlow.use(SelectionSelect)
@@ -44,12 +47,17 @@ onMounted(() => {
   //@ts-ignore
   lf.value.extension.dndPanel.setPatternItems(dndList.value)
   lf.value.render(data.value)
+  lf.value.on('element:click', onClickElement)
 })
+const updateNodeData = (data: any) => {
+  lf.value?.getNodeModelById(data.id)?.setProperties({
+    extraData: data.properties.extraData
+  })
+}
 const getRawData = () => {
-  console.log(lf.value?.getEditConfig())
   return lf.value?.getGraphRawData()
 }
-defineExpose({ getRawData })
+defineExpose({ getRawData, updateNodeData })
 </script>
 <style scoped lang="scss">
 .flow-container {
