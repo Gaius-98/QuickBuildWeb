@@ -99,14 +99,23 @@ export class FlowExecutor {
             middle:'1200px',
             large:'1800px'
         }
-        Modal.confirm({
-            content:h(LowCodeFormId,{
-                id:formId,
-                formData:this.state.modalFormData,
-            }),
-            title:'表单',
-            width:widthObject[size]
+        return new Promise((resolve,reject)=>{
+             Modal.confirm({
+                content:h(LowCodeFormId,{
+                    id:formId,
+                    formData:this.state.modalFormData,
+                }),
+                title:'表单',
+                width:widthObject[size],
+                onCancel:()=>{
+                    reject()
+                },
+                onOk:()=>{
+                    resolve(this.state.modalFormData)
+                }
+            })
         })
+
     }
 
     private onOpenLink(node:FlowNode){
@@ -120,7 +129,7 @@ export class FlowExecutor {
                 resolve(2000)
             }, 1000);
         })
-       const data =   await requestFn
+       const data =  await requestFn
        this.state['test'] = data
     }
 
@@ -129,6 +138,7 @@ export class FlowExecutor {
         const fn = new Function(`return ()=>{${code}}`)
         const _this = this
         fn.call(_this)()
+
     }
 
     async run(){
@@ -147,12 +157,11 @@ export class FlowExecutor {
                     this.onOpenLink(current)   
                     break;
                 case  'modal-node':
-                    this.onOpenModal(current)
+                    await this.onOpenModal(current)
                     break;
                 default:
                     break;
             }
         }
-        console.log(this.state)
     }
 }
