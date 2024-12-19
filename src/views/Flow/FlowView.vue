@@ -12,13 +12,10 @@
   <a-drawer v-model:open="open" title="节点配置" placement="right" @close="onClose()" width="600px">
     <a-form :model="currentData.properties.extraData">
       <template v-if="currentData.properties.nodeType == 'func-node'">
-        <a-form-item label="是否异步">
-          <a-switch v-model:value="currentData.properties.extraData.async"> </a-switch>
-        </a-form-item>
         <a-form-item label="函数">
           <code-editor
             v-model:value="currentData.properties.extraData.code"
-            :prepend="currentData.properties.extraData.async ? 'async ()=>{' : '()=>{'"
+            :prepend="'()=>{'"
             append="}"
             theme="light"
           ></code-editor>
@@ -135,8 +132,7 @@ const dndList = ref([
     properties: {
       nodeType: 'func-node',
       extraData: {
-        code: '',
-        async: false
+        code: ''
       }
     }
   },

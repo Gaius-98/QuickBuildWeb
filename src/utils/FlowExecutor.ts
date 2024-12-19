@@ -10,7 +10,7 @@ export class FlowExecutor {
     } = {
 
     }
-
+    InternalMapping = new Map<string,Function>()
     rawData?:FlowData 
     flowNodeList?:FlowNode[]
    
@@ -18,6 +18,14 @@ export class FlowExecutor {
         this.rawData = data
         this.flowNodeList = []
         this.handleData()
+        this.InternalMapping = new Map(
+            [
+                ['func-node',this.executeFunction],
+                ['request-node',this.requestData],
+                ['link-node',this.onOpenLink],
+                ['modal-node',this.onOpenModal]
+            ]
+        )
     }
 
     private handleData(){
@@ -133,35 +141,21 @@ export class FlowExecutor {
        this.state['test'] = data
     }
 
-    private executeFunction(node:FlowNode){
-        const { code,async } = node.properties.extraData
-        const fn = new Function(`return ()=>{${code}}`)
+    private  executeFunction(node:FlowNode){
+        const { code } = node.properties.extraData
+        const fn = new Function(`return  ()=>{${code}}`)
         const _this = this
-        fn.call(_this)()
-
+        return fn.call(_this)()
     }
 
     async run(){
         if(!this.flowNodeList) return
         for (let index = 1; index < this.flowNodeList.length - 1; index++) {
             const current  = this.flowNodeList[index]
-            const type = current.properties.nodeType
-            switch (type) {
-                case 'func-node':
-                    await this.executeFunction(current)
-                    break;
-                case 'request-node':
-                    await this.requestData(current)
-                    break;
-                case 'link-node':
-                    this.onOpenLink(current)   
-                    break;
-                case  'modal-node':
-                    await this.onOpenModal(current)
-                    break;
-                default:
-                    break;
-            }
+            const type = current.properties.nodeType as string
+            if(this.InternalMapping.get(type))
+                await this.InternalMapping.get(type)?.call(this,current)
+
         }
     }
 }
