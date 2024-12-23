@@ -142,8 +142,15 @@
           <a-radio-button value="row">行内</a-radio-button>
         </a-radio-group>
       </a-form-item>
-      <a-form-item prop="event" label="事件流">
-        <a-select v-model:value="currentBtnCfg.eventFlowId" :options="evnetFlows">
+      <a-form-item prop="customEvent" label="是否启用自定义">
+        <a-switch v-model:checked="currentBtnCfg.customEvent"> </a-switch>
+      </a-form-item>
+      <a-form-item prop="builtInEvents" label="内置事件" v-if="!currentBtnCfg.customEvent">
+        <a-select v-model:value="currentBtnCfg.builtInEvents" :options="buildInOptions" allowClear>
+        </a-select>
+      </a-form-item>
+      <a-form-item prop="event" label="自定义事件流" v-if="currentBtnCfg.customEvent">
+        <a-select v-model:value="currentBtnCfg.eventFlowId" :options="eventFlows" allowClear>
           <template #suffixIcon>
             <SyncOutlined style="color: #000" title="刷新" />
             <ExportOutlined
@@ -226,7 +233,20 @@ const {
   onSave
 } = tableStore
 window.name = 'table-design'
-
+const buildInOptions = ref([
+  {
+    label: '新增',
+    value: 'add'
+  },
+  {
+    label: '编辑',
+    value: 'edit'
+  },
+  {
+    label: '删除',
+    value: 'delete'
+  }
+])
 const onClickAddWidget = () => {
   tableCfg.value.filter.widgetList?.push({
     id: new Date().getTime().toString(),
@@ -301,10 +321,12 @@ const currentBtnCfg = ref<LCTableInteractionCfg>({
   id: '',
   name: '',
   eventFlowId: '',
-  position: 'header'
+  position: 'header',
+  customEvent: false,
+  builtInEvents: 'add'
 })
 const btnCfgShow = ref(false)
-const evnetFlows = ref([
+const eventFlows = ref([
   {
     label: '默认新增事件流',
     value: 'add'
@@ -387,7 +409,22 @@ const widgetSchema = ref<SchemaProp>({
     dict: {
       type: 'select',
       label: '字典',
-      show: '"${formData.type}" == "select"'
+      show: '"${formData.type}" == "select"',
+      component: {
+        asyncData: async () => {
+          const { code, data, msg } = await commonApi.getDictTypeList()
+          if (code == 200) {
+            return data.map((item) => {
+              return {
+                label: item.dictTypeDesc,
+                value: item.dictType
+              }
+            })
+          } else {
+            return []
+          }
+        }
+      }
     },
 
     defaultValue: {

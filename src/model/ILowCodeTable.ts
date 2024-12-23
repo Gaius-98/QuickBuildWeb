@@ -68,7 +68,18 @@ export interface LCTablePaginationCfg {
   pageSizeOptions: string[] | number[]
   total: number
 }
+export enum BuiltInEventEnum {
+  //新增
+  add = 'add',
+  //编辑
+  edit = 'edit',
+  //删除
+  delete = 'delete',
+  view = 'view',
+  export = 'export',
+  import = 'import',
 
+}
 export interface LCTableInteractionCfg  {
   //按钮标识
   id: string
@@ -76,7 +87,10 @@ export interface LCTableInteractionCfg  {
   name: string
   //按钮位置
   position: 'row' | 'header'
-  //事件流id
+  // 是否开启自定义事件
+  customEvent:boolean
+  builtInEvents:keyof typeof BuiltInEventEnum
+  //自定义事件流id
   eventFlowId:string
 }
 
