@@ -112,7 +112,7 @@ const routes = [
             {
               path:'table',
               name:'table',
-              component:()=>import('@/views/LowCode/Table/index.vue')
+              component:()=>import('@/views/LowCode/Table/TableList/TableList.vue')
             },
             {
               path:'dashboard',

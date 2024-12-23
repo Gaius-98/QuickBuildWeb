@@ -12,7 +12,10 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
     status: 1,
     columns: [],
     global: {
-      bordered: false,
+      showFilter:true,
+      showPagination:true,
+      showBordered:false,
+      size:'middle'
     },
     datasource:{
       tableName:'',
@@ -28,7 +31,6 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
   const currentColumn = ref<Partial<LCTableColumnCfg>>({})
   const onAddColumn = () => {
     const randomStr = new Date().getTime().toString().slice(-4)
-    console.log(tableCfg.value.columns)
     tableCfg.value.columns.push({
       id: uuid(),
       dataIndex: 'field' + randomStr,
@@ -53,7 +55,9 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       id: new Date().getTime().toString(),
       name: '测试',
       position: position,
-      eventFlowId: ''
+      eventFlowId: '',
+      customEvent:false,
+      builtInEvents:'add'
     })
   }
   const onRemoveBtn = (id:string) =>{
@@ -78,7 +82,7 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
 
     setTimeout(() => {
       console.log(tableCfg.value)
-    saveLoading.value = false
+      saveLoading.value = false
       
     }, 2000);
   }

@@ -30,6 +30,8 @@
             >
             </a-select>
           </a-form-item>
+          <a-button type="primary" @click="onOpenGlobalModal">全局配置</a-button>
+
           <a-button @click="onSave()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
       </template>
@@ -183,6 +185,15 @@
   >
     <table-cfg></table-cfg>
   </a-drawer>
+  <a-drawer
+    title="全局配置"
+    placement="right"
+    :closable="false"
+    :open="globalShow"
+    @close="globalShow = false"
+  >
+    <schema-form :formData="tableCfg.global" :schema="globalSchema"> </schema-form>
+  </a-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -206,6 +217,7 @@ import SchemaForm from '@/components/SchemaForm/SchemaForm'
 import type { SchemaProp } from '@/model'
 import { useRouter } from 'vue-router'
 import agPubSub from './AgTable/utils/AgPubSub'
+import { size } from 'lodash-es'
 
 const router = useRouter()
 agPubSub.onSubscribe('open-btn-modal', (data: any) => {
@@ -439,6 +451,57 @@ const onOpenWidget = (cfg: any) => {
   widgetShow.value = true
 }
 const columnShow = ref(false)
+
+const globalShow = ref(false)
+const globalSchema = ref<SchemaProp>({
+  layout: {
+    labelAlign: 'left',
+    layout: 'horizontal',
+    labelCol: {
+      style: {
+        width: '120px'
+      }
+    }
+  },
+  properties: {
+    showFilter: {
+      type: 'switch',
+      label: '显示筛选面板'
+    },
+    showPagination: {
+      type: 'switch',
+      label: '显示分页器'
+    },
+    showBordered: {
+      type: 'switch',
+      label: '显示边框'
+    },
+    size: {
+      type: 'radio',
+      label: '表格尺寸',
+      component: {
+        dataSource: [
+          {
+            label: '紧凑',
+            value: 'small'
+          },
+          {
+            label: '默认',
+            value: 'middle'
+          },
+          {
+            label: '宽松',
+            value: 'large'
+          }
+        ],
+        buttonStyle: 'solid'
+      }
+    }
+  }
+})
+const onOpenGlobalModal = () => {
+  globalShow.value = true
+}
 </script>
 <style scoped lang="scss">
 .table-design {

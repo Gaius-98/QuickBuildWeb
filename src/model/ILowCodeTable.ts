@@ -89,6 +89,7 @@ export interface LCTableInteractionCfg  {
   position: 'row' | 'header'
   // 是否开启自定义事件
   customEvent:boolean
+  //内置事件
   builtInEvents:keyof typeof BuiltInEventEnum
   //自定义事件流id
   eventFlowId:string
@@ -98,8 +99,10 @@ export interface EventFlow {
 
 }
 export interface LCTableGlobalCfg {
-  bordered: boolean
- 
+  showFilter:boolean
+  showPagination:boolean
+  showBordered:boolean
+  size: 'large' | 'middle' | 'small'
 }
 export enum DataSourceType {
   static = 'static',
