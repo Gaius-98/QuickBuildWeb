@@ -6,7 +6,7 @@ export interface LowCodeTable {
   status: number
   columns: Partial<LCTableColumnCfg>[]
   global: Partial<LCTableGlobalCfg>,
-  filter:Partial<LowCodeFilterCfg>,
+  filter:Partial<LowCodeWidget>[],
   action:Partial<LCTableInteractionCfg>[],
   datasource:{
     sourceId:string,
@@ -23,7 +23,7 @@ export interface LowCodeWidget{
    label:string
 }
 export interface LowCodeFilterCfg {
-    show:boolean
+
     widgetList:LowCodeWidget[]
 }
 export interface LowCodeBtn {

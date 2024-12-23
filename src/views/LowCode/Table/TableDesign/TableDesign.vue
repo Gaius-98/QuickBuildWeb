@@ -41,7 +41,7 @@
         <div class="filter-part">
           <div class="filter-container">
             <vue-draggable-next
-              v-model:list="tableCfg.filter.widgetList"
+              v-model:list="tableCfg.filter"
               class="widget-container"
               animation="300"
               :group="{ name: 'widget', pull: true, put: true }"
@@ -51,7 +51,7 @@
             >
               <div
                 class="widget-item"
-                v-for="item in tableCfg.filter.widgetList"
+                v-for="item in tableCfg.filter"
                 :key="item.id"
                 @click="onOpenWidget(item)"
               >
@@ -260,7 +260,7 @@ const buildInOptions = ref([
   }
 ])
 const onClickAddWidget = () => {
-  tableCfg.value.filter.widgetList?.push({
+  tableCfg.value.filter?.push({
     id: new Date().getTime().toString(),
     type: 'input',
     label: '文本',

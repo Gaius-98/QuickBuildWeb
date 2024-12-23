@@ -21,10 +21,7 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       tableName:'',
       sourceId:''
     },
-    filter:{
-        show:true,
-        widgetList:[]
-    },
+    filter:[],
     action:[]
   })
   const columnFields = ref<{ label: string; value: string }[]>([])
@@ -68,9 +65,9 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
   }
 
   const onRemoveWidget = (id:string) =>{
-   const idx =   tableCfg.value.filter.widgetList!.findIndex(e=>(e.id == id))
+   const idx =   tableCfg.value.filter!.findIndex(e=>(e.id == id))
    if(idx != -1){
-    tableCfg.value.filter.widgetList!.splice(idx,1)
+    tableCfg.value.filter!.splice(idx,1)
    }
   }
   const onRefreshData = async (handlerFunc?: string) => {
