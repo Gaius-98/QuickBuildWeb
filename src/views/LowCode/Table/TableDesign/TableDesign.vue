@@ -1,5 +1,5 @@
 <template>
-  <div class="table-design" v-loading.fullscreen="saveLoading">
+  <div class="table-design" v-loading.fullscreen="loading">
     <a-page-header
       @back="goBack"
       :ghost="false"
@@ -12,7 +12,7 @@
         <a-space class="extra">
           <a-form-item label="选择数据源">
             <a-select
-              v-model:value="tableCfg.datasource.sourceId"
+              v-model:value="tableCfg.dataSource.sourceId"
               :options="dataSourceList"
               style="width: 180px"
               :fieldNames="{ label: 'datasourceName', value: 'id' }"
@@ -22,7 +22,7 @@
           </a-form-item>
           <a-form-item label="选择表名">
             <a-select
-              v-model:value="tableCfg.datasource.tableName"
+              v-model:value="tableCfg.dataSource.tableName"
               :options="tableNameList"
               style="width: 180px"
               :fieldNames="{ label: 'tableName', value: 'tableName' }"
@@ -217,8 +217,8 @@ import SchemaForm from '@/components/SchemaForm/SchemaForm'
 import type { SchemaProp } from '@/model'
 import { useRouter } from 'vue-router'
 import agPubSub from './AgTable/utils/AgPubSub'
-import { size } from 'lodash-es'
-
+import api from '../api/table'
+import { message } from 'ant-design-vue'
 const router = useRouter()
 agPubSub.onSubscribe('open-btn-modal', (data: any) => {
   onOpenBtnModal(data)
@@ -232,9 +232,14 @@ onMounted(() => {
     }
   })
 })
+interface Props {
+  id?: string
+}
+const props = defineProps<Props>()
+const { id } = toRefs(props)
+const loading = ref(false)
 const tableStore = useTableDesignStore()
-const { tableCfg, columnFields, saveLoading } = storeToRefs(tableStore)
-
+const { tableCfg, columnFields } = storeToRefs(tableStore)
 const {
   onSelectColumn,
   onRemoveBtn,
@@ -242,8 +247,39 @@ const {
   onSetColumns,
   onRemoveWidget,
   onAddBtn,
-  onSave
+  setTableCfg
 } = tableStore
+
+if (id.value) {
+  loading.value = true
+  api.getDetail(id.value).then((res) => {
+    const { code, data, msg } = res
+    if (code == 200) {
+      setTableCfg(data)
+      loading.value = false
+    }
+  })
+} else {
+  setTableCfg({
+    name: '未命名列表',
+    description: '',
+    status: 1,
+    columns: [],
+    global: {
+      showFilter: true,
+      showPagination: true,
+      showBordered: false,
+      size: 'middle'
+    },
+    dataSource: {
+      tableName: '',
+      sourceId: ''
+    },
+    filter: [],
+    action: []
+  })
+}
+
 window.name = 'table-design'
 const buildInOptions = ref([
   {
@@ -283,7 +319,7 @@ const fields = ref<string[]>([])
 const tableData = ref<Obj<any>[]>([])
 const getPreviewData = () => {
   commonApi
-    .getSourceData(tableCfg.value.datasource.sourceId, tableCfg.value.datasource.tableName)
+    .getSourceData(tableCfg.value.dataSource.sourceId, tableCfg.value.dataSource.tableName)
     .then((res) => {
       const { code, data, msg } = res
       if (code == 200) {
@@ -293,7 +329,7 @@ const getPreviewData = () => {
 }
 const tableNameList = ref<DataSourceTable[]>([])
 const getTableInfo = () => {
-  commonApi.getTableInfo(tableCfg.value.datasource.sourceId).then((res) => {
+  commonApi.getTableInfo(tableCfg.value.dataSource.sourceId).then((res) => {
     const { code, data, msg } = res
     if (code == 200) {
       tableNameList.value = data
@@ -302,7 +338,7 @@ const getTableInfo = () => {
 }
 const getFieldInfo = () => {
   commonApi
-    .getColumnInfo(tableCfg.value.datasource.sourceId, tableCfg.value.datasource.tableName)
+    .getColumnInfo(tableCfg.value.dataSource.sourceId, tableCfg.value.dataSource.tableName)
     .then((res) => {
       const { code, data, msg } = res
       if (code == 200) {
@@ -501,6 +537,17 @@ const globalSchema = ref<SchemaProp>({
 })
 const onOpenGlobalModal = () => {
   globalShow.value = true
+}
+const onSave = () => {
+  loading.value = true
+  let httpApi = id.value ? api.update : api.add
+  httpApi(tableCfg.value).then((res) => {
+    const { code, data, msg } = res
+    if (code == 200) {
+      message.success('保存成功')
+    }
+    loading.value = false
+  })
 }
 </script>
 <style scoped lang="scss">

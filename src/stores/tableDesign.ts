@@ -3,7 +3,6 @@ import type { LowCodeTable, LCTableColumnCfg, Obj } from '@/model'
 import { ref } from 'vue'
 import { v4 as uuid } from 'uuid'
 
-import { message } from 'ant-design-vue'
 export const useTableDesignStore = defineStore('tableDesign', () => {
   const tableData = ref<Obj<any>[]>([])
   const tableCfg = ref<LowCodeTable>({
@@ -17,7 +16,7 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       showBordered:false,
       size:'middle'
     },
-    datasource:{
+    dataSource:{
       tableName:'',
       sourceId:''
     },
@@ -73,29 +72,22 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
   const onRefreshData = async (handlerFunc?: string) => {
     
   }
-  const saveLoading = ref(false)
-  const onSave = async () => {
-    saveLoading.value = true
 
-    setTimeout(() => {
-      console.log(tableCfg.value)
-      saveLoading.value = false
-      
-    }, 2000);
-  }
   const onSetColumns = (data:{ label: string; value: string }[]) =>{
     columnFields.value = data
   }
+  const setTableCfg  = (data:LowCodeTable) =>{
+    tableCfg.value = data
+  }
   return {
     tableCfg,
+    setTableCfg,
     currentColumn,
     onSelectColumn,
     onRemoveColumn,
     onAddColumn,
     tableData,
     onRefreshData,
-    saveLoading,
-    onSave,
     columnFields,
     onSetColumns,
     onAddBtn,

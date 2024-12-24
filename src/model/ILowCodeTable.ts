@@ -8,7 +8,7 @@ export interface LowCodeTable {
   global: Partial<LCTableGlobalCfg>,
   filter:Partial<LowCodeWidget>[],
   action:Partial<LCTableInteractionCfg>[],
-  datasource:{
+  dataSource:{
     sourceId:string,
     tableName:string
   }
