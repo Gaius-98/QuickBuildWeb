@@ -53,7 +53,8 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       position: position,
       eventFlowId: '',
       customEvent:false,
-      builtInEvents:'add'
+      builtInEvents:'add',
+      formId:''
     })
   }
   const onRemoveBtn = (id:string) =>{

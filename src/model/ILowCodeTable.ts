@@ -93,6 +93,8 @@ export interface LCTableInteractionCfg  {
   builtInEvents:keyof typeof BuiltInEventEnum
   //自定义事件流id
   eventFlowId:string
+  //表单
+  formId?:string
 }
 
 export interface EventFlow {
@@ -109,4 +111,11 @@ export enum DataSourceType {
   dynamic = 'dynamic'
 }
 
+export interface LowCodeTableQueryParams {
+  sourceId:string
+  tableName:string
+  pageNumber:number
+  pageSize:number
+  paramsData:Record<string,string|number>
+}
 

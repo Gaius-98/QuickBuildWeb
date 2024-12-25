@@ -151,6 +151,20 @@
         <a-select v-model:value="currentBtnCfg.builtInEvents" :options="buildInOptions" allowClear>
         </a-select>
       </a-form-item>
+      <a-form-item
+        prop="formId"
+        label="关联表单"
+        v-if="['add', 'edit'].includes(currentBtnCfg.builtInEvents) && !currentBtnCfg.customEvent"
+      >
+        <a-select
+          v-model:value="currentBtnCfg.formId"
+          :options="formList"
+          :fieldNames="{
+            label: 'name',
+            value: 'id'
+          }"
+        ></a-select>
+      </a-form-item>
       <a-form-item prop="event" label="自定义事件流" v-if="currentBtnCfg.customEvent">
         <a-select v-model:value="currentBtnCfg.eventFlowId" :options="eventFlows" allowClear>
           <template #suffixIcon>
@@ -210,7 +224,7 @@ import {
 import { useTableDesignStore } from '@/stores/tableDesign'
 import { storeToRefs } from 'pinia'
 import type { DataSourceTable, LCTableColumnCfg, LowCodeDataSource, Obj } from '@/model'
-import commonApi, { type DictItem } from '@/api/common'
+import commonApi, { type DictItem, type FormListItem } from '@/api/common'
 import TableCfg from './TableCfg.vue'
 import type { LCTableInteractionCfg } from '@/model'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
@@ -256,6 +270,8 @@ if (id.value) {
     const { code, data, msg } = res
     if (code == 200) {
       setTableCfg(data)
+      getTableInfo()
+      getFieldInfo()
       loading.value = false
     }
   })
@@ -336,6 +352,20 @@ const getTableInfo = () => {
     }
   })
 }
+const getFieldList = async () => {
+  const { code, data, msg } = await commonApi.getColumnInfo(
+    tableCfg.value.dataSource.sourceId,
+    tableCfg.value.dataSource.tableName
+  )
+  if (code == 200) {
+    return data.map((e) => ({
+      label: e.columnComment ? `${e.columnComment}(${e.columnName})` : e.columnName,
+      value: e.columnName
+    }))
+  } else {
+    return []
+  }
+}
 const getFieldInfo = () => {
   commonApi
     .getColumnInfo(tableCfg.value.dataSource.sourceId, tableCfg.value.dataSource.tableName)
@@ -364,14 +394,26 @@ const getFieldInfo = () => {
 const onClickAddBtn = () => {
   onAddBtn('header')
 }
-
+const formList = ref<FormListItem[]>([])
+const getFormDict = () => {
+  commonApi.getFormDict().then((res) => {
+    const { code, data, msg } = res
+    if (code == 200) {
+      formList.value = data
+    }
+  })
+}
+onMounted(() => {
+  getFormDict()
+})
 const currentBtnCfg = ref<LCTableInteractionCfg>({
   id: '',
   name: '',
   eventFlowId: '',
   position: 'header',
   customEvent: false,
-  builtInEvents: 'add'
+  builtInEvents: 'add',
+  formId: ''
 })
 const btnCfgShow = ref(false)
 const eventFlows = ref([
@@ -426,8 +468,11 @@ const widgetSchema = ref<SchemaProp>({
       }
     },
     field: {
-      type: 'string',
-      label: '字段名称'
+      type: 'select',
+      label: '字段名称',
+      component: {
+        asyncData: getFieldList
+      }
     },
     label: {
       type: 'string',
