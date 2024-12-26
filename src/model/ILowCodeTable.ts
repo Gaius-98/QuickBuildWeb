@@ -119,3 +119,9 @@ export interface LowCodeTableQueryParams {
   paramsData:Record<string,string|number>
 }
 
+export interface LowCodeTableParamsData{
+  sourceId:string
+  tableName:string
+  data:Record<string,any>
+}
+

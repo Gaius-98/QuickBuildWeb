@@ -85,8 +85,16 @@
         @change="getList()"
       />
     </a-card>
-    <a-modal v-model:open="previewShow" title="预览" width="1000px" height="800px" :footer="null">
-    </a-modal>
+    <a-drawer
+      v-model:open="previewShow"
+      placement="right"
+      title="预览"
+      width="1920px"
+      height="900px"
+      :footer="null"
+    >
+      <low-code-table-vue :id="currentId"></low-code-table-vue>
+    </a-drawer>
   </div>
 </template>
 
@@ -98,6 +106,7 @@ import { message, type FormInstance } from 'ant-design-vue'
 import type { LowCodeTable, PageParams } from '@/model'
 import { useRouter } from 'vue-router'
 import { SwapOutlined } from '@ant-design/icons-vue'
+import LowCodeTableVue from '@/components/LowCodeTable/LowCodeTable.vue'
 const router = useRouter()
 const columns = ref([
   {
@@ -192,10 +201,10 @@ const onDelete = (id: string) => {
 }
 const previewShow = ref(false)
 const formData = ref({})
-const currentFormId = ref('')
+const currentId = ref('')
 const onOpenPreviewModal = (id: string) => {
   previewShow.value = true
-  currentFormId.value = id
+  currentId.value = id
 }
 onMounted(() => {
   getList()

@@ -78,6 +78,7 @@ declare module 'vue' {
     LowCodeFormId: typeof import('./src/components/LowCodeForm/LowCodeFormId.vue')['default']
     LowCodeFormItem: typeof import('./src/components/LowCodeForm/components/LowCodeFormItem.vue')['default']
     LowCodeGrid: typeof import('./src/components/LowCodeForm/components/LowCodeGrid.vue')['default']
+    LowCodeTable: typeof import('./src/components/LowCodeTable/LowCodeTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
