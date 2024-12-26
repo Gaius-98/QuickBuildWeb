@@ -271,7 +271,7 @@ if (id.value) {
     if (code == 200) {
       setTableCfg(data)
       getTableInfo()
-      getFieldInfo()
+      getFieldList()
       loading.value = false
     }
   })
