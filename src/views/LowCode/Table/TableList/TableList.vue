@@ -93,7 +93,7 @@
       height="900px"
       :footer="null"
     >
-      <low-code-table-vue :id="currentId"></low-code-table-vue>
+      <low-code-table-vue :id="currentId" :key="currentId"></low-code-table-vue>
     </a-drawer>
   </div>
 </template>
