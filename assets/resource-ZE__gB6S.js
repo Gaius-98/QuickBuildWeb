@@ -1,1 +1,0 @@
-import{r}from"./index-fcjS_Q3B.js";const o={getList:e=>r({method:"get",url:"upload/list",params:e}),remove:e=>r({method:"get",url:"upload/remove",params:{id:e}}),add:e=>r({method:"post",url:"upload/images",data:e})};export{o as a};
