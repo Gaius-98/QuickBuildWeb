@@ -197,7 +197,7 @@
     :open="columnShow"
     @close="columnShow = false"
   >
-    <table-cfg></table-cfg>
+    <schema-form :formData="currentColumn" :schema="columnSchema"> </schema-form>
   </a-drawer>
   <a-drawer
     title="全局配置"
@@ -225,7 +225,6 @@ import { useTableDesignStore } from '@/stores/tableDesign'
 import { storeToRefs } from 'pinia'
 import type { DataSourceTable, LCTableColumnCfg, LowCodeDataSource, Obj } from '@/model'
 import commonApi, { type DictItem, type FormListItem } from '@/api/common'
-import TableCfg from './TableCfg.vue'
 import type { LCTableInteractionCfg } from '@/model'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
 import type { SchemaProp } from '@/model'
@@ -253,7 +252,7 @@ const props = defineProps<Props>()
 const { id } = toRefs(props)
 const loading = ref(false)
 const tableStore = useTableDesignStore()
-const { tableCfg, columnFields } = storeToRefs(tableStore)
+const { tableCfg, currentColumn } = storeToRefs(tableStore)
 const {
   onSelectColumn,
   onRemoveBtn,
@@ -271,7 +270,6 @@ if (id.value) {
     if (code == 200) {
       setTableCfg(data)
       getTableInfo()
-      getFieldList()
       loading.value = false
     }
   })
@@ -526,7 +524,92 @@ const widgetSchema = ref<SchemaProp>({
     }
   }
 })
-
+const columnSchema = ref<SchemaProp>({
+  layout: {
+    layout: 'horizontal',
+    labelAlign: 'right',
+    labelCol: { style: { width: '80px' } }
+  },
+  properties: {
+    dataIndex: {
+      type: 'select',
+      label: '字段名',
+      component: {
+        asyncData: getFieldList
+      }
+    },
+    title: {
+      type: 'string',
+      label: '列名'
+    },
+    width: {
+      type: 'number',
+      label: '列宽'
+    },
+    align: {
+      type: 'radio',
+      label: '对齐方式',
+      component: {
+        dataSource: [
+          {
+            value: 'left',
+            label: '左'
+          },
+          {
+            value: 'center',
+            label: '居中'
+          },
+          {
+            value: 'right',
+            label: '右'
+          }
+        ],
+        buttonStyle: 'solid'
+      }
+    },
+    fixed: {
+      type: 'radio',
+      label: '固定列',
+      component: {
+        dataSource: [
+          {
+            value: 'left',
+            label: '左'
+          },
+          {
+            value: 'right',
+            label: '右'
+          },
+          {
+            value: 'none',
+            label: '不固定'
+          }
+        ],
+        buttonStyle: 'solid'
+      }
+    },
+    type: {
+      type: 'select',
+      label: '列类型',
+      component: {
+        dataSource: [
+          {
+            value: 'link',
+            label: '链接'
+          },
+          {
+            value: 'image',
+            label: '图片'
+          },
+          {
+            value: 'text',
+            label: '文本'
+          }
+        ]
+      }
+    }
+  }
+})
 const onOpenWidget = (cfg: any) => {
   currentWidgetCfg.value = cfg
   widgetShow.value = true
