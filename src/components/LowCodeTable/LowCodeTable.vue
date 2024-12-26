@@ -171,7 +171,8 @@ const handleColumns = (columns: LowCodeTable['columns'], actions: LowCodeTable['
       title: '操作',
       key: '_action_',
       dataIndex: '_action_',
-      width: 250
+      width: 250,
+      fixed: 'right'
     } as any)
   }
   return newColumns
