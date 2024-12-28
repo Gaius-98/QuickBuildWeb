@@ -1,6 +1,6 @@
 <template>
   <div class="low-code-table">
-    <a-card class="search-area">
+    <a-card class="search-area" v-if="showWidgetPanel">
       <a-form ref="searchFormRef" :model="paramsData" @finish="onSearch">
         <a-row :gutter="24">
           <a-col :span="6" v-for="widget in widgetCfg" :key="widget.id">
@@ -27,7 +27,7 @@
       </a-form>
     </a-card>
     <a-card>
-      <div class="tools">
+      <div class="tools" v-if="showHeaderBtnPanel">
         <a-button
           v-for="headerBtn in actionCfg?.filter((e) => e.position == 'header')"
           :key="headerBtn.id"
@@ -42,12 +42,16 @@
         :data-source="tableData"
         :scroll="{ y: 500 }"
         @change="onChangePagination"
-        :pagination="{
-          current: paramsData.pageNumber,
-          total: total,
-          showSizeChanger: true,
-          pageSize: paramsData.pageSize
-        }"
+        :pagination="
+          showPagination && {
+            current: paramsData.pageNumber,
+            total: total,
+            showSizeChanger: true,
+            pageSize: paramsData.pageSize
+          }
+        "
+        :bordered="globalCfg?.showBordered"
+        :size="globalCfg?.size"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.type === 'image'">
@@ -76,7 +80,7 @@
 </template>
 
 <script lang="ts" setup name="LowCodeTable">
-import { reactive, toRefs, ref, onMounted, h } from 'vue'
+import { reactive, toRefs, ref, onMounted, h, computed } from 'vue'
 import commonApi, { type DictItem } from '@/api/common'
 import type { LowCodeTable } from '@/model'
 import { message, type FormInstance, type PaginationProps } from 'ant-design-vue'
@@ -98,6 +102,21 @@ const globalCfg = ref<LowCodeTable['global']>()
 const actionCfg = ref<LowCodeTable['action']>()
 const columnsCfg = ref<any[]>()
 const dataSourceCfg = ref<LowCodeTable['dataSource']>()
+
+const showPagination = computed(() => {
+  return globalCfg.value?.showPagination
+})
+const showWidgetPanel = computed(() => {
+  return globalCfg.value?.showFilter && widgetCfg.value && widgetCfg.value.length > 0
+})
+const showHeaderBtnPanel = computed(() => {
+  const headerBtns = actionCfg.value?.filter((e) => e.position == 'header')
+  return headerBtns && headerBtns.length > 0
+})
+const showTableOptColumn = computed(() => {
+  const rowBtns = actionCfg.value?.filter((e) => e.position == 'row')
+  return rowBtns && rowBtns.length > 0
+})
 if (!id.value) {
   throw new Error('id is required')
 } else {
@@ -109,7 +128,7 @@ if (!id.value) {
       getSelectOptions(widgetCfg.value)
       globalCfg.value = data.global
       actionCfg.value = data.action
-      columnsCfg.value = handleColumns(data.columns, actionCfg.value)
+      columnsCfg.value = handleColumns(data.columns)
 
       dataSourceCfg.value = data.dataSource
       onSearch()
@@ -153,8 +172,7 @@ const getSelectOptions = (widgetList: LowCodeTable['filter']) => {
     })
   }
 }
-const handleColumns = (columns: LowCodeTable['columns'], actions: LowCodeTable['action']) => {
-  const rowBtns = actions.filter((btn) => btn.position == 'row')
+const handleColumns = (columns: LowCodeTable['columns']) => {
   const newColumns = columns.map((column) => {
     return {
       title: column.title,
@@ -166,7 +184,7 @@ const handleColumns = (columns: LowCodeTable['columns'], actions: LowCodeTable['
       type: column.type
     }
   })
-  if (rowBtns.length > 0) {
+  if (showTableOptColumn.value) {
     newColumns.push({
       title: '操作',
       key: '_action_',
