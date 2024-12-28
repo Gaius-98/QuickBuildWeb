@@ -1,21 +1,25 @@
 <template>
-  <a-button @click="onSave()">保存</a-button>
-  <a-button @click="onRun()">执行</a-button>
+  <a-divider>配置区</a-divider>
   <event-flow
     ref="eventFlowRef"
     :data="data"
     :dndList="dndList"
-    style="height: 600px"
+    style="height: 450px"
     @onClickEle="onOpenDraw"
   >
   </event-flow>
-  <a-drawer v-model:open="open" title="节点配置" placement="right" @close="onClose()" width="600px">
+  <a-button @click="onRun()" type="primary" style="margin-top: 10px">执行</a-button>
+  <a-divider>运行结果</a-divider>
+
+  <div v-if="flowError" style="color: red">错误日志: {{ flowErrorMsg }}</div>
+  <code-editor v-model:value="flowResult" height="200" readOnly v-else></code-editor>
+  <a-drawer v-model:open="open" title="节点配置" placement="right" @close="onClose()" width="400px">
     <a-form :model="currentData.properties.extraData">
       <template v-if="currentData.properties.nodeType == 'func-node'">
         <a-form-item label="函数">
           <code-editor
             v-model:value="currentData.properties.extraData.code"
-            :prepend="'()=>{'"
+            prepend="()=>{"
             append="}"
             theme="light"
           ></code-editor>
@@ -87,6 +91,9 @@
           </a-tabs>
         </div>
       </template>
+      <template v-if="['start-node', 'end-node'].includes(currentData.properties.nodeType)">
+        <a-empty description="起止节点暂无配置项"></a-empty>
+      </template>
     </a-form>
   </a-drawer>
 </template>
@@ -98,10 +105,19 @@ import { reactive, toRefs, ref, onMounted } from 'vue'
 import type { FlowData } from '@/model'
 import EditTable from '@/components/EditTable.vue'
 import { FlowExecutor } from '@/utils/FlowExecutor'
-const data = ref({
-  nodes: [],
-  edges: []
+interface Props {
+  data: {
+    nodes: any
+    edges: any
+  }
+}
+const props = withDefaults(defineProps<Props>(), {
+  data: () => ({
+    nodes: [],
+    edges: []
+  })
 })
+const { data } = toRefs(props)
 
 const dndList = ref([
   {
@@ -225,7 +241,7 @@ const headersColumns = ref<any[]>([
 const onSave = () => {
   console.log(eventFlowRef.value.getRawData())
 }
-
+const flowResult = ref('')
 const onOpenDraw = (data: any) => {
   open.value = true
   currentData.value = data.data
@@ -239,12 +255,32 @@ commonApi.getFormDict().then((res) => {
 const onClose = () => {
   eventFlowRef.value.updateNodeData(currentData.value)
 }
+const flowError = ref(false)
+const flowErrorMsg = ref('')
 
-const onRun = () => {
-  const rawData = eventFlowRef.value.getRawData() as FlowData
-  const flowExecutor = new FlowExecutor(rawData)
-  console.log(flowExecutor.getFlowList())
-  flowExecutor.run()
+const getData = () => {
+  return eventFlowRef.value.getRawData() as FlowData
+}
+defineExpose({ getData })
+const onRun = async () => {
+  flowError.value = false
+  flowErrorMsg.value = ''
+  try {
+    const rawData = eventFlowRef.value.getRawData() as FlowData
+    const flowExecutor = new FlowExecutor(rawData)
+    await flowExecutor.run()
+    flowResult.value = JSON.stringify(flowExecutor.getState(), null, 4)
+  } catch (error) {
+    flowError.value = true
+    flowErrorMsg.value = error as string
+    console.log(error)
+  }
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.ant-card) {
+  .ant-card-body {
+    padding: $gap;
+  }
+}
+</style>

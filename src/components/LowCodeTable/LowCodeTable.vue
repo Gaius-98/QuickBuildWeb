@@ -92,7 +92,7 @@ import { cloneDeep } from 'lodash-es'
 import { Modal } from 'ant-design-vue'
 import { DeleteOutlined } from '@ant-design/icons-vue'
 import LowCodeFormId from '@/components/LowCodeForm/LowCodeFormId.vue'
-
+import { FlowExecutor } from '@/utils/FlowExecutor'
 interface Props {
   id: string
 }
@@ -262,12 +262,19 @@ const resetFormData = () => {
   formData.value = {}
 }
 const onClickBtn = (btn: LowCodeTable['action'][0], rowData?: Record<string, any>) => {
-  const { customEvent, builtInEvents, eventFlowId, formId } = btn
+  const { customEvent, builtInEvents, eventFlow, formId } = btn
   if (rowData) {
     formData.value = cloneDeep(rowData)
   }
   if (customEvent) {
     // customEvent
+    try {
+      if (!eventFlow) return console.log('未配置工作流')
+      const flowExecutor = new FlowExecutor(eventFlow!)
+      flowExecutor.run()
+    } catch (error) {
+      console.log(`工作流执行报错:${error}`)
+    }
   } else {
     if (['add', 'edit'].includes(builtInEvents!)) {
       let httpApi =

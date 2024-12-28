@@ -166,18 +166,7 @@
         ></a-select>
       </a-form-item>
       <a-form-item prop="event" label="自定义事件流" v-if="currentBtnCfg.customEvent">
-        <a-select v-model:value="currentBtnCfg.eventFlowId" :options="eventFlows" allowClear>
-          <template #suffixIcon>
-            <SyncOutlined style="color: #000" title="刷新" />
-            <ExportOutlined
-              @click="onClickEditFlow(currentBtnCfg.eventFlowId)"
-              style="color: #000"
-              title="编辑事件流"
-              v-if="currentBtnCfg.eventFlowId"
-            />
-            <PlusOutlined style="color: #000" title="新增事件流" @click="onClickAddFlow()" v-else />
-          </template>
-        </a-select>
+        <a-button @click="onOpenEventFlow(currentBtnCfg)"> 自定义事件流 </a-button>
       </a-form-item>
     </a-form>
   </a-drawer>
@@ -208,6 +197,43 @@
   >
     <schema-form :formData="tableCfg.global" :schema="globalSchema"> </schema-form>
   </a-drawer>
+  <a-modal
+    width="100%"
+    wrap-class-name="full-modal"
+    v-model:open="eventFlowOpen"
+    @ok="onSaveEventFlow"
+    @cancel="onCancelFlowMaol"
+  >
+    <template #title>
+      事件流配置
+      <a-tooltip
+        :overlayInnerStyle="{
+          width: '600px'
+        }"
+      >
+        <template #title>
+          <h2>工作流配置注意事项</h2>
+          <ul>
+            <li><strong>工作流节点不能为空：</strong> 每个工作流必须包含有效的节点配置。</li>
+            <li>
+              <strong>包含开始与结束节点：</strong>
+              每个工作流必须至少包含一个“开始节点”和一个“结束节点”。
+            </li>
+            <li>
+              <strong>节点内变量引用：</strong> 在节点配置中，可以通过
+              <code>this.state.xxx</code> 的方式引用当前工作流中的变量。
+            </li>
+            <li>
+              <strong>预览结果：</strong> 执行后，预览结果仅显示当前工作流的
+              <code>state</code> 属性，其他信息不可见。
+            </li>
+          </ul>
+        </template>
+        <QuestionCircleOutlined />
+      </a-tooltip>
+    </template>
+    <flow-view :data="eventFlowData" ref="flowRef"></flow-view>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -219,11 +245,12 @@ import {
   ExportOutlined,
   SyncOutlined,
   PlusOutlined,
-  CloseCircleOutlined
+  CloseCircleOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons-vue'
 import { useTableDesignStore } from '@/stores/tableDesign'
 import { storeToRefs } from 'pinia'
-import type { DataSourceTable, LCTableColumnCfg, LowCodeDataSource, Obj } from '@/model'
+import type { DataSourceTable, EventFlow, LCTableColumnCfg, LowCodeDataSource, Obj } from '@/model'
 import commonApi, { type DictItem, type FormListItem } from '@/api/common'
 import type { LCTableInteractionCfg } from '@/model'
 import SchemaForm from '@/components/SchemaForm/SchemaForm'
@@ -232,6 +259,7 @@ import { useRouter } from 'vue-router'
 import agPubSub from './AgTable/utils/AgPubSub'
 import api from '../api/table'
 import { message } from 'ant-design-vue'
+import FlowView from '@/views/Flow/FlowView.vue'
 const router = useRouter()
 agPubSub.onSubscribe('open-btn-modal', (data: any) => {
   onOpenBtnModal(data)
@@ -408,44 +436,22 @@ onMounted(() => {
 const currentBtnCfg = ref<LCTableInteractionCfg>({
   id: '',
   name: '',
-  eventFlowId: '',
+  eventFlow: {
+    nodes: [],
+    edges: []
+  },
   position: 'header',
   customEvent: false,
   builtInEvents: 'add',
   formId: ''
 })
 const btnCfgShow = ref(false)
-const eventFlows = ref([
-  {
-    label: '默认新增事件流',
-    value: 'add'
-  },
-  {
-    label: '默认编辑事件流',
-    value: 'edit'
-  },
-  {
-    label: '默认批量编辑事件流',
-    value: 'batchEdit'
-  }
-])
+
 const onOpenBtnModal = (btnCfg: any) => {
   currentBtnCfg.value = btnCfg
   btnCfgShow.value = true
 }
-const onClickEditFlow = (id: string) => {
-  router.push({
-    path: '/design/flow',
-    query: {
-      id
-    }
-  })
-}
-const onClickAddFlow = () => {
-  router.push({
-    path: '/design/flow'
-  })
-}
+
 const currentWidgetCfg = ref({})
 const widgetShow = ref(false)
 const widgetSchema = ref<SchemaProp>({
@@ -697,6 +703,25 @@ const onSave = () => {
     }
     loading.value = false
   })
+}
+const eventFlowOpen = ref(false)
+const eventFlowData = ref<EventFlow>({
+  nodes: [],
+  edges: []
+})
+
+const onOpenEventFlow = (data: LCTableInteractionCfg) => {
+  eventFlowData.value = data.eventFlow
+  eventFlowOpen.value = true
+}
+const flowRef = ref()
+const onSaveEventFlow = () => {
+  currentBtnCfg.value.eventFlow = flowRef.value.getData()
+  onCancelFlowMaol()
+}
+const onCancelFlowMaol = () => {
+  eventFlowData.value = { nodes: [], edges: [] }
+  eventFlowOpen.value = false
 }
 </script>
 <style scoped lang="scss">

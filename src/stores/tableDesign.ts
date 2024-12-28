@@ -51,7 +51,7 @@ export const useTableDesignStore = defineStore('tableDesign', () => {
       id: new Date().getTime().toString(),
       name: '测试',
       position: position,
-      eventFlowId: '',
+      eventFlow: { nodes :[],edges:[]},
       customEvent:false,
       builtInEvents:'add',
       formId:''

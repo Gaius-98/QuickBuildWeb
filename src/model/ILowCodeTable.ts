@@ -93,13 +93,15 @@ export interface LCTableInteractionCfg  {
   //内置事件
   builtInEvents:keyof typeof BuiltInEventEnum
   //自定义事件流id
-  eventFlowId:string
+  eventFlow:EventFlow
   //表单
   formId?:string
 }
 
-export interface EventFlow {
 
+export interface EventFlow {
+  nodes:any[]
+  edges:any[]
 }
 export interface LCTableGlobalCfg {
   showFilter:boolean

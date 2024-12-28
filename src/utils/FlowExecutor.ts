@@ -70,6 +70,13 @@ export class FlowExecutor {
     }
 
     /**
+     * Gets flow state.
+     * @returns The data of flow state.
+     */
+    getState() {
+        return this.state;
+    }
+    /**
      * Recursively pushes nodes to the flow node list until the last node is reached.
      * @returns The result of the recursive push operation.
      */
@@ -229,11 +236,16 @@ export class FlowExecutor {
      */
     async run() {
         if (!this.flowNodeList) return;
-        for (let index = 1; index < this.flowNodeList.length - 1; index++) {
-            const current = this.flowNodeList[index];
-            const type = current.properties.nodeType as string;
-            if (this.InternalMapping.get(type))
-                await this.InternalMapping.get(type)?.call(this, current);
+        try {
+            for (let index = 1; index < this.flowNodeList.length - 1; index++) {
+                const current = this.flowNodeList[index];
+                const type = current.properties.nodeType as string;
+                if (this.InternalMapping.get(type))
+                    await this.InternalMapping.get(type)?.call(this, current);
+            }
+        } catch (error) {
+            return error
         }
+
     }
 }
