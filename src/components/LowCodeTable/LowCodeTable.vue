@@ -13,7 +13,11 @@
               <a-select
                 v-else-if="widget.type == 'select'"
                 v-model:value="paramsData[widget.field!]"
-                :options="dictOptions[widget.dict!]"
+                :options="
+                  widget.dictType == 'dict'
+                    ? dictOptions[widget.dict!]
+                    : colDictOptions[widget.field!]
+                "
                 :allowClear="true"
               ></a-select>
               <a-date-picker v-else v-model:value="paramsData[widget.field!]"></a-date-picker>
@@ -124,13 +128,14 @@ if (!id.value) {
     const { code, data, msg } = res
     if (code == 200) {
       widgetCfg.value = data.filter
-      handleWidgetDefaultValue(widgetCfg.value)
-      getSelectOptions(widgetCfg.value)
+
       globalCfg.value = data.global
       actionCfg.value = data.action
-      columnsCfg.value = handleColumns(data.columns)
 
       dataSourceCfg.value = data.dataSource
+      handleWidgetDefaultValue(widgetCfg.value)
+      getSelectOptions(widgetCfg.value)
+      columnsCfg.value = handleColumns(data.columns)
       onSearch()
     } else {
       message.error(msg)
@@ -153,14 +158,22 @@ const handleWidgetDefaultValue = (widgetList: LowCodeTable['filter']) => {
   })
 }
 const dictOptions = ref<Record<string, DictItem[]>>({})
+const colDictOptions = ref<Record<string, DictItem[]>>({})
 const getSelectOptions = (widgetList: LowCodeTable['filter']) => {
   const dicts = widgetList
     .filter((widget) => {
-      if (widget.type == 'select') {
+      if (widget.type == 'select' && widget.dictType == 'dict') {
         return widget
       }
     })
     .map((e) => e.dict)
+  const colDicts = widgetList
+    .filter((widget) => {
+      if (widget.type == 'select' && widget.dictType == 'col') {
+        return widget
+      }
+    })
+    .map((e) => e.field as string)
   if (dicts.length > 0) {
     commonApi.getDict(dicts as string[]).then((res) => {
       const { code, data, msg } = res
@@ -169,6 +182,24 @@ const getSelectOptions = (widgetList: LowCodeTable['filter']) => {
       } else {
         message.error(msg)
       }
+    })
+  }
+  if (colDicts.length > 0) {
+    colDicts.forEach((field) => {
+      commonApi
+        .getLowCodeColData({
+          sourceId: dataSourceCfg.value!.sourceId,
+          tableName: dataSourceCfg.value!.tableName,
+          field: field
+        })
+        .then((res) => {
+          const { code, data, msg } = res
+          if (code == 200) {
+            colDictOptions.value[field] = data
+          } else {
+            message.error(msg)
+          }
+        })
     })
   }
 }

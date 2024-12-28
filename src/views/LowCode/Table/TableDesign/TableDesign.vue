@@ -270,6 +270,7 @@ if (id.value) {
     if (code == 200) {
       setTableCfg(data)
       getTableInfo()
+      getPreviewData()
       loading.value = false
     }
   })
@@ -497,10 +498,30 @@ const widgetSchema = ref<SchemaProp>({
         buttonStyle: 'solid'
       }
     },
+    dictType: {
+      type: 'radio',
+      label: '字典类型',
+      show: '"${formData.type}" == "select"',
+      tooltip: '字典为系统的字典配置数据，列数据为当前配置字段的列数据',
+      component: {
+        dataSource: [
+          {
+            label: '字典',
+            value: 'dict'
+          },
+          {
+            label: '列数据',
+            value: 'col'
+          }
+        ],
+        buttonStyle: 'solid'
+      }
+    },
     dict: {
       type: 'select',
       label: '字典',
-      show: '"${formData.type}" == "select"',
+      tooltip: '可以在系统配置自定义字典',
+      show: '"${formData.type}" == "select" && "${formData.dictType}" == "builtIn"',
       component: {
         asyncData: async () => {
           const { code, data, msg } = await commonApi.getDictTypeList()

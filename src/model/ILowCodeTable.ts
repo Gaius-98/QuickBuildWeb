@@ -21,6 +21,7 @@ export interface LowCodeWidget{
    dict?:string 
    defaultValue?:string
    label:string
+   dictType:'dict'|'col'
 }
 export interface LowCodeFilterCfg {
 
@@ -123,5 +124,10 @@ export interface LowCodeTableParamsData{
   sourceId:string
   tableName:string
   data:Record<string,any>
+}
+export interface LowCodeTableColParamsData{
+  sourceId:string
+  tableName:string
+  field:string
 }
 
