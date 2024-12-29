@@ -69,6 +69,7 @@ declare module 'vue' {
     CodeEditor: typeof import('./src/components/CodeEditor.vue')['default']
     ColorPicker: typeof import('./src/components/ColorPicker.vue')['default']
     ConfigInput: typeof import('./src/components/LowCodeConfig/ConfigInput/ConfigInput.vue')['default']
+    ConfigSelect: typeof import('./src/components/LowCodeConfig/ConfigInput/ConfigSelect.vue')['default']
     EditTable: typeof import('./src/components/EditTable.vue')['default']
     EventFlow: typeof import('./src/components/EventFlow/EventFlow.vue')['default']
     IconSelect: typeof import('./src/components/IconSelect/IconSelect.vue')['default']
