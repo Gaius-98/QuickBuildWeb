@@ -1,115 +1,54 @@
 <template>
-  <button @click="onclick()">查看数据</button>
-  <event-flow :data="data" style="width: 100%; height: 500px" ref="flow"></event-flow>
+  <code-editor :value="JSON.stringify(state, null, 4)" disabled> </code-editor>
+  <a-form>
+    <a-form-item label="输入框">
+      <config-input v-model:data="data.input"></config-input>
+    </a-form-item>
+    <a-form-item label="选择框">
+      <config-select v-model:data="data.select" :options="options"></config-select>
+    </a-form-item>
+  </a-form>
+  <a-button @click="onGetConfig">配置项</a-button>
+  <a-button @click="onGetData">数据</a-button>
 </template>
 
 <script lang="ts" setup>
 import { ref, watchEffect } from 'vue'
-import SchemaForm from '@/components/SchemaForm/SchemaForm'
-import type { SchemaProp } from '@/model'
-import EventFlow from '@/components/EventFlow/EventFlow.vue'
-import CodeEditor from './../../components/CodeEditor.vue'
-const flow = ref()
-const data = ref({
-  nodes: [
-    {
-      id: '1',
-      type: 'rect',
-      x: 100,
-      y: 100,
-      test: {
-        a: 1
-      },
-      properties: {
-        test: '1'
-      }
-    },
-    {
-      id: '2',
-      type: 'circle',
-      x: 300,
-      y: 200
-    }
-  ],
-  edges: [
-    {
-      sourceNodeId: '1',
-      targetNodeId: '2',
-      type: 'polyline'
-    }
-  ]
-})
-const validatePass2 = async (_rule: any, value: string) => {
-  if (value === '') {
-    return Promise.reject('Please input the password again')
-  } else if (value == '1') {
-    return Promise.reject("Two inputs don't match!")
-  } else {
-    return Promise.resolve()
-  }
-}
-
-const form = ref()
-const schema = ref<SchemaProp>({
-  layout: {
-    labelAlign: 'left',
-    layout: 'horizontal',
-    labelCol: {
-      span: 2
-    }
+import type { DynamicConfigData } from '@/model'
+import ConfigInput from '@/components/LowCodeConfig/ConfigInput/ConfigInput.vue'
+import ConfigSelect from '@/components/LowCodeConfig/ConfigInput/ConfigSelect.vue'
+const data = ref<Record<string, DynamicConfigData>>({
+  input: {
+    staticValue: '',
+    mode: 'static',
+    dynExp: ''
   },
-  properties: {
-    field: {
-      type: 'string',
-      label: '字段名'
-    },
-    test: {
-      type: 'string',
-      label: '测试',
-      tooltip: '字段名等于test时不显示此项',
-      show: "'${formData.field}' != 'test'",
-      rules: [
-        {
-          validator: validatePass2,
-          trigger: 'change'
-        }
-      ]
-    },
-    asyncData: {
-      label: '异步加载数据',
-      type: 'select',
-      component: {
-        dataSource: [
-          {
-            label: '1',
-            value: 1
-          },
-          {
-            label: '2',
-            value: 2
-          }
-        ]
-      }
-    }
+  select: {
+    staticValue: '',
+    mode: 'static',
+    dynExp: ''
   }
 })
-const scheamStr = ref('')
-scheamStr.value = JSON.stringify(schema.value, null, 4)
-const errmsg = ref('')
-watchEffect(() => {
-  try {
-    schema.value = JSON.parse(scheamStr.value)
-  } catch (error) {
-    errmsg.value = JSON.stringify(error)
+const state = ref({
+  string: '配置表单',
+  arr: [1, 2, 3, 4],
+  number: 125654
+})
+const options = ref([
+  {
+    label: '1',
+    value: '1'
+  },
+  {
+    label: '2',
+    value: '2'
   }
-})
-const formData = ref({
-  field: '1',
-  test: '测试',
-  asyncData: 1
-})
-const onclick = () => {
-  console.log(flow.value.getRawData())
+])
+const onGetConfig = () => {
+  console.log(data.value)
+}
+const onGetData = () => {
+  console.log('----')
 }
 </script>
 
