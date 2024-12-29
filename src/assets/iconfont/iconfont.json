@@ -6,6 +6,55 @@
   "description": "低代码平台",
   "glyphs": [
     {
+      "icon_id": "22057669",
+      "name": "大括号",
+      "font_class": "brackets-curly",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "77403",
+      "name": "链接",
+      "font_class": "lianjie",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "12550674",
+      "name": "弹窗",
+      "font_class": "danchuang",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "22227207",
+      "name": "开始",
+      "font_class": "daochu1024-15",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "22824903",
+      "name": "js函数",
+      "font_class": "jshanshu",
+      "unicode": "e9e2",
+      "unicode_decimal": 59874
+    },
+    {
+      "icon_id": "26082631",
+      "name": "结束",
+      "font_class": "jieshu",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "39104127",
+      "name": "发起请求",
+      "font_class": "faqiqingqiu",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    },
+    {
       "icon_id": "37434609",
       "name": "Mysql",
       "font_class": "Mysql",

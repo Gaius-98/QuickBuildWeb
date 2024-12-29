@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4745645 */
-  src: url('iconfont.woff2?t=1731563926584') format('woff2'),
-       url('iconfont.woff?t=1731563926584') format('woff'),
-       url('iconfont.ttf?t=1731563926584') format('truetype');
+  src: url('iconfont.woff2?t=1735475358413') format('woff2'),
+       url('iconfont.woff?t=1735475358413') format('woff'),
+       url('iconfont.ttf?t=1735475358413') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,34 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-brackets-curly:before {
+  content: "\e610";
+}
+
+.icon-lianjie:before {
+  content: "\e602";
+}
+
+.icon-danchuang:before {
+  content: "\e63c";
+}
+
+.icon-daochu1024-15:before {
+  content: "\e616";
+}
+
+.icon-jshanshu:before {
+  content: "\e9e2";
+}
+
+.icon-jieshu:before {
+  content: "\e625";
+}
+
+.icon-faqiqingqiu:before {
+  content: "\e697";
 }
 
 .icon-Mysql:before {
