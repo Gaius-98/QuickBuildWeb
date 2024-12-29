@@ -6,10 +6,11 @@
       style="width: calc(100% - 35px)"
       :prefix="isSelected ? '{' : ''"
       :suffix="isSelected ? '}' : ''"
+      v-bind="$attrs"
     >
     </a-input>
     <a-button
-      :title="isSelected ? '使用变量中' : '是否引用变量'"
+      :title="isSelected ? `绑定中:${data.dynExp}` : '变量绑定'"
       :type="isSelected ? 'primary' : ''"
       @click="onToggleMode()"
     >
