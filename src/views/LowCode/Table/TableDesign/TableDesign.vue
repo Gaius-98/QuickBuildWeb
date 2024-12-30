@@ -527,7 +527,7 @@ const widgetSchema = ref<SchemaProp>({
       type: 'select',
       label: '字典',
       tooltip: '可以在系统配置自定义字典',
-      show: '"${formData.type}" == "select" && "${formData.dictType}" == "builtIn"',
+      show: '"${formData.type}" == "select" && "${formData.dictType}" == "dict"',
       component: {
         asyncData: async () => {
           const { code, data, msg } = await commonApi.getDictTypeList()
