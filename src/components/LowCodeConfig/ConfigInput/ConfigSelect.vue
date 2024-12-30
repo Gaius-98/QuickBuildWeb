@@ -9,7 +9,7 @@
     </a-select>
     <a-input
       v-else
-      :value="isSelected ? data.dynExp : data.staticValue"
+      v-model:value="data.dynExp"
       style="width: calc(100% - 35px)"
       prefix="{"
       suffix="}"
