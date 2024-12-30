@@ -15,9 +15,10 @@
 <script lang="ts" setup>
 import { ref, watchEffect } from 'vue'
 import type { DynamicConfigData } from '@/model'
+import { DynamicConfig } from '@/utils/DynamicConfig'
 import ConfigInput from '@/components/LowCodeConfig/ConfigInput/ConfigInput.vue'
 import ConfigSelect from '@/components/LowCodeConfig/ConfigInput/ConfigSelect.vue'
-const data = ref<Record<string, DynamicConfigData>>({
+const data = ref<Record<string, DynamicConfigData | any>>({
   input: {
     staticValue: '',
     mode: 'static',
@@ -27,7 +28,8 @@ const data = ref<Record<string, DynamicConfigData>>({
     staticValue: '',
     mode: 'static',
     dynExp: ''
-  }
+  },
+  test: '123'
 })
 const state = ref({
   string: '配置表单',
@@ -49,6 +51,8 @@ const onGetConfig = () => {
 }
 const onGetData = () => {
   console.log('----')
+  const dc = new DynamicConfig(state.value)
+  console.log(dc.processObject(data.value))
 }
 </script>
 
