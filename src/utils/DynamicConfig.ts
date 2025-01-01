@@ -1,73 +1,83 @@
-import type { DynamicConfigData } from "@/model";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep } from 'lodash-es';
+import type { DynamicConfigData } from '@/model';
+
+/**
+ * 表示动态配置处理程序的类。
+ */
 export class DynamicConfig {
-    private state:Record<string,any>
-    private formData:Record<string,any> = {}
-    constructor(state:Record<string,any>,formData?:Record<string,any>){
-        this.state = state
-        if(formData){
-          this.formData = formData
+    private state: Record<string, any>;
+
+    /**
+     * 创建 DynamicConfig 的实例。
+     * @param state - 初始状态对象。
+     */
+    constructor(state: Record<string, any>) {
+        this.state = state;
+    }
+
+    /**
+     * 根据提供的 DynamicConfigData 检索值。
+     * @param data - 包含静态和动态配置的 DynamicConfigData 对象。
+     * @returns 解析后的值，可以是静态值或动态值。
+     */
+    getValue(data: DynamicConfigData): any {
+        const { staticValue, mode, dynExp } = data;
+        if (mode === 'static') return staticValue;
+        return this.resolveDynamicValue(dynExp);
+    }
+
+    /**
+     * 根据提供的表达式解析动态值。
+     * @param expression - 要评估的动态表达式。
+     * @returns 表达式的评估结果，如果发生错误则返回 null。
+     */
+    private resolveDynamicValue(expression: string): any {
+        try {
+            const func = new Function('state', `return ${expression}`);
+            return func(this.state);
+        } catch (error) {
+            console.error('评估动态表达式时出错:', error);
+            return null;
         }
     }
 
-    getValue(data:DynamicConfigData){
-        const {staticValue,mode,dynExp } = data
-        if(mode == 'static') return staticValue
-        return this.resolveDynamicValue(dynExp)
+    /**
+     * 检查提供的对象是否为有效的 DynamicConfigData。
+     * @param obj - 要检查的对象。
+     * @returns 如果对象是 DynamicConfigData 则返回 true，否则返回 false。
+     */
+    isDynamicConfigData(obj: any): obj is DynamicConfigData {
+        return typeof obj === 'object' && obj !== null &&
+            typeof obj.staticValue === 'string' &&
+            ['static', 'dynamic'].includes(obj.mode) &&
+            typeof obj.dynExp === 'string';
     }
 
-   /**
-   * 解析动态值，支持表达式
-   * @param {string} expression - 动态表达式，例如：'state.text == "1" ? "正常" : "异常"'
-   * @returns {any} 返回解析后的值
-   */
-   private resolveDynamicValue(expression:string) {
-    try {
-      const func = new Function('state', `return ${expression}`);
-      return func(this.state);  
-    } catch (error) {
-      console.error('Error evaluating dynamic expression:', error);
-      return null; 
+    /**
+     * 处理对象，解析其中的任何动态配置数据。
+     * @param data - 要处理的对象。
+     * @returns 具有解析后的动态值的新对象。
+     */
+    processObject(data: any): any {
+        const obj = cloneDeep(data);
+        if (Array.isArray(obj)) {
+            return obj.map(item => this.processObject(item));
+        } else if (typeof obj === 'object' && obj !== null) {
+            const result: any = {};
+            for (const key in obj) {
+                const value = obj[key];
+
+                if (this.isDynamicConfigData(value)) {
+                    result[key] = this.getValue(value);
+                } else if (typeof value === 'object' && value !== null) {
+                    result[key] = this.processObject(value);
+                } else {
+                    result[key] = value;
+                }
+            }
+            return result;
+        } else {
+            return obj;
+        }
     }
-  }
-
-  isDynamicConfigData(obj: any): obj is DynamicConfigData {
-      return typeof obj === 'object' && obj !== null &&
-          typeof obj.staticValue === 'string' &&
-          ['static', 'dynamic'].includes(obj.mode) &&  // check if 'mode' is a valid key of DyMode
-          typeof obj.dynExp === 'string';
-  }
-
-  processObject(data: any): any {
-      const obj = cloneDeep(data) 
-      // 如果是数组，遍历数组中的每个元素
-      if (Array.isArray(obj)) {
-          return obj.map(item => this.processObject(item)); // 对数组元素递归处理
-      } 
-      // 如果是对象，遍历对象的每个键值对
-      else if (typeof obj === 'object' && obj !== null) {
-          const result: any = {};  // 新对象，用于存储结果
-          for (const key in obj) {
-              const value = obj[key];
-              
-              // 如果值符合 DynamicConfigData 接口，使用 getValue 处理
-              if (this.isDynamicConfigData(value)) {
-                  result[key] = this.getValue(value);  // 将处理后的值放入结果对象
-              }
-              // 如果值是对象或数组，递归处理
-              else if (typeof value === 'object' && value !== null) {
-                  result[key] = this.processObject(value);  // 递归处理嵌套对象或数组
-              }
-              // 对于其他类型，直接保留原值
-              else {
-                  result[key] = value;  
-              }
-          }
-          return result;  // 返回新对象
-      }
-
-      else {
-          return obj;
-      }
-  }
 }
