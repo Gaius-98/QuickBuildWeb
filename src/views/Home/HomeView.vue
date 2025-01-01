@@ -7,6 +7,9 @@
     <a-form-item label="选择框">
       <config-select v-model:data="data.select" :options="options"></config-select>
     </a-form-item>
+    <a-form-item label="单选框">
+      <config-radio v-model:data="data.radio" :options="iconOptions" :icon="true"></config-radio>
+    </a-form-item>
   </a-form>
   <a-button @click="onGetConfig">配置项</a-button>
   <a-button @click="onGetData">数据</a-button>
@@ -17,7 +20,8 @@ import { ref, watchEffect } from 'vue'
 import type { DynamicConfigData } from '@/model'
 import { DynamicConfig } from '@/utils/DynamicConfig'
 import ConfigInput from '@/components/LowCodeConfig/ConfigInput/ConfigInput.vue'
-import ConfigSelect from '@/components/LowCodeConfig/ConfigInput/ConfigSelect.vue'
+import ConfigSelect from '@/components/LowCodeConfig/ConfigSelect/ConfigSelect.vue'
+import ConfigRadio from '@/components/LowCodeConfig/ConfigRadio/ConfigRadio.vue'
 const data = ref<Record<string, DynamicConfigData | any>>({
   input: {
     staticValue: '',
@@ -29,7 +33,8 @@ const data = ref<Record<string, DynamicConfigData | any>>({
     mode: 'static',
     dynExp: ''
   },
-  test: '123'
+  test: '123',
+  radio: {}
 })
 const state = ref({
   string: '配置表单',
@@ -44,6 +49,18 @@ const options = ref([
   {
     label: '2',
     value: '2'
+  }
+])
+const iconOptions = ref([
+  {
+    label: 'icon-lock1',
+    value: '1',
+    title: '锁定'
+  },
+  {
+    label: 'icon-unlock1',
+    value: '2',
+    title: '解锁'
   }
 ])
 const onGetConfig = () => {
