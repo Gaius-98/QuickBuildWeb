@@ -48,7 +48,7 @@ export class DynamicConfig {
      */
     isDynamicConfigData(obj: any): obj is DynamicConfigData {
         return typeof obj === 'object' && obj !== null &&
-            typeof obj.staticValue === 'string' &&
+            ['string','number','boolean'].includes(typeof obj.staticValue) &&
             ['static', 'dynamic'].includes(obj.mode) &&
             typeof obj.dynExp === 'string';
     }
