@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import LogicFlow from '@logicflow/core'
-import { DndPanel, SelectionSelect } from '@logicflow/extension'
+import { DndPanel, SelectionSelect, Menu } from '@logicflow/extension'
 import '@logicflow/core/lib/style/index.css'
 import '@logicflow/extension/lib/style/index.css'
 import { reactive, toRefs, ref, onMounted } from 'vue'
@@ -39,15 +39,28 @@ const onClickElement = (data: any) => {
 onMounted(() => {
   LogicFlow.use(DndPanel)
   LogicFlow.use(SelectionSelect)
-
+  LogicFlow.use(Menu)
   lf.value = new LogicFlow({
     container: container.value,
     grid: true
   })
   //@ts-ignore
   lf.value.extension.dndPanel.setPatternItems(dndList.value)
+  //@ts-ignore
+  lf.value.extension.menu.setMenuConfig({
+    nodeMenu: [
+      {
+        text: '删除',
+        callback(node: any) {
+          lf.value!.deleteNode(node.id)
+        }
+      }
+    ],
+    edgeMenu: false,
+    graphMenu: false
+  })
   lf.value.render(data.value)
-  lf.value.on('element:click', onClickElement)
+  lf.value.on('node:click', onClickElement)
 })
 const updateNodeData = (data: any) => {
   lf.value?.getNodeModelById(data.id)?.setProperties({
