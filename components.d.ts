@@ -71,6 +71,7 @@ declare module 'vue' {
     ConfigInput: typeof import('./src/components/LowCodeConfig/ConfigInput/ConfigInput.vue')['default']
     ConfigRadio: typeof import('./src/components/LowCodeConfig/ConfigRadio/ConfigRadio.vue')['default']
     ConfigSelect: typeof import('./src/components/LowCodeConfig/ConfigSelect/ConfigSelect.vue')['default']
+    ConfigSwitch: typeof import('./src/components/LowCodeConfig/ConfigSwitch/ConfigSwitch.vue')['default']
     EditTable: typeof import('./src/components/EditTable.vue')['default']
     EventFlow: typeof import('./src/components/EventFlow/EventFlow.vue')['default']
     IconSelect: typeof import('./src/components/IconSelect/IconSelect.vue')['default']
