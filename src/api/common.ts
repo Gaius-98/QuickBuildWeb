@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import type { Obj,SystemOrgTree,SystemUserNotice,LowCodeTable,LowCodeTableQueryParams,LowCodeTableParamsData,LowCodeTableColParamsData,SystemDictTypeItem,ResPage,LowCodeDataSource,DataSourceTable,DataSourceTableField } from '@/model'
+import type { Obj,SystemOrgTree,SystemUserNotice,QueryProxyDataDto,LowCodeTable,LowCodeTableQueryParams,LowCodeTableParamsData,LowCodeTableColParamsData,SystemDictTypeItem,ResPage,LowCodeDataSource,DataSourceTable,DataSourceTableField } from '@/model'
 export type DictTypes = string[]
 export interface DictItem {
   value: string
@@ -160,6 +160,13 @@ export default {
       return request<DictItem[]>({
         method: 'post',
         url: 'table/lowcode/getColData',
+        data
+      })
+    },
+    getProxyData:(data:QueryProxyDataDto)=>{
+      return request<any>({
+        method:'post',
+        url:'datasource/proxy',
         data
       })
     }

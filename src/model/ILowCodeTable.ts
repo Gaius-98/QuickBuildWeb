@@ -133,3 +133,16 @@ export interface LowCodeTableColParamsData{
   field:string
 }
 
+export interface ProxyData {
+  key: string;
+  value: string;
+  var: string;
+}
+export interface QueryProxyDataDto {
+  method: 'get' | 'post';
+  url: string;
+  headers: ProxyData[];
+  body: ProxyData[];
+  params: ProxyData[];
+  state: Record<string, any>;
+}

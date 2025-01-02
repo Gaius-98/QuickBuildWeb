@@ -1,8 +1,9 @@
-import type { FlowData,PropExtraData,FlowNode, Obj } from "@/model"
+import type { FlowData,PropExtraData,FlowNode, Obj,QueryProxyDataDto } from "@/model"
 import type { IBaseEdgeModel, IBaseNodeModel } from "@logicflow/core"
 import { Modal } from "ant-design-vue"
 import {h} from 'vue'
 import LowCodeFormId from "@/components/LowCodeForm/LowCodeFormId.vue"
+import common from "@/api/common"
 /**
  * The `FlowExecutor` class is responsible for executing a flow of nodes based on the provided flow data.
  * It manages the state, handles the flow data, and executes specific functions for different types of nodes.
@@ -170,8 +171,8 @@ export class FlowExecutor {
      * @returns A promise that resolves with the modal form data or rejects on cancel.
      */
     private onOpenModal(node: FlowNode) {
-        const { size, formId } = node.properties.extraData;
-        this.state['modalFormData'] = {};
+      const { size, formId } = node.properties.extraData;
+      this.state.modalFormData =   this.state['modalFormData'] ? this.state['modalFormData']: {} 
         const widthObject: Obj<string> = {
             small: '600px',
             middle: '1200px',
@@ -183,6 +184,7 @@ export class FlowExecutor {
                     id: formId,
                     formData: this.state.modalFormData,
                 }),
+                icon:null,
                 title: '表单',
                 width: widthObject[size],
                 onCancel: () => {
@@ -211,12 +213,17 @@ export class FlowExecutor {
      */
     private async requestData(node: FlowNode) {
         const requestFn = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(2000);
-            }, 1000);
+            common.getProxyData(node.properties.extraData as QueryProxyDataDto).then((res) => {
+                 resolve(res.data);
+            })
         });
-        const data = await requestFn;
-        this.state['test'] = data;
+        let data 
+        try {
+            data = await requestFn;
+        } catch (error) {
+            console.error(error)
+        }
+        this.state['requestData'] = data;
     }
 
     /**
@@ -228,7 +235,12 @@ export class FlowExecutor {
         const { code } = node.properties.extraData;
         const fn = new Function(`return  ()=>{${code}}`);
         const _this = this;
-        return fn.call(_this)();
+        try {
+            return fn.call(_this)();
+        } catch (error) {
+            console.error(error)
+        }
+        
     }
 
     /**

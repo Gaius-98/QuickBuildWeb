@@ -187,7 +187,7 @@ const dndList = ref([
       nodeType: 'request-node',
       extraData: {
         url: '',
-        method: '',
+        method: 'get',
         params: [],
         headers: [],
         body: []
@@ -235,6 +235,11 @@ const headersColumns = ref<any[]>([
   {
     title: 'Value',
     dataIndex: 'value',
+    type: 'input'
+  },
+  {
+    title: '引用变量',
+    dataIndex: 'var',
     type: 'input'
   }
 ])
