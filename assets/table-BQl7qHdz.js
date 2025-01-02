@@ -1,1 +1,0 @@
-import{r as e}from"./index-BCy4npaG.js";const a={getList:t=>e({method:"get",url:"table/list",params:t}),getDetail:t=>e({method:"get",url:"table/detail",params:{id:t}}),remove:t=>e({method:"get",url:"table/remove",params:{id:t}}),add:t=>e({method:"post",url:"table/add",data:t}),update:t=>e({method:"post",url:"table/update",data:t})};export{a};
