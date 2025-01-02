@@ -208,20 +208,38 @@
       事件流配置
       <a-tooltip
         :overlayInnerStyle="{
-          width: '600px'
+          width: '600px',
+          color: '#000'
         }"
+        color="#ffffff"
+        :arrow="false"
+        placement="rightBottom"
       >
         <template #title>
-          <h2>工作流配置注意事项</h2>
+          <h3>
+            工作流配置注意事项<strong style="color: red"
+              >(目前只支持线性工作流,没有条件判断或并行执行的能力)</strong
+            >
+          </h3>
           <ul>
-            <li><strong>工作流节点不能为空：</strong> 每个工作流必须包含有效的节点配置。</li>
             <li>
-              <strong>包含开始与结束节点：</strong>
-              每个工作流必须至少包含一个“开始节点”和一个“结束节点”。
+              <strong>工作流节点不能为空：</strong>
+              每个工作流<strong>必须</strong>包含有效的节点配置。
             </li>
             <li>
-              <strong>节点内变量引用：</strong> 在节点配置中，可以通过
+              <strong>包含开始与结束节点：</strong>
+              每个工作流<strong>必须</strong>包含一个“开始节点”和一个“结束节点”。
+            </li>
+            <li>
+              <strong style="color: red">重要参数：</strong>
+              <code>this.state.modalFormData</code>为弹窗表单数据，
+              <code>this.state.requestData</code>为请求数据，
+              两者既可以作为输入也可以作为输出，搭配<strong>处理函数</strong>节点使用，可以实现数据的填充或者数据的保存。
+            </li>
+            <li>
+              <strong>节点内变量引用：</strong> 在<strong>处理函数</strong>节点中，可以通过
               <code>this.state.xxx</code> 的方式引用当前工作流中的变量。
+              在<strong>请求配置</strong>节点中，在<strong>引用变量</strong>列中可以通过<code>state.xxx</code>引用变量数据，也可以配置<strong>Value</strong>列使用静态数据。
             </li>
             <li>
               <strong>预览结果：</strong> 执行后，预览结果仅显示当前工作流的
