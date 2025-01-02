@@ -56,7 +56,14 @@ onMounted(() => {
         }
       }
     ],
-    edgeMenu: false,
+    edgeMenu: [
+      {
+        text: '删除',
+        callback(edge: any) {
+          lf.value!.deleteEdge(edge.id)
+        }
+      }
+    ],
     graphMenu: false
   })
   lf.value.render(data.value)
