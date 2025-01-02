@@ -51,6 +51,13 @@ export class FlowExecutor {
     }
 
     /**
+     * Sets the modal form data in the state.
+     * @param data - The data to be set in the modal form.
+     */
+    setModalFormData(data:Record<string,any>){
+        this.state['modalFormData'] = data
+    }    
+    /**
      * Handles the flow data by finding the first and last nodes and recursively pushing nodes to the flow node list.
      * @returns The list of flow nodes.
      */

@@ -262,7 +262,7 @@ const resetFormData = () => {
   formData.value = {}
 }
 const onClickBtn = (btn: LowCodeTable['action'][0], rowData?: Record<string, any>) => {
-  const { customEvent, builtInEvents, eventFlow, formId } = btn
+  const { customEvent, builtInEvents, eventFlow, formId, position } = btn
   if (rowData) {
     formData.value = cloneDeep(rowData)
   }
@@ -271,6 +271,9 @@ const onClickBtn = (btn: LowCodeTable['action'][0], rowData?: Record<string, any
     try {
       if (!eventFlow) return console.log('未配置工作流')
       const flowExecutor = new FlowExecutor(eventFlow!)
+      if (rowData) {
+        flowExecutor.setModalFormData(formData.value)
+      }
       flowExecutor.run()
     } catch (error) {
       console.log(`工作流执行报错:${error}`)
