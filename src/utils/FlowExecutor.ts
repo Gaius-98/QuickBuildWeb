@@ -220,7 +220,10 @@ export class FlowExecutor {
      */
     private async requestData(node: FlowNode) {
         const requestFn = new Promise((resolve, reject) => {
-            common.getProxyData(node.properties.extraData as QueryProxyDataDto).then((res) => {
+            common.getProxyData(({
+                ...node.properties.extraData,
+                state:this.state
+            }) as QueryProxyDataDto).then((res) => {
                  resolve(res.data);
             })
         });
