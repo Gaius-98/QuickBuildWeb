@@ -30,7 +30,7 @@
             >
             </a-select>
           </a-form-item>
-          <a-button type="primary" @click="onOpenGlobalModal">全局配置</a-button>
+          <a-button type="primary" @click="onOpenGlobalModal" class="global-btn">全局配置</a-button>
 
           <a-button @click="onSave()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
@@ -38,7 +38,7 @@
     </a-page-header>
     <div class="table-design-container">
       <div class="main-part">
-        <div class="filter-part">
+        <div class="filter-part" :class="{ disabled: !tableCfg.global.showFilter }">
           <div class="filter-container">
             <vue-draggable-next
               v-model:list="tableCfg.filter"
@@ -252,6 +252,12 @@
     </template>
     <flow-view :data="eventFlowData" ref="flowRef"></flow-view>
   </a-modal>
+  <a-tour
+    v-model:current="current"
+    :open="shouldShowReminder"
+    :steps="steps"
+    @close="shouldShowReminder = false"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -278,7 +284,42 @@ import agPubSub from './AgTable/utils/AgPubSub'
 import api from '../api/table'
 import { message } from 'ant-design-vue'
 import FlowView from '@/views/Flow/FlowView.vue'
+import { useReminder } from '@/hooks/useReminder'
 const router = useRouter()
+const { shouldShowReminder } = useReminder('low-code-table-design')
+const current = ref(0)
+const steps = [
+  {
+    title: '数据源',
+    description: '选择你在系统内已配置好的数据源',
+    target: () => document.querySelector('.extra'),
+    placement: 'bottom'
+  },
+  {
+    title: '列配置区域',
+    description: '对已配置数据源的表格的列进行配置，可以拖拽调整列的顺序，点击列进行详细配置',
+    target: () => document.querySelector('.table-part'),
+    placement: 'top'
+  },
+  {
+    title: '筛选条件区域',
+    description: '添加当前表格的筛选条件，可以拖拽调整筛选条件的顺序，点击筛选条件进行详细配置',
+    target: () => document.querySelector('.filter-container'),
+    placement: 'bottom'
+  },
+  {
+    title: '按钮操作配置区域',
+    description: '添加当前表格的操作按钮，可以拖拽调整按钮的顺序，点击按钮进行详细配置',
+    target: () => document.querySelector('.tools-container'),
+    placement: 'bottom'
+  },
+  {
+    title: '最后',
+    description: '保存您刚刚的配置',
+    target: () => document.querySelector('.save-btn'),
+    placement: 'left'
+  }
+]
 agPubSub.onSubscribe('open-btn-modal', (data: any) => {
   onOpenBtnModal(data)
 })
@@ -398,6 +439,9 @@ const getTableInfo = () => {
   })
 }
 const getFieldList = async () => {
+  if (!tableCfg.value.dataSource.sourceId || !tableCfg.value.dataSource.tableName) {
+    return []
+  }
   const { code, data, msg } = await commonApi.getColumnInfo(
     tableCfg.value.dataSource.sourceId,
     tableCfg.value.dataSource.tableName
@@ -799,6 +843,20 @@ const onCancelFlowMaol = () => {
               flex: 1;
               margin-bottom: 0;
             }
+          }
+        }
+        &.disabled {
+          position: relative;
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            cursor: not-allowed;
+            background-color: #f5f5f5;
+            z-index: 99;
           }
         }
       }

@@ -33,7 +33,12 @@
       v-if="previewShow"
     ></low-code-form>
   </a-modal>
-  <a-tour v-model:current="current" :open="open" :steps="steps" @close="open = false" />
+  <a-tour
+    v-model:current="current"
+    :open="shouldShowReminder"
+    :steps="steps"
+    @close="shouldShowReminder = false"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -43,7 +48,7 @@ import MaterialCfg from './components/MaterialCfg.vue'
 import { reactive, toRefs, ref, computed } from 'vue'
 import { useFormDesignStore } from '@/stores/formDesign'
 import { storeToRefs } from 'pinia'
-
+import { useReminder } from '@/hooks/useReminder'
 import LowCodeForm from '@/components/LowCodeForm/LowCodeForm.vue'
 import api from '../api/form'
 
@@ -59,7 +64,7 @@ const { formCfgItemList, extraFormConfig, saveLoading, formConfig } = storeToRef
 const { onSave, setFormDetail } = formStore
 // 引导
 const open = ref<boolean>(false)
-
+const { shouldShowReminder } = useReminder('low-code-form-design')
 const current = ref(0)
 const steps = [
   {
