@@ -114,7 +114,7 @@ const role = computed(() => {
 const { local, themeCfg, userInfo, orgInfo, roleInfo, noticeInfo } = storeToRefs(systemStore)
 const { onOpenConfigDrawer, onToggleLocal } = systemStore
 const onOpenGithub = () => {
-  window.open('https://github.com/Gaius-98/gaius-admin', '_blank')
+  window.open('https://github.com/Gaius-98/quick-build', '_blank')
 }
 const onLogout = () => {
   auth.remove()

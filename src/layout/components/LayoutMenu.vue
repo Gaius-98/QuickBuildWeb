@@ -26,8 +26,8 @@ const route = useRoute()
 const systemStore = useSystemStore()
 const { menuTree, themeCfg } = storeToRefs(systemStore)
 
-const selectedKeys = useStorage<string[]>('gaius-admin-menu-selected', [], sessionStorage)
-const openKeys = useStorage('gaius-admin-menu-open', [], sessionStorage)
+const selectedKeys = useStorage<string[]>('quick-build-menu-selected', [], sessionStorage)
+const openKeys = useStorage('quick-build-menu-open', [], sessionStorage)
 const realMenuTree = computed(() => {
   return transformMenuData(menuTree.value)
 })
