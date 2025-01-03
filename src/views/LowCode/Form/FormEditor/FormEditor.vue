@@ -48,7 +48,7 @@ import MaterialCfg from './components/MaterialCfg.vue'
 import { reactive, toRefs, ref, computed } from 'vue'
 import { useFormDesignStore } from '@/stores/formDesign'
 import { storeToRefs } from 'pinia'
-import { useReminder } from '@/hooks/useReminder'
+import { useReminder } from '@/hooks'
 import LowCodeForm from '@/components/LowCodeForm/LowCodeForm.vue'
 import api from '../api/form'
 

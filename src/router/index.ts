@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, } from 'vue-router'
 import type {RouteLocationNormalized} from 'vue-router'
-import auth from '@/utils/auth'
+import { useAuth } from '@/hooks'
+const { getToken } = useAuth()
 const routes = [
     {
       path: '/',
@@ -189,7 +190,7 @@ router.beforeEach((to, from, next) => {
   if (to.path == '/login') {
     next()
   } else {
-    if (auth.get()) {
+    if (getToken()) {
       next()
     } else {
       next('/login')

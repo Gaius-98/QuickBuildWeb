@@ -58,7 +58,7 @@ import { reactive, ref, onMounted } from 'vue'
 import { useSystemStore } from '@/stores/system'
 import { storeToRefs } from 'pinia'
 import api from './api'
-import auth from '@/utils/auth'
+import { useAuth } from '@/hooks'
 import { UserOutlined, LockOutlined, SafetyOutlined } from '@ant-design/icons-vue'
 import jump from '@/utils/jump'
 const systemStore = useSystemStore()
@@ -69,11 +69,12 @@ const authForm = reactive({
   password: 'test',
   captcha: ''
 })
+const { setToken } = useAuth()
 const onLogin = () => {
   api.login(authForm).then((res) => {
     const { code, data } = res
     if (code == 200) {
-      auth.set(data)
+      setToken(data)
       startUp().then(() => {
         jump(menuTree.value[0])
       })

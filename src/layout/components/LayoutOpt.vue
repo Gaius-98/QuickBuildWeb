@@ -101,12 +101,13 @@ import {
   GithubOutlined,
   MessageOutlined
 } from '@ant-design/icons-vue'
-import auth from '@/utils/auth'
+import { useAuth } from '@/hooks'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import type { SystemUserNotice } from '@/model'
 import jump from '@/utils/jump'
 const router = useRouter()
+const { removeToken } = useAuth()
 const systemStore = useSystemStore()
 const role = computed(() => {
   return roleInfo.value.map((e) => e.roleName).join(',')
@@ -117,7 +118,7 @@ const onOpenGithub = () => {
   window.open('https://github.com/Gaius-98/quick-build', '_blank')
 }
 const onLogout = () => {
-  auth.remove()
+  removeToken()
   router.push({
     path: '/login'
   })

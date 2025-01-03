@@ -1,8 +1,9 @@
 import axios from 'axios'
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { message } from 'ant-design-vue'
-import auth from './auth'
+import { useAuth } from '@/hooks'
 import jump from './jump'
+const { getToken } = useAuth()
 //接口返回格式
 export type Res<T = any> = {
   code: number
@@ -17,7 +18,7 @@ const service = axios.create({
 //请求拦截器
 service.interceptors.request.use(
   (config) => {
-    config.headers['Authorization'] = `Bearer ${auth.get()}`
+    config.headers['Authorization'] = `Bearer ${getToken()}`
     return config
   },
   (error) => error

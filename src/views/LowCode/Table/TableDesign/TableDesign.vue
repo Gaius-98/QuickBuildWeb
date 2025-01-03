@@ -284,7 +284,7 @@ import agPubSub from './AgTable/utils/AgPubSub'
 import api from '../api/table'
 import { message } from 'ant-design-vue'
 import FlowView from '@/views/Flow/FlowView.vue'
-import { useReminder } from '@/hooks/useReminder'
+import { useReminder } from '@/hooks'
 const router = useRouter()
 const { shouldShowReminder } = useReminder('low-code-table-design')
 const current = ref(0)
