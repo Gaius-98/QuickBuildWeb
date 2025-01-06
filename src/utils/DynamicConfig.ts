@@ -4,6 +4,16 @@ import type { DynamicConfigData } from '@/model';
 /**
  * 表示动态配置处理程序的类。
  */
+/**
+ * #TODO 动态数据结构设计不合理，应该参考ref通过特定函数包装，按照规则直接引用，而不是还包含特定的结构
+  同时确保按照上述调整后，后端结构能保存对应的结构，保存不了的话，将结构调整为现在的结构：
+    {
+        staticValue: any;
+        mode: 'static' | 'dynamic';
+        dynExp: string;
+    }
+ */
+
 export class DynamicConfig {
     private state: Record<string, any>;
 
