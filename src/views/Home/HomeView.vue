@@ -1,19 +1,7 @@
 <template>
   <code-editor :value="JSON.stringify(state, null, 4)" disabled> </code-editor>
-  <a-form>
-    <a-form-item label="输入框">
-      <config-input v-model:data="data.input"></config-input>
-    </a-form-item>
-    <a-form-item label="选择框">
-      <config-select v-model:data="data.select" :options="options"></config-select>
-    </a-form-item>
-    <a-form-item label="单选框">
-      <config-radio v-model:data="data.radio" :options="iconOptions" :icon="true"></config-radio>
-    </a-form-item>
-    <a-form-item label="数组">
-      <config-array v-model:data="data.arr" title="数组" closable></config-array>
-    </a-form-item>
-  </a-form>
+  <config-form :data="data" :schema="configSchema"> </config-form>
+
   <a-button @click="onGetConfig">配置项</a-button>
   <a-button @click="onGetData">数据</a-button>
   <component :is="ElButton" type="success">el</component>
@@ -37,33 +25,54 @@
 import { defineAsyncComponent, defineComponent, ref, watchEffect, onMounted } from 'vue'
 import type { DynamicConfigData } from '@/model'
 import { DynamicConfig } from '@/utils/DynamicConfig'
-import ConfigInput from '@/components/LowCodeConfig/ConfigInput/ConfigInput.vue'
-import ConfigSelect from '@/components/LowCodeConfig/ConfigSelect/ConfigSelect.vue'
-import ConfigRadio from '@/components/LowCodeConfig/ConfigRadio/ConfigRadio.vue'
+
 import { DynamicLoader } from '@/utils/DynamicLoader'
-import ConfigArray from '@/components/LowCodeConfig/ConfigArray/ConfigArray.vue'
 import type { LibItem, LibTree } from '@/model'
-const data = ref<Record<string, DynamicConfigData | any>>({
+import ConfigForm from '@/components/LowCodeConfig/ConfigForm/ConfigForm.vue'
+import type { ConfigSchema } from '@/model'
+const data = ref<Record<string, DynamicConfigData | any>>({})
+const configSchema = ref<ConfigSchema>({
   input: {
-    _value: '',
-    _mode: 'static',
-    _dynExp: ''
+    type: 'input',
+    label: '输入框'
   },
   select: {
-    _value: '',
-    _mode: 'static',
-    _dynExp: ''
+    type: 'select',
+    label: '选择框'
   },
-  test: '123',
-  radio: {},
   arr: {
-    _value: [
-      {
-        title: '测试'
+    type: 'array',
+    label: '数组',
+    items: {
+      title: {
+        type: 'input',
+        label: '标题'
       }
-    ],
-    _mode: 'static',
-    _dynExp: ''
+    }
+  },
+  arr2: {
+    type: 'array',
+    label: '数组',
+    items: {
+      test: {
+        type: 'input',
+        label: '测试'
+      }
+    }
+  },
+  test: {
+    type: 'object',
+    label: '测试对象',
+    properties: {
+      a: {
+        type: 'input',
+        label: 'a'
+      },
+      b: {
+        type: 'input',
+        label: 'b'
+      }
+    }
   }
 })
 const state = ref({

@@ -15,14 +15,14 @@ import type { DynamicConfigData } from '@/model';
  */
 
 export class DynamicConfig {
-    private state: Record<string, any>;
+    private state: Record<string, any> = {};
 
     /**
      * 创建 DynamicConfig 的实例。
      * @param state - 初始状态对象。
      */
-    constructor(state: Record<string, any>) {
-        this.state = state;
+    constructor(state?: Record<string, any>) {
+        if(state) this.state = state;
     }
 
     /**
@@ -36,6 +36,13 @@ export class DynamicConfig {
         return this.resolveDynamicValue(_dynExp);
     }
 
+    createDynamicConfigData(value?: any): DynamicConfigData {
+        return {
+            _value: value || '',
+            _mode: 'static',
+            _dynExp: ''
+        };
+    }
     /**
      * 根据提供的表达式解析动态值。
      * @param expression - 要评估的动态表达式。
@@ -58,7 +65,6 @@ export class DynamicConfig {
      */
     isDynamicConfigData(obj: any): obj is DynamicConfigData {
         return typeof obj === 'object' && obj !== null &&
-            ['string','number','boolean'].includes(typeof obj._value) &&
             ['static', 'dynamic'].includes(obj._mode);
     }
 
@@ -70,12 +76,13 @@ export class DynamicConfig {
     processObject(data: any): any {
         const obj = cloneDeep(data);
         if (Array.isArray(obj)) {
+            
             return obj.map(item => this.processObject(item));
         } else if (typeof obj === 'object' && obj !== null) {
             const result: any = {};
             for (const key in obj) {
                 const value = obj[key];
-
+                console.log(value)
                 if (this.isDynamicConfigData(value)) {
                     result[key] = this.getValue(value);
                 } else if (typeof value === 'object' && value !== null) {
