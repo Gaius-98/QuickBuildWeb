@@ -80,9 +80,8 @@ const isSelected = computed(() => {
 const onToggleMode = () => {
   data.value._mode = data.value._mode === 'dynamic' ? 'static' : 'dynamic'
 }
-const newTabIndex = ref(0)
 const add = () => {
-  activeKey.value = ++newTabIndex.value
+  activeKey.value = data.value._value.length || 0
   data.value._value.push({})
 }
 
