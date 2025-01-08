@@ -68,6 +68,7 @@ declare module 'vue' {
     AWatermark: typeof import('ant-design-vue/es')['Watermark']
     CodeEditor: typeof import('./src/components/CodeEditor.vue')['default']
     ColorPicker: typeof import('./src/components/ColorPicker.vue')['default']
+    ConfigArray: typeof import('./src/components/LowCodeConfig/ConfigArray/ConfigArray.vue')['default']
     ConfigInput: typeof import('./src/components/LowCodeConfig/ConfigInput/ConfigInput.vue')['default']
     ConfigRadio: typeof import('./src/components/LowCodeConfig/ConfigRadio/ConfigRadio.vue')['default']
     ConfigSelect: typeof import('./src/components/LowCodeConfig/ConfigSelect/ConfigSelect.vue')['default']

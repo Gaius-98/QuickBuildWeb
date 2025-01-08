@@ -8,7 +8,7 @@
       v-if="!isSelected"
     >
       <a-tab-pane
-        v-for="(pane, idx) in data.staticValue"
+        v-for="(pane, idx) in data._value"
         :key="idx + 1"
         :tab="`${title}${idx + 1}`"
         :closable="closable"
@@ -17,7 +17,7 @@
       </a-tab-pane>
       <template #rightExtra>
         <a-button
-          :title="isSelected ? `绑定中:${data.dynExp}` : '变量绑定'"
+          :title="isSelected ? `绑定中:${data._dynExp}` : '变量绑定'"
           :type="isSelected ? 'primary' : ''"
           @click="onToggleMode()"
         >
@@ -29,7 +29,7 @@
     </a-tabs>
     <a-input
       v-if="isSelected"
-      v-model:value="data.dynExp"
+      v-model:value="data._dynExp"
       style="width: calc(100% - 35px)"
       prefix="{"
       suffix="}"
@@ -37,7 +37,7 @@
     </a-input>
     <a-button
       v-if="isSelected"
-      :title="isSelected ? `绑定中:${data.dynExp}` : '变量绑定'"
+      :title="isSelected ? `绑定中:${data._dynExp}` : '变量绑定'"
       :type="isSelected ? 'primary' : ''"
       @click="onToggleMode()"
     >
@@ -51,14 +51,15 @@
 <script lang="ts" setup>
 import { reactive, toRefs, ref, computed } from 'vue'
 interface DataProps {
-  staticValue: Record<string, any>[]
-  mode: 'static' | 'dynamic'
-  dynExp: string
+  _value: Record<string, any>[]
+  _mode: 'static' | 'dynamic'
+  _dynExp: string
 }
 interface Props {
   title: string
   closable: boolean
 }
+
 const props = withDefaults(defineProps<Props>(), {
   title: '标题',
   closable: true
@@ -66,33 +67,38 @@ const props = withDefaults(defineProps<Props>(), {
 const { title, closable } = toRefs(props)
 const activeKey = ref(0)
 const data = defineModel<DataProps>('data', {
-  required: true
+  required: true,
+  default: {
+    _value: [],
+    _mode: 'static',
+    _dynExp: ''
+  }
 })
 const isSelected = computed(() => {
-  return data.value.mode === 'dynamic'
+  return data.value._mode === 'dynamic'
 })
 const onToggleMode = () => {
-  data.value.mode = data.value.mode === 'dynamic' ? 'static' : 'dynamic'
+  data.value._mode = data.value._mode === 'dynamic' ? 'static' : 'dynamic'
 }
 const newTabIndex = ref(0)
 const add = () => {
   activeKey.value = ++newTabIndex.value
-  data.value.staticValue.push({})
+  data.value._value.push({})
 }
 
 const remove = (targetKey: number) => {
   let lastIndex = 0
-  data.value.staticValue.forEach((pane, i) => {
+  data.value._value.forEach((pane, i) => {
     if (pane.key === targetKey) {
       lastIndex = i - 1
     }
   })
-  data.value.staticValue = data.value.staticValue.filter((pane) => pane.key !== targetKey)
-  if (data.value.staticValue.length && activeKey.value === targetKey) {
+  data.value._value = data.value._value.filter((pane) => pane.key !== targetKey)
+  if (data.value._value.length && activeKey.value === targetKey) {
     if (lastIndex >= 0) {
-      activeKey.value = data.value.staticValue[lastIndex].key
+      activeKey.value = data.value._value[lastIndex].key
     } else {
-      activeKey.value = data.value.staticValue[0].key
+      activeKey.value = data.value._value[0].key
     }
   }
 }

@@ -3,7 +3,7 @@ export enum DyMode {
     dynamic
 }
 export interface DynamicConfigData{
-    staticValue:string|number|boolean
-    mode:keyof typeof DyMode
-    dynExp:string
+    _value:string|number|boolean
+    _mode:keyof typeof DyMode
+    _dynExp:string
 }

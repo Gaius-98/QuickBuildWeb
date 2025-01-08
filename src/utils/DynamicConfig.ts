@@ -8,9 +8,9 @@ import type { DynamicConfigData } from '@/model';
  * #TODO 动态数据结构设计不合理，应该参考ref通过特定函数包装，按照规则直接引用，而不是还包含特定的结构
   同时确保按照上述调整后，后端结构能保存对应的结构，保存不了的话，将结构调整为现在的结构：
     {
-        staticValue: any;
-        mode: 'static' | 'dynamic';
-        dynExp: string;
+        _value: any;
+        _mode: 'static' | 'dynamic';
+        _dynExp: string;
     }
  */
 
@@ -31,9 +31,9 @@ export class DynamicConfig {
      * @returns 解析后的值，可以是静态值或动态值。
      */
     getValue(data: DynamicConfigData): any {
-        const { staticValue, mode, dynExp } = data;
-        if (mode === 'static') return staticValue;
-        return this.resolveDynamicValue(dynExp);
+        const { _value, _mode, _dynExp } = data;
+        if (_mode === 'static') return _value;
+        return this.resolveDynamicValue(_dynExp);
     }
 
     /**
@@ -58,9 +58,8 @@ export class DynamicConfig {
      */
     isDynamicConfigData(obj: any): obj is DynamicConfigData {
         return typeof obj === 'object' && obj !== null &&
-            ['string','number','boolean'].includes(typeof obj.staticValue) &&
-            ['static', 'dynamic'].includes(obj.mode) &&
-            typeof obj.dynExp === 'string';
+            ['string','number','boolean'].includes(typeof obj._value) &&
+            ['static', 'dynamic'].includes(obj._mode);
     }
 
     /**

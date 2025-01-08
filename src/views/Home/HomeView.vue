@@ -10,6 +10,9 @@
     <a-form-item label="单选框">
       <config-radio v-model:data="data.radio" :options="iconOptions" :icon="true"></config-radio>
     </a-form-item>
+    <a-form-item label="数组">
+      <config-array v-model:data="data.arr" title="数组" closable></config-array>
+    </a-form-item>
   </a-form>
   <a-button @click="onGetConfig">配置项</a-button>
   <a-button @click="onGetData">数据</a-button>
@@ -38,26 +41,37 @@ import ConfigInput from '@/components/LowCodeConfig/ConfigInput/ConfigInput.vue'
 import ConfigSelect from '@/components/LowCodeConfig/ConfigSelect/ConfigSelect.vue'
 import ConfigRadio from '@/components/LowCodeConfig/ConfigRadio/ConfigRadio.vue'
 import { DynamicLoader } from '@/utils/DynamicLoader'
+import ConfigArray from '@/components/LowCodeConfig/ConfigArray/ConfigArray.vue'
 import type { LibItem, LibTree } from '@/model'
 const data = ref<Record<string, DynamicConfigData | any>>({
   input: {
-    staticValue: '',
-    mode: 'static',
-    dynExp: ''
+    _value: '',
+    _mode: 'static',
+    _dynExp: ''
   },
   select: {
-    staticValue: '',
-    mode: 'static',
-    dynExp: ''
+    _value: '',
+    _mode: 'static',
+    _dynExp: ''
   },
   test: '123',
-  radio: {}
+  radio: {},
+  arr: {
+    _value: [
+      {
+        title: '测试'
+      }
+    ],
+    _mode: 'static',
+    _dynExp: ''
+  }
 })
 const state = ref({
   string: '配置表单',
   arr: [1, 2, 3, 4],
   number: 125654
 })
+console.log(state)
 const options = ref([
   {
     label: '1',
@@ -87,6 +101,7 @@ const onGetConfig = () => {
 }
 const onGetData = () => {
   const dc = new DynamicConfig(state.value)
+  console.log(dc.processObject(data.value))
 }
 const text = ref('测试')
 const componentInfo = ref({

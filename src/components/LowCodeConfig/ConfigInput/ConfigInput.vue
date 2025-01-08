@@ -1,7 +1,7 @@
 <template>
   <a-input-group :size="size" :compact="compact">
     <a-input
-      :value="isSelected ? data.dynExp : data.staticValue"
+      :value="isSelected ? data._dynExp : data._value"
       @change="onChangeValue"
       style="width: calc(100% - 35px)"
       :prefix="isSelected ? '{' : ''"
@@ -10,7 +10,7 @@
     >
     </a-input>
     <a-button
-      :title="isSelected ? `绑定中:${data.dynExp}` : '变量绑定'"
+      :title="isSelected ? `绑定中:${data._dynExp}` : '变量绑定'"
       :type="isSelected ? 'primary' : ''"
       @click="onToggleMode()"
     >
@@ -28,12 +28,17 @@ interface Props {
   size: 'large' | 'default' | 'small'
 }
 interface DataProps {
-  staticValue: string
-  mode: 'static' | 'dynamic'
-  dynExp: string
+  _value: string
+  _mode: 'static' | 'dynamic'
+  _dynExp: string
 }
 const data = defineModel<DataProps>('data', {
-  required: true
+  required: true,
+  default: {
+    _value: '',
+    _mode: 'static',
+    _dynExp: ''
+  }
 })
 const props = withDefaults(defineProps<Props>(), {
   size: 'default',
@@ -41,16 +46,16 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const { size, compact } = toRefs(props)
 const isSelected = computed(() => {
-  return data.value.mode === 'dynamic'
+  return data.value._mode === 'dynamic'
 })
 const onToggleMode = () => {
-  data.value.mode = data.value.mode === 'dynamic' ? 'static' : 'dynamic'
+  data.value._mode = data.value._mode === 'dynamic' ? 'static' : 'dynamic'
 }
 const onChangeValue = (e: InputEvent) => {
-  if (data.value.mode === 'dynamic') {
-    data.value.dynExp = (e.target as HTMLInputElement).value
+  if (data.value._mode === 'dynamic') {
+    data.value._dynExp = (e.target as HTMLInputElement).value
   } else {
-    data.value.staticValue = (e.target as HTMLInputElement).value
+    data.value._value = (e.target as HTMLInputElement).value
   }
 }
 </script>
