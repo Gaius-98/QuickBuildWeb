@@ -19,6 +19,5 @@ app.use(registerSFEl, {
   'color-picker': defineAsyncComponent(() => import('@/components/ColorPicker.vue')),
   'image-picker': defineAsyncComponent(() => import('@/components/ImagePicker.vue'))
 })
-
 app.mount('#app')
 uninstallPreLoad()
