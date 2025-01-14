@@ -47,6 +47,10 @@ export default defineConfig({
   build:{
     minify:'esbuild',
     rollupOptions:{
+      input:{
+        main:'index.html',
+        standalone:'./standalone/standalone.html'
+      },
         output: {
           manualChunks(name) {
             if (name.includes("node_modules")) {
