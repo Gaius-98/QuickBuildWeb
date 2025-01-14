@@ -1,5 +1,5 @@
 <template>
-  <a-image style="width: 100%; height: 100%" :src="attrs.src" :style="style" />
+  <a-image class="qb-image" style="width: 100%; height: 100%" :src="attrs.src" :style="style" />
 </template>
 
 <script lang="ts" setup>
@@ -16,4 +16,9 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const { attrs, style } = toRefs(props)
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.qb-image {
+  width: 100%;
+  height: 100%;
+}
+</style>

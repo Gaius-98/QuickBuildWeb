@@ -23,6 +23,10 @@ const props = withDefaults(defineProps<Props>(), {
 const { attrs, preview } = toRefs(props)
 </script>
 <style scoped lang="scss">
+.qb-iframe {
+  width: 100%;
+  height: 100%;
+}
 .no-effect {
   pointer-events: none;
 }
