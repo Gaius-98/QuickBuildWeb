@@ -173,9 +173,9 @@ const routes = [
           props: (route:RouteLocationNormalized) => route.query
         },
         {
-          path:'flow',
-          name:'flow',
-          component:()=>import('@/views/Flow/FlowView.vue'),
+          path:'dashboard',
+          name:'dashboard',
+          component:()=>import('@/views/LowCode/Dashboard/DashboardDesign/DashboardDesign.vue'),
           props: (route:RouteLocationNormalized) => route.query
         }
       ]

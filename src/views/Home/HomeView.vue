@@ -105,7 +105,6 @@ const iconOptions = ref([
 ])
 const showBtn = ref(false)
 const onGetConfig = () => {
-  console.log(data.value)
   showBtn.value = true
 }
 const onGetData = () => {
