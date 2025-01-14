@@ -1,21 +1,22 @@
 <template>
   <a-form :model="data">
     <template v-for="(config, field) in schema" :key="field">
-      <a-form-item :label="config.label" :name="field">
-        <config-form
-          v-if="config.type === 'object'"
-          :schema="(config as ConfigSchemaObject).properties"
-          :data="data[field]"
-        >
-        </config-form>
+      <a-form-item :label="config.label" :name="field" v-if="config.type !== 'object'">
         <config-array
-          v-else-if="config.type === 'array'"
+          v-if="config.type === 'array'"
           :schema="(config as ConfigSchemaArray).items"
           :data="data[field]"
         >
         </config-array>
         <component :is="getComponent(config.type)" v-model:data="data[field]" v-else> </component>
       </a-form-item>
+      <config-object
+        v-if="config.type === 'object'"
+        :schema="(config as ConfigSchemaObject).properties"
+        :data="data[field]"
+        :title="config.label"
+      >
+      </config-object>
     </template>
   </a-form>
 </template>
@@ -29,6 +30,7 @@ import ConfigInput from '../ConfigInput/ConfigInput.vue'
 import ConfigRadio from '../ConfigRadio/ConfigRadio.vue'
 import ConfigSelect from '../ConfigSelect/ConfigSelect.vue'
 import ConfigSwitch from '../ConfigSwitch/ConfigSwitch.vue'
+import ConfigObject from '../ConfigObject/ConfigObject.vue'
 
 interface Props {
   schema: ConfigSchema

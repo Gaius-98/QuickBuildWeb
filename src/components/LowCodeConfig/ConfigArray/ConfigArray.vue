@@ -5,6 +5,7 @@
       type="editable-card"
       @edit="onEdit"
       class="config-array-tab"
+      size="small"
     >
       <a-tab-pane
         v-for="(pane, idx) in data"
