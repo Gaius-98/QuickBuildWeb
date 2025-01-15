@@ -3,22 +3,24 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, toRefs, ref, onMounted, watch } from 'vue'
+import { reactive, toRefs, ref, toRaw, onMounted, watch } from 'vue'
 import { init } from 'echarts'
 import type { EChartsType } from 'echarts'
+import { cloneDeep } from 'lodash-es'
 interface Props {
   attrs: {
     dataset: string
     dimension: string[]
     target: string[]
   }
-  style: Record<string, any>
+  styleConfig: Record<string, any>
 }
 const props = withDefaults(defineProps<Props>(), {
   attrs: () => ({ dataset: '', dimension: [], target: [] }),
-  style: () => ({})
+  styleConfig: () => ({})
 })
-const { attrs, style } = props
+const { attrs, styleConfig } = props
+
 const loading = ref(true)
 const QBChart = ref()
 let evChartInstance: EChartsType
@@ -27,15 +29,36 @@ const lastDataset = ref('')
 const chartData = ref()
 const getData = async () => {
   lastDataset.value = attrs.dataset
-  chartData.value = []
+  chartData.value = [
+    {
+      title: 'title1',
+      value: 100
+    },
+    {
+      title: 'title2',
+      value: 200
+    },
+    {
+      title: 'title3',
+      value: 300
+    }
+  ]
 }
 const transformOption = () => {
   const { dimension, target } = attrs
+  const options = toRaw(styleConfig.option)
+  const series = toRaw(styleConfig.series)
+  console.log(styleConfig)
+  const newSeries: any = []
+  target.forEach((item) => {
+    newSeries.push(cloneDeep(series))
+  })
+  options.series = newSeries
   return {
-    ...style.value,
+    ...options,
     dataset: {
-      source: chartData.value,
-      dimension: [...dimension, ...target]
+      source: toRaw(chartData.value),
+      dimensions: [...dimension, ...target]
     }
   }
 }
@@ -78,7 +101,7 @@ onMounted(() => {
 })
 
 watch(
-  () => [props.attrs, props.style],
+  () => [props.attrs, props.styleConfig],
   () => {
     initEchart()
   },

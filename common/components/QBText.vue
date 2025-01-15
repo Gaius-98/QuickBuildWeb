@@ -1,5 +1,5 @@
 <template>
-  <div class="qb-text" :style="style">{{ attrs.text }}</div>
+  <div class="qb-text" :style="styleConfig">{{ attrs.text }}</div>
 </template>
 
 <script lang="ts" setup>
@@ -8,11 +8,11 @@ interface Props {
   attrs: {
     text: string
   }
-  style: Record<string, any>
+  styleConfig: Record<string, any>
 }
 const props = withDefaults(defineProps<Props>(), {
   attrs: () => ({ text: '' }),
-  style: () => ({})
+  styleConfig: () => ({})
 })
 const { attrs } = toRefs(props)
 </script>

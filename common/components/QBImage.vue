@@ -1,5 +1,5 @@
 <template>
-  <a-image class="qb-image" style="width: 100%; height: 100%" :src="attrs.src" :style="style" />
+  <img class="qb-image" style="width: 100%; height: 100%" :src="attrs.src" :style="styleConfig" />
 </template>
 
 <script lang="ts" setup>
@@ -8,13 +8,13 @@ interface Props {
   attrs: {
     src: string
   }
-  style: Record<string, any>
+  styleConfig: Record<string, any>
 }
 const props = withDefaults(defineProps<Props>(), {
   attrs: () => ({ src: '' }),
-  style: () => ({})
+  styleConfig: () => ({})
 })
-const { attrs, style } = toRefs(props)
+const { attrs, styleConfig } = toRefs(props)
 </script>
 <style scoped lang="scss">
 .qb-image {
