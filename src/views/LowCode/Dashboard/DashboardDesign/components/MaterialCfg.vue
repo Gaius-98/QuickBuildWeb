@@ -22,7 +22,14 @@ window.addEventListener('message', (e) => {
     //@ts-ignore
     rawData.value = e.data.data
     //@ts-ignore
-    configSchema.value = compCfgSchema[e.data.data.name]
+    if (typeof compCfgSchema[e.data.data.component] == 'function') {
+      //@ts-ignore
+      configSchema.value = compCfgSchema[e.data.data.component]([])
+    } else {
+      //@ts-ignore
+      configSchema.value = compCfgSchema[e.data.data.component]
+    }
+
     data.value = e.data.data.props
   }
 })
