@@ -53,8 +53,8 @@ dependencies:
     specifier: ^1.6.8
     version: 1.6.8
   drag-grid-layout-v3:
-    specifier: ^0.0.6
-    version: 0.0.6(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6)
+    specifier: ^0.0.9
+    version: 0.0.9(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6)
   echarts:
     specifier: ^5.5.1
     version: 5.5.1
@@ -201,7 +201,6 @@ packages:
   /@babel/helper-string-parser@7.25.9:
     resolution: {integrity: sha512-4A/SCr/2KLd5jrtOMFzaKjVtAei3+2r/NChoBNoZ3EyP/+GlhoaEGoWOZUmFmoITP7zOJyHIMm+DYRd8o3PvHA==}
     engines: {node: '>=6.9.0'}
-    dev: false
 
   /@babel/helper-validator-identifier@7.22.20:
     resolution: {integrity: sha512-Y4OZ+ytlatR8AI+8KZfKuL5urKp7qey08ha31L8b3BwewJAoJamTzyvxPR/5D+KkdJCGPq/+8TukHBlY10FX9A==}
@@ -210,7 +209,6 @@ packages:
   /@babel/helper-validator-identifier@7.25.9:
     resolution: {integrity: sha512-Ed61U6XJc3CVRfkERJWDz4dJwKe7iLmmJsbOGu9wSloNSFttHV0I8g6UAgb7qnK5ly5bGLPd4oXZlxCdANBOWQ==}
     engines: {node: '>=6.9.0'}
-    dev: false
 
   /@babel/highlight@7.24.2:
     resolution: {integrity: sha512-Yac1ao4flkTxTteCDZLEvdxg2fZfz1v8M4QpaGypq/WPDqg3ijHYbDfs+LG5hvzSoqaSZ9/Z9lKSP3CjZjv+pA==}
@@ -235,7 +233,6 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.26.5
-    dev: false
 
   /@babel/runtime@7.24.4:
     resolution: {integrity: sha512-dkxf7+hn8mFBwKjs9bvBlArzLVxVbS8usaPUDd5p2a9JCL9tB8OaOVN1isD4+Xyk4ns89/xeOmbQvgdK7IIVdA==}
@@ -258,7 +255,6 @@ packages:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
-    dev: false
 
   /@codemirror/autocomplete@6.16.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1):
     resolution: {integrity: sha512-P/LeCTtZHRTCU4xQsa89vSKWecYv1ZqwzOd5topheGRf+qtacFgBeIMQi3eL8Kt/BUNvxUWkx+5qP2jlGoARrg==}
@@ -1625,11 +1621,11 @@ packages:
   /@vue/compiler-core@3.4.31:
     resolution: {integrity: sha512-skOiodXWTV3DxfDhB4rOf3OGalpITLlgCeOwb+Y9GJpfQ8ErigdBUHomBzvG78JoVE8MJoQsb+qhZiHfKeNeEg==}
     dependencies:
-      '@babel/parser': 7.24.8
+      '@babel/parser': 7.26.5
       '@vue/shared': 3.4.31
       entities: 4.5.0
       estree-walker: 2.0.2
-      source-map-js: 1.2.0
+      source-map-js: 1.2.1
 
   /@vue/compiler-core@3.5.13:
     resolution: {integrity: sha512-oOdAkwqUfW1WqpwSYJce06wvt6HljgY3fGeM9NcVA1HaYOij3mZG9Rkysn0OHuyUAGMbEbARIpsG+LPVlBJ5/Q==}
@@ -1676,15 +1672,15 @@ packages:
   /@vue/compiler-sfc@3.4.31:
     resolution: {integrity: sha512-einJxqEw8IIJxzmnxmJBuK2usI+lJonl53foq+9etB2HAzlPjAS/wa7r0uUpXw5ByX3/0uswVSrjNb17vJm1kQ==}
     dependencies:
-      '@babel/parser': 7.24.8
+      '@babel/parser': 7.26.5
       '@vue/compiler-core': 3.4.31
       '@vue/compiler-dom': 3.4.31
       '@vue/compiler-ssr': 3.4.31
       '@vue/shared': 3.4.31
       estree-walker: 2.0.2
-      magic-string: 0.30.10
+      magic-string: 0.30.17
       postcss: 8.4.38
-      source-map-js: 1.2.0
+      source-map-js: 1.2.1
     dev: false
 
   /@vue/compiler-sfc@3.5.13:
@@ -2507,8 +2503,8 @@ packages:
       is-obj: 2.0.0
     dev: false
 
-  /drag-grid-layout-v3@0.0.6(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6):
-    resolution: {integrity: sha512-U0PutjTbqLwxoxk0jxNr5xIeNc88Tzg5kbL8quNZs8SN3jJtd3a3m9dF/L0O2VYCI18ZSSxfzqDtefZBkWmaIA==}
+  /drag-grid-layout-v3@0.0.9(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6):
+    resolution: {integrity: sha512-/2v4mBv0ZMt2uQnxrU0C9ZD3C+OKCPvTjONEO2o3/tBqYCdYa7SLyIbh4P4N2sS7k9jf5T6yUEWn8FsGbpx7Vg==}
     dependencies:
       sass: 1.83.1
       vite-plugin-dts: 4.5.0(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6)
@@ -3967,7 +3963,6 @@ packages:
   /source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
-    dev: false
 
   /source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}

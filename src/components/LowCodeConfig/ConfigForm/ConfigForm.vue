@@ -45,10 +45,14 @@ const handleDataValue = () => {
   Object.keys(schema.value).forEach((key) => {
     if (!data.value[key]) {
       data.value[key] = getInitData(schema.value[key].type)
+    }else{
+      if(typeof data.value[key] !== 'object'){
+        data.value[key] = getInitData(schema.value[key].type,data.value[key])
+      }
     }
   })
 }
-const getInitData = (type: string) => {
+const getInitData = (type: string,defaultData?:any) => {
   switch (type) {
     case 'array':
       return []
@@ -58,19 +62,19 @@ const getInitData = (type: string) => {
     case 'select':
     case 'radio':
       return {
-        _value: '',
+        _value: defaultData||'',
         _mode: 'static',
         _dynExp: ''
       }
     case 'switch':
       return {
-        _value: false,
+        _value:  typeof defaultData == 'boolean' ? defaultData: false,
         _mode: 'static',
         _dynExp: ''
       }
     default:
       return {
-        _value: '',
+        _value: defaultData||'',
         _mode: 'static',
         _dynExp: ''
       }

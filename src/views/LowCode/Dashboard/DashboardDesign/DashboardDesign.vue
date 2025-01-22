@@ -23,6 +23,7 @@
           height="100%"
           src="/standalone/standalone.html"
           style="border: 0"
+          class="standalone-iframe"
         ></iframe>
       </div>
       <material-cfg class="right-part"></material-cfg>
@@ -33,9 +34,7 @@
 <script lang="ts" setup>
 import MaterialArea from './components/MaterialArea.vue'
 import MaterialCfg from './components/MaterialCfg.vue'
-import { reactive, toRefs, ref, computed } from 'vue'
-import { useDgDesignStore } from '@/stores/dgDesign'
-import { storeToRefs } from 'pinia'
+import { reactive, toRefs, ref, computed, onMounted } from 'vue'
 import { useReminder } from '@/hooks'
 
 window.name = 'dg-design'
@@ -44,10 +43,6 @@ interface Props {
 }
 const props = defineProps<Props>()
 const { id } = toRefs(props)
-
-const dgStore = useDgDesignStore()
-const { dashboardData } = storeToRefs(dgStore)
-const { add, remove } = dgStore
 
 const desc = computed(() => {
   return id.value
