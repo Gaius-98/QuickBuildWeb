@@ -2,7 +2,15 @@
   <div class="container" ref="container" @dragover.prevent.stop @drop.stop="onDrop">
     <grid-layout :list="dgList" class="layout" @item:click="selectItem">
       <template #layout-item="{ item }">
-        <component :is="item.component" :attrs="item.props" :style-config="item.style"> </component>
+        <component
+          v-if="item.type && item.type === 'custom'"
+          :is="customComp[item.component]"
+          v-bind="item.props"
+          :style="item.style"
+        >
+        </component>
+        <component :is="item.component" :attrs="item.props" :style-config="item.style" v-else>
+        </component>
       </template>
     </grid-layout>
   </div>
@@ -12,6 +20,7 @@
 import { reactive, toRefs, ref, onMounted, watch } from 'vue'
 import { useDgDesignStore } from '../stores/dgDesign'
 import { storeToRefs } from 'pinia'
+import { DynamicLoader } from '@/utils/DynamicLoader'
 const COLNUM = 12
 const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
@@ -21,18 +30,44 @@ const { initDgItem, add, selectItem, updateItem } = dgStore
 const container = ref()
 const clientWidth = ref(0)
 const onDrop = (e: DragEvent) => {
-  const dgItem = initDgItem(e.dataTransfer!.getData('material'))
+  const dgType = e.dataTransfer!.getData('material-type')
+  let dgItem
+  if (dgType == 'custom') {
+    dgItem = {
+      name: e.dataTransfer!.getData('material'),
+      id: new Date().getTime().toString(),
+      label: '自定义组件',
+      icon: '',
+      type: 'custom',
+      component: e.dataTransfer!.getData('material'),
+      props: {},
+      rowStart: 1,
+      colStart: 1,
+      rowSpan: 5,
+      colSpan: 2
+    }
+  } else {
+    dgItem = initDgItem(e.dataTransfer!.getData('material'))
+  }
+
   const colStart = e.x / (clientWidth.value / COLNUM)
   const rowStart = e.y / ROWHEIGHT
   dgItem.colStart = Math.floor(colStart)
   dgItem.rowStart = Math.floor(rowStart)
   add(dgItem)
 }
-
+const customComp = ref<Record<string, any>>({})
 window.addEventListener('message', (event) => {
-  console.log(event.data)
   if (event.data.type === 'refresh') {
     updateItem(event.data.data)
+  } else if (event.data.type === 'add-custom-comp') {
+    const dyLoader = new DynamicLoader([event.data.data])
+    dyLoader.load().then((res) => {
+      Object.keys(res).forEach((compName) => {
+        customComp.value[compName] = res[compName]
+      })
+      console.log('-----------加载完成!---------')
+    })
   }
 })
 onMounted(() => {

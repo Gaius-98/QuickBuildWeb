@@ -19,4 +19,4 @@ const getChartPropsSchema = (datasetOptions:any[]) => {
         }
     }
 }
-export { getChartPropsSchema}    
+export { getChartPropsSchema }    

@@ -21,13 +21,21 @@ window.addEventListener('message', (e) => {
   if (e.data.type === 'select') {
     //@ts-ignore
     rawData.value = e.data.data
-    //@ts-ignore
-    if (typeof compCfgSchema[e.data.data.component] == 'function') {
-      //@ts-ignore
-      configSchema.value = compCfgSchema[e.data.data.component]([])
+    if (rawData.value.type === 'custom') {
+      if (localStorage.getItem('qb-custom-data')) {
+        const customSchema = JSON.parse(localStorage.getItem('qb-custom-data')!)
+        //@ts-ignore
+        configSchema.value = JSON.parse(customSchema[rawData.value.component])
+      }
     } else {
       //@ts-ignore
-      configSchema.value = compCfgSchema[e.data.data.component]
+      if (typeof compCfgSchema[rawData.value.component] == 'function') {
+        //@ts-ignore
+        configSchema.value = compCfgSchema[rawData.value.component]([])
+      } else {
+        //@ts-ignore
+        configSchema.value = compCfgSchema[rawData.value.component]
+      }
     }
 
     data.value = e.data.data.props

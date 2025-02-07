@@ -9,7 +9,10 @@
         <a-input :bordered="false" class="form-name"></a-input>
       </template>
       <template #extra>
+        <a-space> </a-space>
+        <a-space> </a-space>
         <a-space>
+          <a-button type="primary">变量池</a-button>
           <a-button class="preview-btn"> 预览 </a-button>
           <a-button @click="onConfirm()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
