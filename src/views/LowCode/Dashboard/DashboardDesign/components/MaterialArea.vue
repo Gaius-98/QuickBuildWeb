@@ -102,7 +102,6 @@
                       </a-form-item>
                       <a-form-item
                         label="导出名称"
-                        :name="['sights', index, 'price']"
                         :rules="{
                           required: true
                         }"
