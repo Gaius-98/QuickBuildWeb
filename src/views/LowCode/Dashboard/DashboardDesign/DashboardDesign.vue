@@ -12,7 +12,7 @@
         <a-space> </a-space>
         <a-space> </a-space>
         <a-space>
-          <a-button type="primary">变量池</a-button>
+          <a-button type="primary" @click="onOpenVarPools()">变量池</a-button>
           <a-button class="preview-btn"> 预览 </a-button>
           <a-button @click="onConfirm()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
@@ -32,14 +32,58 @@
       <material-cfg class="right-part"></material-cfg>
     </div>
   </div>
+  <a-modal title="变量池" v-model:open="varOpen" width="800px" :footer="null" @cancel="updateVariables">
+    <a-form>
+      <div style="height:300px;overflow-y:auto">
+        <a-space
+          v-for="(variable, index) in varPools.vars"
+          :key="index"
+          style="display: flex; margin-bottom: 8px"
+          align="baseline"
+        >
+          <a-form-item
+            label="变量名"
+            :required="true"
+          >
+            <a-input v-model:value="variable.name" />
+          </a-form-item>
+          <a-form-item
+            label="变量类型"
+            :required="true"
+          >
+            <a-select style="width:150px" v-model:value="variable.type" :options="typeList"></a-select>
+          </a-form-item>
+          <a-form-item
+            label="默认值"
+            :required="true"
+          >
+            <a-input v-model:value="variable.defaultValue"  />
+          </a-form-item>
+          <MinusCircleOutlined @click="onRemoveVar(variable)" />
+        </a-space>
+      </div> 
+      <a-form-item>
+        <a-button type="dashed" block @click="onAddVar">
+          <PlusOutlined />
+          添加变量
+        </a-button>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
 import MaterialArea from './components/MaterialArea.vue'
 import MaterialCfg from './components/MaterialCfg.vue'
-import { reactive, toRefs, ref, computed, onMounted } from 'vue'
+import { reactive, toRefs, ref, computed, onMounted,toRaw } from 'vue'
 import { useReminder } from '@/hooks'
-
+import { useDashboardDesignStore } from '@/stores/dashboardDesign'
+import { storeToRefs } from 'pinia'
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons-vue'
+const dgStore = useDashboardDesignStore()
+const { varPools } = storeToRefs(dgStore)
+let contentWindow:Window
+const { getContentWindow } = dgStore
 window.name = 'dg-design'
 interface Props {
   id?: string
@@ -50,8 +94,53 @@ const { id } = toRefs(props)
 const desc = computed(() => {
   return id.value
 })
-
+const varOpen = ref(false)
+const onOpenVarPools = () =>{
+  varOpen.value = true
+}
 const onConfirm = () => {}
+onMounted(()=>{
+  contentWindow = getContentWindow()
+})
+const updateVariables = () =>{
+  contentWindow.postMessage({type:'refresh-var',data:toRaw(varPools.value)})
+}
+const onAddVar = () =>{
+  varPools.value.vars.push({
+    name:'',
+    type:'',
+    defaultValue:''
+  })
+}
+const typeList = ref([
+  {
+    label:'字符串',
+    value:'string'
+  },{
+    label:'数字',
+    value:'number',
+  },{
+    label:'布尔',
+    value:'boolean'
+  },
+  {
+    label:'数组',
+    value:'array'
+  },{
+    label:'对象',
+    value:'object'
+  }
+])
+const onRemoveVar = (variable:{
+  name:string;
+  type:string;
+  defaultValue:any
+}) =>{
+  const idx = varPools.value.vars.findIndex((e)=>(e.name === variable.name))
+  if(idx != -1){
+    varPools.value.vars.splice(idx,1)
+  }
+}
 </script>
 <style scoped lang="scss">
 .dg-design {

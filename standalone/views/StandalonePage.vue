@@ -5,11 +5,11 @@
         <component
           v-if="item.type && item.type === 'custom'"
           :is="customComp[item.component]"
-          v-bind="item.props"
+          v-bind="transformProps(item.props)"
           :style="item.style"
         >
         </component>
-        <component :is="item.component" :attrs="item.props" :style-config="item.style" v-else>
+        <component :is="item.component" :attrs="transformProps(item.props)" :style-config="item.style" v-else>
         </component>
       </template>
     </grid-layout>
@@ -25,7 +25,7 @@ const COLNUM = 12
 const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
 const { dgList } = storeToRefs(dgStore)
-const { initDgItem, add, selectItem, updateItem } = dgStore
+const { initDgItem, add, selectItem, updateItem,transformProps,setVarPools } = dgStore
 
 const container = ref()
 const clientWidth = ref(0)
@@ -68,6 +68,8 @@ window.addEventListener('message', (event) => {
       })
       console.log('-----------加载完成!---------')
     })
+  }else if(event.data.type === 'refresh-var'){
+    setVarPools(event.data.data)
   }
 })
 onMounted(() => {

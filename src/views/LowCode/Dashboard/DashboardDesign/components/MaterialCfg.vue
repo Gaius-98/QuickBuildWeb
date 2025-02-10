@@ -3,7 +3,7 @@
     <config-form class="material-cfg-contain" :key="rawData.id" :data="data" :schema="configSchema">
     </config-form>
     <div class="material-cfg-btn">
-      <a-button @click="onConfirm">刷新</a-button>
+      <a-button @click="onRefresh">刷新</a-button>
     </div>
   </div>
 </template>
@@ -12,15 +12,15 @@
 import ConfigForm from '@/components/LowCodeConfig/ConfigForm/ConfigForm.vue'
 import { reactive, toRefs, ref, watch, onMounted, toRaw } from 'vue'
 import compCfgSchema from '@/assets/components/compCfgSchema'
-import { DynamicConfig } from '@/utils/DynamicConfig'
 import { useDashboardDesignStore } from '@/stores/dashboardDesign'
 import { storeToRefs } from 'pinia'
 const dgStore = useDashboardDesignStore()
 const { customCompSchema } = storeToRefs(dgStore)
+const { getContentWindow } = dgStore
 const data = ref<any>({})
 const rawData = ref<any>({})
 const configSchema = ref({})
-const dc = new DynamicConfig()
+
 window.addEventListener('message', (e) => {
   if (e.data.type === 'select') {
     //@ts-ignore
@@ -44,7 +44,7 @@ window.addEventListener('message', (e) => {
     data.value = e.data.data.props
   }
 })
-let contentWindow: null | Window = null
+ let contentWindow: null | Window = null
 const refreshData = (data: any) => {
   if (contentWindow) {
     contentWindow.postMessage({ type: 'refresh', data })
@@ -52,14 +52,11 @@ const refreshData = (data: any) => {
     throw new Error('contentWindow is null')
   }
 }
-const onConfirm = () => {
-  rawData.value['props'] = dc.processObject(data.value)
-  localStorage.setItem(`dg-raw-config-${rawData.value.id}`, JSON.stringify(data.value))
-  rawData.value.props = dc.processObject(data.value)
+const onRefresh = () => {
   refreshData(toRaw(rawData.value))
 }
 onMounted(() => {
-  contentWindow = (document.querySelector('.standalone-iframe') as HTMLIFrameElement).contentWindow
+  contentWindow = getContentWindow()
 })
 </script>
 <style scoped lang="scss">

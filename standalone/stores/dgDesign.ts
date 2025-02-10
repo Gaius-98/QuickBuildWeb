@@ -2,7 +2,7 @@ import { defineStore } from "pinia"
 import { ref,toRaw } from "vue"
 import componentsSchema from "@/assets/components/componentsSchema"
 import { cloneDeep } from "lodash-es"
-
+import { DynamicConfig } from "@/utils/DynamicConfig"
 export const useDgDesignStore = defineStore('dgDesign', () => { 
 
     const dashboardData = ref({})
@@ -38,6 +38,68 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          dgList.value.splice(idx,1,item)
        }
     }
+    const transformProps = (props:any) =>{
+      const dc = new DynamicConfig(AssemblingVariables.value)
+      return dc.processObject(props)
+    }
+    const varPools = ref<{
+    datasets:string[];
+    vars:{
+        name:string;
+        type:string;
+        defaultValue:any
+    }[]
+   }>({
+        datasets:[],
+        vars:[
+            {
+                name:'test',
+                type:'string',
+                defaultValue:'这是一段测试文本'
+            }
+        ]
+   })
+   const setVarPools = (data:any) =>{
+    varPools.value = data
+    updateVariables()
+   }
+   const AssemblingVariables = ref({})
+ 
+   const transformVar = (rawData:{
+        name:string;
+        type:string;
+        defaultValue:any
+    }[]) =>{
+        const transformData:Record<string,any> = {}
+        const getValue = (type:string,defaultValue:any) =>{
+            switch(type){
+                case 'string':
+                    return defaultValue;
+                case 'number':
+                    return Number(defaultValue);
+                case 'boolean':
+                    return Boolean(defaultValue);
+                case 'array':
+                case 'object':    
+                    return JSON.parse(defaultValue);
+                default:
+                    return defaultValue          
+            }
+        }
+        rawData.reduce((p:Record<string,any>,c:{
+            name:string;
+            type:string;
+            defaultValue:any
+        })=>{
+            p[c.name] = getValue(c.type,c.defaultValue)
+            return p
+        },transformData)
+        return transformData
+   }
+   const updateVariables = () =>{
+     AssemblingVariables.value = transformVar(varPools.value.vars)
+    
+   }
    return {
          dashboardData,
          add,
@@ -46,6 +108,9 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          initDgItem,
          selectItem,
          curComp,
-         updateItem  
+         updateItem,
+         transformProps,
+         updateVariables,
+         setVarPools  
    }
 })

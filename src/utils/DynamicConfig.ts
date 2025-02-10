@@ -82,7 +82,6 @@ export class DynamicConfig {
             const result: any = {};
             for (const key in obj) {
                 const value = obj[key];
-                console.log(value)
                 if (this.isDynamicConfigData(value)) {
                     result[key] = this.getValue(value);
                 } else if (typeof value === 'object' && value !== null) {
