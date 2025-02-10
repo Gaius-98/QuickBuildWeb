@@ -180,11 +180,11 @@ const defaultCompInfo = ref<any>({
   ],
   children: [
     {
-      componentName: 'ElEmpty',
-      exportName: 'ElEmpty',
+      componentName: 'ElButton',
+      exportName: 'ElButton',
       id: '1',
-      schema:
-        '{\n    "description": {\n        "type": "input",\n        "label": "描述内容"\n    }\n}'
+      schema: `{\n    "type": {\n        "type": "input",\n        "label": "按钮类型"\n    }\n
+      }`
     }
   ]
 })
