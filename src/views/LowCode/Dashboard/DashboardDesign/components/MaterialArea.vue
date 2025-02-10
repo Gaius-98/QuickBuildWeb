@@ -146,6 +146,11 @@ import type { LibItem, LibTree } from '@/model'
 import componentsSchema from '@/assets/components/componentsSchema'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons-vue'
 import { cloneDeep } from 'lodash-es'
+import { useDashboardDesignStore } from '@/stores/dashboardDesign'
+import { storeToRefs } from 'pinia'
+const dgStore = useDashboardDesignStore()
+const { customModules, customComps } = storeToRefs(dgStore)
+const { onAddModules } = dgStore
 const materials = ref<{
   internalComp: any[]
   customComp: any[]
@@ -175,10 +180,11 @@ const defaultCompInfo = ref<any>({
   ],
   children: [
     {
-      componentName: 'ElButton',
-      exportName: 'ElButton',
+      componentName: 'ElEmpty',
+      exportName: 'ElEmpty',
       id: '1',
-      schema: '{\n    "type": {\n        "type": "input",\n        "label": "按钮类型"\n    }\n}'
+      schema:
+        '{\n    "description": {\n        "type": "input",\n        "label": "描述内容"\n    }\n}'
     }
   ]
 })
@@ -187,18 +193,8 @@ const onCancel = () => {
   open.value = false
 }
 const onConfirm = () => {
-  const comps = customCompInfo.value.children.map((e: any) => ({
-    label: e.componentName,
-    value: e.exportName
-  }))
-  materials.value.customComp = materials.value.customComp.concat(comps)
-  const compMap = localStorage.getItem('qb-custom-data')
-    ? JSON.parse(localStorage.getItem('qb-custom-data')!)
-    : {}
-  customCompInfo.value.children.forEach((e: any) => {
-    compMap[e.componentName] = e.schema
-  })
-  localStorage.setItem('qb-custom-data', JSON.stringify(compMap))
+  onAddModules(customCompInfo.value)
+  materials.value.customComp = materials.value.customComp.concat(customComps.value)
   contentWindow?.postMessage({ type: 'add-custom-comp', data: toRaw(customCompInfo.value) })
   onCancel()
 }

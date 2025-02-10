@@ -13,6 +13,10 @@ import ConfigForm from '@/components/LowCodeConfig/ConfigForm/ConfigForm.vue'
 import { reactive, toRefs, ref, watch, onMounted, toRaw } from 'vue'
 import compCfgSchema from '@/assets/components/compCfgSchema'
 import { DynamicConfig } from '@/utils/DynamicConfig'
+import { useDashboardDesignStore } from '@/stores/dashboardDesign'
+import { storeToRefs } from 'pinia'
+const dgStore = useDashboardDesignStore()
+const { customCompSchema } = storeToRefs(dgStore)
 const data = ref<any>({})
 const rawData = ref<any>({})
 const configSchema = ref({})
@@ -22,10 +26,9 @@ window.addEventListener('message', (e) => {
     //@ts-ignore
     rawData.value = e.data.data
     if (rawData.value.type === 'custom') {
-      if (localStorage.getItem('qb-custom-data')) {
-        const customSchema = JSON.parse(localStorage.getItem('qb-custom-data')!)
+      if (customCompSchema.value) {
         //@ts-ignore
-        configSchema.value = JSON.parse(customSchema[rawData.value.component])
+        configSchema.value = JSON.parse(customCompSchema.value[rawData.value.component])
       }
     } else {
       //@ts-ignore
