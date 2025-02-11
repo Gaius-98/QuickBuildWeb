@@ -10,3 +10,6 @@
  .schema-form .ant-form-item .ant-form-item-control-input {
      min-height: var(--schema-height)
  }
+ .schema-form .ant-divider-with-text {
+    margin: var(--schema-gap) 0;
+ }

@@ -33,6 +33,7 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
     }
     const updateItem = (item:any)=>{
        const { id } = item
+       console.log(item)
        const idx = dgList.value.findIndex((item) => item.id === id)
        if(idx !== -1){
          dgList.value.splice(idx,1,item)

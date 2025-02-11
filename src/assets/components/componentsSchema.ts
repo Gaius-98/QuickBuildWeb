@@ -9,6 +9,9 @@ export default [
     props: {
       text: '文本内容',
     },
+    style:{
+
+    },
     rowStart: 1,
     colStart: 1,
     rowSpan: 5,
@@ -21,6 +24,9 @@ export default [
     icon: 'icon-image1',
     props: {
       src: 'https://avatars.githubusercontent.com/u/59641156?v=4',
+    },
+    style:{
+
     },
     rowStart: 1,
     colStart: 1,
@@ -126,6 +132,9 @@ export default [
     component: 'qb-iframe',
     props: {
       src: 'https://blog.csdn.net/weixin_47030180',
+    },
+    style:{
+
     },
     rowStart: 1,
     colStart: 1,

@@ -14,7 +14,8 @@ import {
   RadioGroup,
   type RadioChangeEvent,
   Switch,
-  Textarea
+  Textarea,
+  Divider
 } from 'ant-design-vue'
 import { compileText, execFun } from './core'
 import { getDeepValue, setDeepValue } from '@/utils/tools'
@@ -154,6 +155,13 @@ const createUIControl = (
         }
       })
       break
+    case 'divider':
+      Node = h(Divider, {
+        ...component
+      },{
+        default:()=>(component?.title)
+      })
+      break  
     default:
       Node = h(Input, {
         size:ctx.size,
@@ -180,7 +188,7 @@ const createSchemaFormItem = (
   prop: SchemaProperties,
   ctx: any
 ) => {
-  const { type, label, component, rules, tooltip } = prop
+  const { type, label, component, rules, tooltip,formLayout=true } = prop
   let childrenNode
   if (component?.name) {
     const { name } = component
@@ -210,6 +218,7 @@ const createSchemaFormItem = (
     childrenNode = createUIControl(formData, key, type, ctx, component)
   }
   return (
+    !formLayout ? childrenNode :
     ctx.visibleInfo[key] &&
     h(
       FormItem,

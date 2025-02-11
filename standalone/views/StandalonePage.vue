@@ -2,15 +2,15 @@
   <div class="container" ref="container" @dragover.prevent.stop @drop.stop="onDrop">
     <grid-layout :list="dgList" class="layout" @item:click="selectItem">
       <template #layout-item="{ item }">
-        <component
-          v-if="item.type && item.type === 'custom'"
-          :is="customComp[item.component]"
-          v-bind="transformProps(item.props)"
-          :style="item.style"
-        >
-        </component>
-        <component :is="item.component" :attrs="transformProps(item.props)" :style-config="item.style" v-else>
-        </component>
+        <div class="comp-container" :style="item.style">
+          <component
+            v-if="item.type && item.type === 'custom'"
+            :is="customComp[item.component]"
+            v-bind="transformProps(item.props)"
+          >
+          </component>
+          <component :is="item.component" :attrs="transformProps(item.props)" v-else> </component>
+        </div>
       </template>
     </grid-layout>
   </div>
@@ -25,7 +25,7 @@ const COLNUM = 12
 const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
 const { dgList } = storeToRefs(dgStore)
-const { initDgItem, add, selectItem, updateItem,transformProps,setVarPools } = dgStore
+const { initDgItem, add, selectItem, updateItem, transformProps, setVarPools } = dgStore
 
 const container = ref()
 const clientWidth = ref(0)
@@ -68,7 +68,7 @@ window.addEventListener('message', (event) => {
       })
       console.log('-----------加载完成!---------')
     })
-  }else if(event.data.type === 'refresh-var'){
+  } else if (event.data.type === 'refresh-var') {
     setVarPools(event.data.data)
   }
 })
@@ -90,6 +90,12 @@ onMounted(() => {
     &:hover {
       box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     }
+  }
+  .comp-container {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 }
 </style>

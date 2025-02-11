@@ -23,13 +23,15 @@ export type SchemaControlType =
   | 'radio'
   | 'switch'
   | 'textarea'
+  | 'divider'
 export interface SchemaProperties {
-  label: string
+  label?: string
   required?: boolean
   rules?: any[] | Obj<any>
   tooltip?: string
   type: SchemaControlType
   show?: boolean | string
+  formLayout?:boolean
   component?: {
     name?: string
     dataSource?: any[]
