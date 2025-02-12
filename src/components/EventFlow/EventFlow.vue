@@ -7,7 +7,7 @@ import LogicFlow from '@logicflow/core'
 import { DndPanel, SelectionSelect, Menu } from '@logicflow/extension'
 import '@logicflow/core/lib/style/index.css'
 import '@logicflow/extension/lib/style/index.css'
-import { reactive, toRefs, ref, onMounted } from 'vue'
+import { reactive, toRefs, ref, onMounted, watch } from 'vue'
 const emits = defineEmits(['onClickEle'])
 
 const lf = ref<LogicFlow>()
@@ -69,6 +69,12 @@ onMounted(() => {
   lf.value.render(data.value)
   lf.value.on('node:click', onClickElement)
 })
+watch(
+  () => data.value,
+  () => {
+    lf.value!.render(data.value)
+  }
+)
 const updateNodeData = (data: any) => {
   lf.value?.getNodeModelById(data.id)?.setProperties({
     extraData: data.properties.extraData

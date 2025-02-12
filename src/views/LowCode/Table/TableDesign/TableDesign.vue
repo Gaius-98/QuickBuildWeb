@@ -165,8 +165,8 @@
           }"
         ></a-select>
       </a-form-item>
-      <a-form-item prop="event" label="自定义事件流" v-if="currentBtnCfg.customEvent">
-        <a-button @click="onOpenEventFlow(currentBtnCfg)"> 自定义事件流 </a-button>
+      <a-form-item prop="event" label="自定义工作流" v-if="currentBtnCfg.customEvent">
+        <a-button @click="onOpenEventFlow(currentBtnCfg)"> 自定义工作流 </a-button>
       </a-form-item>
     </a-form>
   </a-drawer>
@@ -202,10 +202,10 @@
     wrap-class-name="full-modal"
     v-model:open="eventFlowOpen"
     @ok="onSaveEventFlow"
-    @cancel="onCancelFlowMaol"
+    @cancel="onCancelFlowModal"
   >
     <template #title>
-      事件流配置
+      工作流配置
       <a-tooltip
         :overlayInnerStyle="{
           width: '600px',
@@ -285,6 +285,7 @@ import api from '../api/table'
 import { message } from 'ant-design-vue'
 import FlowView from '@/views/Flow/FlowView.vue'
 import { useReminder } from '@/hooks'
+import { cloneDeep } from 'lodash-es'
 const router = useRouter()
 const { shouldShowReminder } = useReminder('low-code-table-design')
 const current = ref(0)
@@ -779,9 +780,9 @@ const onOpenEventFlow = (data: LCTableInteractionCfg) => {
 const flowRef = ref()
 const onSaveEventFlow = () => {
   currentBtnCfg.value.eventFlow = flowRef.value.getData()
-  onCancelFlowMaol()
+  onCancelFlowModal()
 }
-const onCancelFlowMaol = () => {
+const onCancelFlowModal = () => {
   eventFlowData.value = { nodes: [], edges: [] }
   eventFlowOpen.value = false
 }

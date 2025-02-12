@@ -243,9 +243,7 @@ const headersColumns = ref<any[]>([
     type: 'input'
   }
 ])
-const onSave = () => {
-  console.log(eventFlowRef.value.getRawData())
-}
+
 const flowResult = ref('')
 const onOpenDraw = (data: any) => {
   open.value = true

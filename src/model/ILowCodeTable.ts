@@ -92,7 +92,7 @@ export interface LCTableInteractionCfg  {
   customEvent:boolean
   //内置事件
   builtInEvents:keyof typeof BuiltInEventEnum
-  //自定义事件流id
+  //自定义工作流id
   eventFlow:EventFlow
   //表单
   formId?:string
