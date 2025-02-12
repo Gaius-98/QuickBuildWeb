@@ -580,7 +580,7 @@ const onRemoveParams = (record: DatasetParamsConfig) => {
   .container {
     height: calc(100vh - 80px);
     display: flex;
-    padding: 10px 10px 0;
+    padding: 8px 10px 0;
 
     .left-part {
       width: 240px;

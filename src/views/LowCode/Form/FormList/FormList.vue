@@ -128,13 +128,6 @@ const columns = ref([
     dataIndex: 'status',
     width: 100
   },
-
-  {
-    title: '备注',
-    key: 'remark',
-    dataIndex: 'remark',
-    ellipsis: true
-  },
   {
     title: '创建时间',
     key: 'createTime',

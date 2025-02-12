@@ -62,9 +62,10 @@
           :data-source="tableData"
           :scroll="{ y: 740 }"
           :pagination="false"
-          rowKey="tableName"
+          :rowKey="(record: any) => selectKeys[0] + record.tableName"
           class="ant-table-striped"
           @expand="onExpand"
+          :key="selectKeys[0]"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key == 'action'">
