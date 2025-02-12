@@ -42,6 +42,7 @@ const onDrop = (e: DragEvent) => {
       type: 'custom',
       component: e.dataTransfer!.getData('material'),
       props: {},
+      style: {},
       rowStart: 1,
       colStart: 1,
       rowSpan: 5,
