@@ -1,0 +1,1 @@
+import{r as o,u as c,y as d,bl as l}from"./.pnpm-C-9D1c9J.js";function m(t){const s=()=>l(new Date,"YYYY-MM-DD"),r=o(!1),n=c("reminder",{}),u=()=>{const e=s(),a=n.value[t];return a===null||a!==e?(n.value[t]=e,!0):!1};return d(()=>{r.value=u()}),{shouldShowReminder:r}}export{m as u};
