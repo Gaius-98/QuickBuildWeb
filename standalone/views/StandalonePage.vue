@@ -1,6 +1,6 @@
 <template>
   <div class="container" ref="container" @dragover.prevent.stop @drop.stop="onDrop">
-    <grid-layout :list="dgList" class="layout" @item:click="selectItem">
+    <grid-layout :list="dgList" class="layout" @item:click="selectItem" @item:change="updateDgItem">
       <template #layout-item="{ item }">
         <div class="comp-container" :style="item.style">
           <component
@@ -25,7 +25,8 @@ const COLNUM = 12
 const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
 const { dgList } = storeToRefs(dgStore)
-const { initDgItem, add, selectItem, updateItem, transformProps, setVarPools } = dgStore
+const { initDgItem, add, selectItem, updateItem, transformProps, setVarPools, updateDgItem } =
+  dgStore
 
 const container = ref()
 const clientWidth = ref(0)

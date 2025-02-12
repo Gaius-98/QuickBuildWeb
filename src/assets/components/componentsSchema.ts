@@ -7,7 +7,11 @@ export default [
     icon: 'icon-text',
     component: 'qb-text',
     props: {
-      text: '文本内容',
+      text: {
+        _value:'文本内容',
+        _mode:'static',
+        _dynExp:''
+      },
     },
     style:{
 
@@ -23,7 +27,11 @@ export default [
     label: '图片',
     icon: 'icon-image1',
     props: {
-      src: 'https://avatars.githubusercontent.com/u/59641156?v=4',
+      src: {
+        _value:'https://avatars.githubusercontent.com/u/59641156?v=4',
+        _mode:'static',
+        _dynExp:''
+      },
     },
     style:{
 
@@ -131,7 +139,11 @@ export default [
     icon: 'icon-creditcard',
     component: 'qb-iframe',
     props: {
-      src: 'https://blog.csdn.net/weixin_47030180',
+      src: {
+        _value:'https://gaius-98.github.io/gaius-blog/',
+        _mode:'static',
+        _dynExp:''
+      },
     },
     style:{
 

@@ -2,11 +2,13 @@
   <div class="material-cfg">
     <a-tabs size="small">
       <a-tab-pane key="prop" tab="属性">
+        <a-empty v-if="!rawData.id"></a-empty>
         <config-form
           class="material-cfg-contain"
           :key="rawData.id"
           :data="data"
           :schema="configSchema"
+          v-else
         >
         </config-form>
       </a-tab-pane>
@@ -16,7 +18,7 @@
     </a-tabs>
 
     <div class="material-cfg-btn">
-      <a-button @click="onRefresh">刷新</a-button>
+      <a-button @click="onRefresh" :disabled="!rawData.id">刷新</a-button>
     </div>
   </div>
 </template>
@@ -50,11 +52,10 @@ const styleSchema = ref<SchemaProp>({
   properties: StyleSchema
 })
 window.addEventListener('message', (e) => {
-  if (e.data.type === 'select') {
+  if (e.data.type === 'select' || e.data.type === 'update-item') {
     //@ts-ignore
     rawData.value = e.data.data
-    console.log(rawData.value)
-    if (rawData.value.type === 'custom') {
+    if (rawData.value?.type === 'custom') {
       if (customCompSchema.value) {
         //@ts-ignore
         configSchema.value = JSON.parse(customCompSchema.value[rawData.value.component])

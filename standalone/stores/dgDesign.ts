@@ -33,11 +33,13 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
     }
     const updateItem = (item:any)=>{
        const { id } = item
-       console.log(item)
        const idx = dgList.value.findIndex((item) => item.id === id)
        if(idx !== -1){
          dgList.value.splice(idx,1,item)
        }
+    }
+    const updateDgItem = (data:any) =>{
+      window.parent.postMessage({type:'update-item',data:toRaw(data)},window.location.origin)
     }
     const transformProps = (props:any) =>{
       const dc = new DynamicConfig(AssemblingVariables.value)
@@ -112,6 +114,7 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          updateItem,
          transformProps,
          updateVariables,
-         setVarPools  
+         setVarPools,
+         updateDgItem  
    }
 })
