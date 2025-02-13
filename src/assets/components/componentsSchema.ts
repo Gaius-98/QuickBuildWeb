@@ -62,7 +62,7 @@ export default [
       }
     },
     props:{
-      dataset:'1',
+      dataset:null,
       dimension:['title'],
       target:['value']
     },  
@@ -91,7 +91,7 @@ export default [
       }
     },
     props:{
-      dataset:'1',
+      dataset:null,
       dimension:['title'],
       target:['value']
     }, 
@@ -123,7 +123,7 @@ export default [
       }
     },
     props:{
-      dataset:'1',
+      dataset:null,
       dimension:['title'],
       target:['value']
     }, 

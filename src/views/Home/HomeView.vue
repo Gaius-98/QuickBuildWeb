@@ -80,7 +80,6 @@ const state = ref({
   arr: [1, 2, 3, 4],
   number: 125654
 })
-console.log(state)
 const options = ref([
   {
     label: '1',
@@ -109,7 +108,6 @@ const onGetConfig = () => {
 }
 const onGetData = () => {
   const dc = new DynamicConfig(state.value)
-  console.log(dc.processObject(data.value))
 }
 const text = ref('测试')
 const componentInfo = ref({
@@ -209,7 +207,6 @@ const list = ref([
   }
 ])
 dLoad.load().then((res) => {
-  console.log(res)
   ElButton.value = res['ElButton']
   ElInput.value = res['ElInput']
   GridLayout.value = res['GridLayout']

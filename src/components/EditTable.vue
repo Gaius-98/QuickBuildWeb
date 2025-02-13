@@ -91,7 +91,6 @@ const onAdd = () => {
   columns.value.map((column) => {
     Reflect.set(obj, column.dataIndex, '')
   })
-  console.log(obj)
   data.value.push(obj)
 }
 const onRemove = (idx: number) => {

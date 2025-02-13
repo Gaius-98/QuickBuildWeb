@@ -3,11 +3,13 @@ import { ref,toRaw } from "vue"
 import componentsSchema from "@/assets/components/componentsSchema"
 import { cloneDeep } from "lodash-es"
 import { DynamicConfig } from "@/utils/DynamicConfig"
+import html2canvas from "html2canvas"
 export const useDgDesignStore = defineStore('dgDesign', () => { 
 
     const dashboardData = ref({})
     const dgList = ref<any[]>([])
     const curComp = ref<any>({})
+    const img = ref<string>('')
     const add = (item:any) =>{
       dgList.value.push(item)
     }
@@ -28,6 +30,7 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
       return comp
     }
     const selectItem = (item:any) =>{
+      if(curComp.value.id === item.id) return
       curComp.value = item
       window.parent.postMessage({type:'select',data:toRaw(item)},window.location.origin)
     }
@@ -44,6 +47,14 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
     const transformProps = (props:any) =>{
       const dc = new DynamicConfig(AssemblingVariables.value)
       return dc.processObject(props)
+    }
+    const sendDgList = ()=>{
+      createPreviewImg().then((img)=>{
+        window.parent.postMessage({type:'save',data:{
+          list:toRaw(dgList.value),
+          img:img
+        }},window.location.origin)
+      })
     }
     const varPools = ref<{
     datasets:string[];
@@ -103,6 +114,11 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
      AssemblingVariables.value = transformVar(varPools.value.vars)
     
    }
+   const createPreviewImg = async () =>{ 
+      const dom =  document.querySelector('.dg-design-container') as HTMLElement
+      const canvas = await html2canvas(dom)
+      return canvas.toDataURL('image/png')
+   }
    return {
          dashboardData,
          add,
@@ -115,6 +131,8 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          transformProps,
          updateVariables,
          setVarPools,
-         updateDgItem  
+         updateDgItem,
+         sendDgList,
+         createPreviewImg  
    }
 })

@@ -1,5 +1,10 @@
 <template>
-  <div class="container" ref="container" @dragover.prevent.stop @drop.stop="onDrop">
+  <div
+    class="container dg-design-container"
+    ref="container"
+    @dragover.prevent.stop
+    @drop.stop="onDrop"
+  >
     <grid-layout :list="dgList" class="layout" @item:click="selectItem" @item:change="updateDgItem">
       <template #layout-item="{ item }">
         <div class="comp-container" :style="item.style">
@@ -9,7 +14,13 @@
             v-bind="transformProps(item.props)"
           >
           </component>
-          <component :is="item.component" :attrs="transformProps(item.props)" v-else> </component>
+          <component
+            :is="item.component"
+            :style-config="item.style"
+            :attrs="transformProps(item.props)"
+            v-else
+          >
+          </component>
         </div>
       </template>
     </grid-layout>
@@ -25,8 +36,16 @@ const COLNUM = 12
 const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
 const { dgList } = storeToRefs(dgStore)
-const { initDgItem, add, selectItem, updateItem, transformProps, setVarPools, updateDgItem } =
-  dgStore
+const {
+  initDgItem,
+  add,
+  selectItem,
+  updateItem,
+  transformProps,
+  setVarPools,
+  updateDgItem,
+  sendDgList
+} = dgStore
 
 const container = ref()
 const clientWidth = ref(0)
@@ -72,6 +91,8 @@ window.addEventListener('message', (event) => {
     })
   } else if (event.data.type === 'refresh-var') {
     setVarPools(event.data.data)
+  } else if (event.data.type === 'get-dg') {
+    sendDgList()
   }
 })
 onMounted(() => {

@@ -1,8 +1,11 @@
 import { defineStore } from "pinia"
 import { ref,computed, onMounted } from 'vue'
+import dashboard from "@/views/LowCode/Dashboard/api/dashboard"
+import type { DashboardInfo,DgCompItem,DgVarPool,DgExtraModuleInfo } from "@/model"
+import { message } from "ant-design-vue"
 export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
    // #region 增加自定义模块
-   const customModules = ref<any[]>([])
+   const customModules = ref<DgExtraModuleInfo[]>([])
    const onAddModules = (moduleInfo:any) =>{
     customModules.value.push(moduleInfo)
    }
@@ -34,14 +37,7 @@ export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
    // #endregion
 
    // #region 变量池
-   const varPools = ref<{
-    datasets:string[];
-    vars:{
-        name:string;
-        type:string;
-        defaultValue:any
-    }[]
-   }>({
+   const varPools = ref<DgVarPool>({
         datasets:[],
         vars:[
             {
@@ -60,13 +56,53 @@ export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
    const getContentWindow = () =>{
     return (document.querySelector('.standalone-iframe') as HTMLIFrameElement).contentWindow as Window
    }
-   // #endregion 
+   // #endregion
+   
+   // #region 仪表板信息
+   const dgInfo = ref<DashboardInfo>({
+        list:[],
+        customModules:[],
+        varPools:{
+            datasets:[],
+            vars:[]
+        },
+        img:'',
+        name:'未命名仪表板',
+        id:''
+   })
+   const onSave = (data:any) =>{
+        dgInfo.value.list = data.list as DgCompItem[]
+        dgInfo.value.img = data.img
+        dgInfo.value.customModules = customModules.value
+        dgInfo.value.varPools = varPools.value
+        const http = dgInfo.value.id ? dashboard.update : dashboard.add
+        http(dgInfo.value).then(res=>{
+            const {code,data,msg} = res
+            if(code == 200){
+                message.success('保存成功')
+            }else{
+                message.error('保存失败')
+            }
+        })
+   }
+   const getDetail = (id:string) =>{
+    dashboard.getDetail(id).then(res=>{
+        const {code,data,msg} = res
+        if(code == 200){
+            dgInfo.value = data
+        }
+    })
+   }
+   // #endregion
    return {
         customModules,
         customCompSchema,
         onAddModules,
         customComps,
         varPools,
-        getContentWindow
+        getContentWindow,
+        onSave,
+        dgInfo,
+        getDetail
    }
 })

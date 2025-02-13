@@ -7,6 +7,7 @@ import { reactive, toRefs, ref, toRaw, onMounted, watch } from 'vue'
 import { init } from 'echarts'
 import type { EChartsType } from 'echarts'
 import { cloneDeep } from 'lodash-es'
+import common from '@/api/common'
 interface Props {
   attrs: {
     dataset: string
@@ -19,36 +20,39 @@ const props = withDefaults(defineProps<Props>(), {
   attrs: () => ({ dataset: '', dimension: [], target: [] }),
   styleConfig: () => ({})
 })
-const { attrs, styleConfig } = props
-
+const { attrs, styleConfig } = toRefs(props)
 const loading = ref(true)
 const QBChart = ref()
 let evChartInstance: EChartsType
 const timer = ref(0)
 const lastDataset = ref('')
-const chartData = ref()
+const chartData = ref([
+  {
+    title: 'title1',
+    value: 100
+  },
+  {
+    title: 'title2',
+    value: 200
+  },
+  {
+    title: 'title3',
+    value: 300
+  }
+])
 const getData = async () => {
-  lastDataset.value = attrs.dataset
-  chartData.value = [
-    {
-      title: 'title1',
-      value: 100
-    },
-    {
-      title: 'title2',
-      value: 200
-    },
-    {
-      title: 'title3',
-      value: 300
-    }
-  ]
+  lastDataset.value = attrs.value.dataset
+  const { data, code, msg } = await common.getPreviewByDatasetId(lastDataset.value)
+  if (code == 200) {
+    chartData.value = data
+  } else {
+    chartData.value = []
+  }
 }
 const transformOption = () => {
-  const { dimension, target } = attrs
-  const options = toRaw(styleConfig.option)
-  const series = toRaw(styleConfig.series)
-  console.log(styleConfig)
+  const { dimension, target } = attrs.value
+  const options = toRaw(styleConfig.value.option)
+  const series = toRaw(styleConfig.value.series)
   const newSeries: any = []
   target.forEach((item) => {
     newSeries.push(cloneDeep(series))
@@ -57,13 +61,13 @@ const transformOption = () => {
   return {
     ...options,
     dataset: {
-      source: toRaw(chartData.value),
+      source: toRaw(chartData.value) || [],
       dimensions: [...dimension, ...target]
     }
   }
 }
 const initEchart = () => {
-  if (lastDataset.value != attrs.dataset) {
+  if (attrs.value.dataset && lastDataset.value != attrs.value.dataset) {
     getData().then(() => {
       if (evChartInstance) {
         evChartInstance.clear()
@@ -93,15 +97,17 @@ const rsOb = new ResizeObserver((e) => {
     } catch (error) {
       console.warn(`chart重新设置大小失败,失败原因：${error}`)
     }
-  }, 50)
+  }, 100)
 })
 onMounted(() => {
   initEchart()
-  rsOb.observe(QBChart.value)
+  setTimeout(() => {
+    rsOb.observe(QBChart.value)
+  }, 100)
 })
 
 watch(
-  () => [props.attrs, props.styleConfig],
+  () => [props.styleConfig],
   () => {
     initEchart()
   },
