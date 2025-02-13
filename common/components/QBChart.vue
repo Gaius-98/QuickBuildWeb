@@ -8,6 +8,8 @@ import { init } from 'echarts'
 import type { EChartsType } from 'echarts'
 import { cloneDeep } from 'lodash-es'
 import common from '@/api/common'
+import type { Obj } from '@/model'
+
 interface Props {
   attrs: {
     dataset: string
@@ -26,7 +28,7 @@ const QBChart = ref()
 let evChartInstance: EChartsType
 const timer = ref(0)
 const lastDataset = ref('')
-const chartData = ref([
+const chartData = ref<Obj<any>[]>([
   {
     title: 'title1',
     value: 100
