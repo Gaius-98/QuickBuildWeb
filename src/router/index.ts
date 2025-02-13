@@ -118,7 +118,7 @@ const routes = [
             {
               path:'dashboard',
               name:'dashboard',
-              component:()=>import('@/views/LowCode/Dashboard/index.vue')
+              component:()=>import('@/views/LowCode/Dashboard/DashboardList/DashboardList.vue')
             }
           ]
         },
