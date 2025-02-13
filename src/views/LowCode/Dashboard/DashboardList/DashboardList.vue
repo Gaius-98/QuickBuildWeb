@@ -1,5 +1,5 @@
 <template>
-  <div class="lowcode-table">
+  <div class="lowcode-dashboard">
     <a-card class="search-area">
       <a-form ref="searchFormRef" :model="paramsForm" @finish="getList">
         <a-row :gutter="24">
@@ -87,16 +87,6 @@
         @change="getList()"
       />
     </a-card>
-    <a-drawer
-      v-model:open="previewShow"
-      placement="right"
-      title="预览"
-      width="1920px"
-      height="900px"
-      :footer="null"
-    >
-      <low-code-table-vue :id="currentId" :key="currentId"></low-code-table-vue>
-    </a-drawer>
   </div>
 </template>
 
@@ -108,7 +98,6 @@ import { message, type FormInstance } from 'ant-design-vue'
 import type { DashboardInfo, PageParams } from '@/model'
 import { useRouter } from 'vue-router'
 import { SwapOutlined } from '@ant-design/icons-vue'
-import LowCodeTableVue from '@/components/LowCodeTable/LowCodeTable.vue'
 const router = useRouter()
 const columns = ref([
   {
@@ -212,7 +201,7 @@ onMounted(() => {
 })
 </script>
 <style scoped lang="scss">
-.lowcode-table {
+.lowcode-dashboard {
   display: flex;
   flex-direction: column;
   width: 100%;

@@ -174,7 +174,7 @@ const routes = [
         },
         {
           path:'dashboard',
-          name:'dashboard',
+          name:'dashboard-design',
           component:()=>import('@/views/LowCode/Dashboard/DashboardDesign/DashboardDesign.vue'),
           props: (route:RouteLocationNormalized) => route.query
         }
