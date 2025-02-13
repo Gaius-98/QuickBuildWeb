@@ -1,0 +1,1 @@
+const i=()=>{const e=document.querySelector(".pre-loading");e&&e.remove()},l=(e,r)=>r.split(".").reduce((s,t)=>{if(s!=null)return s[t]||null},e),a=(e,r,o)=>{const s=r.split(".");s.reduce((t,n,u)=>(u===s.length-1?t[n]=o||void 0:t[n]||(t[n]={}),t[n]),e)},f=e=>{if(typeof e=="string")return Number(e)!==0;if(typeof e=="number")return e!==0};export{l as g,f as i,a as s,i as u};
