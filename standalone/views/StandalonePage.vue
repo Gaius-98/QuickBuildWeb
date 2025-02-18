@@ -5,7 +5,16 @@
     @dragover.prevent.stop
     @drop.stop="onDrop"
   >
-    <grid-layout :list="dgList" class="layout" @item:click="selectItem" @item:change="updateDgItem">
+    <grid-layout
+      :list="dgList"
+      class="layout"
+      :class="{
+        readonly: readonly
+      }"
+      :readonly="readonly"
+      @item:click="selectItem"
+      @item:change="updateDgItem"
+    >
       <template #layout-item="{ item }">
         <div class="comp-container" :style="item.style">
           <component
@@ -47,7 +56,7 @@ const {
   sendDgList,
   init
 } = dgStore
-
+const readonly = ref(false)
 const container = ref()
 const clientWidth = ref(0)
 const onDrop = (e: DragEvent) => {
@@ -80,7 +89,6 @@ const onDrop = (e: DragEvent) => {
 }
 const customComp = ref<Record<string, any>>({})
 window.addEventListener('message', (event) => {
-  console.log(event.data.type)
   if (event.data.type === 'refresh') {
     updateItem(event.data.data)
   } else if (event.data.type === 'add-custom-comp') {
@@ -96,8 +104,9 @@ window.addEventListener('message', (event) => {
   } else if (event.data.type === 'get-dg') {
     sendDgList()
   } else if (event.data.type === 'refresh-all') {
-    console.log(event.data.data)
     init(event.data.data)
+  } else if (event.data.type === 'preview') {
+    readonly.value = true
   }
 })
 onMounted(() => {

@@ -53,8 +53,8 @@ dependencies:
     specifier: ^1.6.8
     version: 1.6.8
   drag-grid-layout-v3:
-    specifier: ^0.0.12
-    version: 0.0.12(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6)
+    specifier: ^0.0.13
+    version: 0.0.13(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6)
   echarts:
     specifier: ^5.5.1
     version: 5.5.1
@@ -2345,8 +2345,8 @@ packages:
       is-obj: 2.0.0
     dev: false
 
-  /drag-grid-layout-v3@0.0.12(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6):
-    resolution: {integrity: sha512-tfTI0hJ1/BYdyh1UbJ74h+7TmGTM2rRs3kVQf7qF9tYyHodOdJyGcOmr8+Tu/P4VMfjil1Z7FyE43W5w4Ogfmw==}
+  /drag-grid-layout-v3@0.0.13(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6):
+    resolution: {integrity: sha512-VaawPXxfbPIEdDefOGFSzlK1UHeKNy4zMNv6wP6Hz+5LRaLrnj68rQ4eCr3GhtVOU2duIEMRnQ/AU+qpCa+X5w==}
     dependencies:
       sass: 1.85.0
       vite-plugin-dts: 4.5.0(@types/node@20.11.28)(typescript@5.4.2)(vite@5.1.6)

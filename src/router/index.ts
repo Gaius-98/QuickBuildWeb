@@ -148,7 +148,12 @@ const routes = [
       name: 'login',
       component: () => import('@/views/Login/LoginView.vue')
     },
-
+    {
+      path:'/preview-dashboard',
+      name:'preview-dashboard',
+      component:()=>import('@/views/LowCode/Dashboard/preview/DashboardPreview.vue'),
+      props: (route:RouteLocationNormalized) => route.query
+    },
     {
       path:'/design',
       name:'design',

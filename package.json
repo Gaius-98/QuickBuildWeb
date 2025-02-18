@@ -34,7 +34,7 @@
     "ag-grid-vue3": "^32.2.2",
     "ant-design-vue": "4.1.2",
     "axios": "^1.6.8",
-    "drag-grid-layout-v3": "^0.0.12",
+    "drag-grid-layout-v3": "^0.0.13",
     "echarts": "^5.5.1",
     "gaius-utils": "^1.1.8",
     "html2canvas": "^1.4.1",

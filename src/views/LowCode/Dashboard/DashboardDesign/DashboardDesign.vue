@@ -7,7 +7,7 @@
       <template #extra>
         <a-space>
           <a-button type="primary" @click="onOpenVarPools()">变量池</a-button>
-          <a-button class="preview-btn"> 预览 </a-button>
+          <a-button class="preview-btn" @click="onPreview()"> 预览 </a-button>
           <a-button @click="onConfirm()" type="primary" class="save-btn"> 保存 </a-button>
         </a-space>
       </template>
@@ -69,6 +69,7 @@ import { useReminder } from '@/hooks'
 import { useDashboardDesignStore } from '@/stores/dashboardDesign'
 import { storeToRefs } from 'pinia'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons-vue'
+import { useRouter } from 'vue-router'
 const dgStore = useDashboardDesignStore()
 const { varPools, dgInfo, loading } = storeToRefs(dgStore)
 let contentWindow: Window
@@ -142,6 +143,16 @@ const onRemoveVar = (variable: { name: string; type: string; defaultValue: any }
   if (idx != -1) {
     varPools.value.vars.splice(idx, 1)
   }
+}
+const router = useRouter()
+const onPreview = () => {
+  const urlCfg = router.resolve({
+    path: '/preview-dashboard',
+    query: {
+      id
+    }
+  })
+  window.open(urlCfg.href, '_blank')
 }
 window.addEventListener('message', (e) => {
   if (e.data.type === 'save') {

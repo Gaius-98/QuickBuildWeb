@@ -28,7 +28,7 @@
               <a-image :src="item.img" height="130px" />
             </template>
             <template #actions>
-              <EyeOutlined key="view" title="预览" @click="onOpenPreviewModal(item.id!)" />
+              <EyeOutlined key="view" title="预览" @click="onJumpPreview(item.id!)" />
               <EditOutlined key="edit" title="编辑" @click="onJumpEdit(item.id!)" />
               <a-popconfirm
                 title="确定要删除吗?"
@@ -60,7 +60,7 @@
               <a-tag color="#f50" v-else>停用</a-tag>
             </template>
             <template v-if="column.key == 'action'">
-              <a-button type="link" @click="onOpenPreviewModal(record.id!)">预览</a-button>
+              <a-button type="link" @click="onJumpPreview(record.id!)">预览</a-button>
               <a-divider type="vertical" />
               <a-button type="link" @click="onJumpEdit(record.id!)">编辑</a-button>
               <a-divider type="vertical" />
@@ -192,9 +192,14 @@ const onDelete = (id: string) => {
 const previewShow = ref(false)
 const formData = ref({})
 const currentId = ref('')
-const onOpenPreviewModal = (id: string) => {
-  previewShow.value = true
-  currentId.value = id
+const onJumpPreview = (id: string) => {
+  const urlCfg = router.resolve({
+    path: '/preview-dashboard',
+    query: {
+      id
+    }
+  })
+  window.open(urlCfg.href, '_blank')
 }
 onMounted(() => {
   getList()
