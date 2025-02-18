@@ -1,12 +1,10 @@
 <template>
-  <div class="dg-design">
+  <div class="dg-design" v-loading.fullscreen="loading">
     <a-page-header :ghost="false" style="border: 1px solid rgb(235, 237, 240); padding: 10px 24px">
       <template #title>
         <a-input :bordered="false" class="form-name" v-model:value="dgInfo.name"></a-input>
       </template>
       <template #extra>
-        <a-space> </a-space>
-        <a-space> </a-space>
         <a-space>
           <a-button type="primary" @click="onOpenVarPools()">变量池</a-button>
           <a-button class="preview-btn"> 预览 </a-button>
@@ -28,13 +26,7 @@
       <material-cfg class="right-part"></material-cfg>
     </div>
   </div>
-  <a-modal
-    title="变量池"
-    v-model:open="varOpen"
-    width="800px"
-    :footer="null"
-    @cancel="updateVariables"
-  >
+  <a-modal title="变量池" v-model:open="varOpen" width="800px" :footer="null">
     <a-form>
       <div style="height: 300px; overflow-y: auto">
         <a-space
@@ -72,13 +64,13 @@
 <script lang="ts" setup>
 import MaterialArea from './components/MaterialArea.vue'
 import MaterialCfg from './components/MaterialCfg.vue'
-import { reactive, toRefs, ref, computed, onMounted, toRaw } from 'vue'
+import { reactive, toRefs, ref, computed, onMounted, toRaw, watch } from 'vue'
 import { useReminder } from '@/hooks'
 import { useDashboardDesignStore } from '@/stores/dashboardDesign'
 import { storeToRefs } from 'pinia'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons-vue'
 const dgStore = useDashboardDesignStore()
-const { varPools, dgInfo } = storeToRefs(dgStore)
+const { varPools, dgInfo, loading } = storeToRefs(dgStore)
 let contentWindow: Window
 const { getContentWindow, onSave, getDetail } = dgStore
 window.name = 'dg-design'
@@ -87,9 +79,11 @@ interface Props {
 }
 const props = defineProps<Props>()
 const { id } = toRefs(props)
-if (id.value) {
-  getDetail(id.value)
-}
+onMounted(() => {
+  if (id.value) {
+    getDetail(id.value)
+  }
+})
 const varOpen = ref(false)
 const onOpenVarPools = () => {
   varOpen.value = true
@@ -98,11 +92,22 @@ const onConfirm = () => {
   contentWindow.postMessage({ type: 'get-dg' })
 }
 onMounted(() => {
-  contentWindow = getContentWindow()
+  getContentWindow().then((res) => {
+    contentWindow = res
+  })
 })
 const updateVariables = () => {
   contentWindow.postMessage({ type: 'refresh-var', data: toRaw(varPools.value) })
 }
+watch(
+  () => varPools.value,
+  () => {
+    updateVariables()
+  },
+  {
+    deep: true
+  }
+)
 const onAddVar = () => {
   varPools.value.vars.push({
     name: '',

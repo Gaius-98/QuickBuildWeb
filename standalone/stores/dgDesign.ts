@@ -20,6 +20,9 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
         dgList.value.splice(idx,1)
       }
     }
+    const init = (data:any[]) =>{
+      dgList.value = data
+    }
     const initDgItem = (compName:string) =>{
       const compIdx = componentsSchema.findIndex((item) => item.name === compName)
       if(compIdx === -1){
@@ -133,6 +136,7 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          setVarPools,
          updateDgItem,
          sendDgList,
-         createPreviewImg  
+         createPreviewImg,
+         init  
    }
 })

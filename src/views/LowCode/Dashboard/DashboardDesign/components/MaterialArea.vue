@@ -141,7 +141,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, toRaw } from 'vue'
+import { ref, onMounted, toRaw, watch, nextTick } from 'vue'
 import type { LibItem, LibTree } from '@/model'
 import componentsSchema from '@/assets/components/componentsSchema'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons-vue'
@@ -194,10 +194,18 @@ const onCancel = () => {
 }
 const onConfirm = () => {
   onAddModules(customCompInfo.value)
-  materials.value.customComp = materials.value.customComp.concat(customComps.value)
-  contentWindow?.postMessage({ type: 'add-custom-comp', data: toRaw(customCompInfo.value) })
   onCancel()
 }
+watch(
+  () => customModules.value,
+  () => {
+    materials.value.customComp = materials.value.customComp.concat(customComps.value)
+    contentWindow?.postMessage({ type: 'add-custom-comp', data: toRaw(customCompInfo.value) })
+  },
+  {
+    deep: true
+  }
+)
 const addComponent = () => {
   customCompInfo.value.children.push({
     componentName: '',

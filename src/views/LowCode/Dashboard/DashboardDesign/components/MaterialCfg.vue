@@ -140,7 +140,9 @@ const onRefresh = () => {
   refreshData(toRaw(rawData.value))
 }
 onMounted(() => {
-  contentWindow = getContentWindow()
+  getContentWindow().then((res) => {
+    contentWindow = res
+  })
 })
 </script>
 <style scoped lang="scss">

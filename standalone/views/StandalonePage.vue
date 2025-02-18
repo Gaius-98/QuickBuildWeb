@@ -44,7 +44,8 @@ const {
   transformProps,
   setVarPools,
   updateDgItem,
-  sendDgList
+  sendDgList,
+  init
 } = dgStore
 
 const container = ref()
@@ -79,6 +80,7 @@ const onDrop = (e: DragEvent) => {
 }
 const customComp = ref<Record<string, any>>({})
 window.addEventListener('message', (event) => {
+  console.log(event.data.type)
   if (event.data.type === 'refresh') {
     updateItem(event.data.data)
   } else if (event.data.type === 'add-custom-comp') {
@@ -93,6 +95,9 @@ window.addEventListener('message', (event) => {
     setVarPools(event.data.data)
   } else if (event.data.type === 'get-dg') {
     sendDgList()
+  } else if (event.data.type === 'refresh-all') {
+    console.log(event.data.data)
+    init(event.data.data)
   }
 })
 onMounted(() => {
