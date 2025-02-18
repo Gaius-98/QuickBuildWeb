@@ -70,6 +70,7 @@ import { useDashboardDesignStore } from '@/stores/dashboardDesign'
 import { storeToRefs } from 'pinia'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
+import { message } from 'ant-design-vue'
 const dgStore = useDashboardDesignStore()
 const { varPools, dgInfo, loading } = storeToRefs(dgStore)
 let contentWindow: Window
@@ -146,10 +147,13 @@ const onRemoveVar = (variable: { name: string; type: string; defaultValue: any }
 }
 const router = useRouter()
 const onPreview = () => {
+  if (!dgInfo.value.id) {
+    message.warning('请保存后再预览')
+  }
   const urlCfg = router.resolve({
     path: '/preview-dashboard',
     query: {
-      id
+      id: dgInfo.value.id!
     }
   })
   window.open(urlCfg.href, '_blank')
