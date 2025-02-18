@@ -1,1 +1,0 @@
-import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as e,aO as s,o as c}from"./.pnpm-CaFG0eUE.js";const r={};function n(a,_){const t=s;return c(),e(t,{status:"404",title:"404","sub-title":"对不起,未找到页面"})}const l=o(r,[["render",n]]);export{l as default};
