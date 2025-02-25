@@ -46,11 +46,21 @@ export default defineConfig({
     }
   },
   build:{
+    minify:'esbuild',
     rollupOptions:{
       input:{
-        main:'index.html',
+        main:'./index.html',
         standalone:'./standalone/standalone.html'
       },
+      output:{
+        manualChunks(name){
+          if(name.includes('node_modules')){
+            const arr = name.match(/\/node_modules\/\.pnpm\/(.*?)\//)
+            return `nodemodule-${arr![1]}` 
+          }
+          return null
+        }
+      }
     }
   }
 })
