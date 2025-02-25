@@ -1,1 +1,0 @@
-import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{e as r,b as t,o as n}from"./iconfont-DlnTACa0.js";const c={};function s(_,a){const e=t("router-view");return n(),r(e)}const m=o(c,[["render",s]]);export{m as default};

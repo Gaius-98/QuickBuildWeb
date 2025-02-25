@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{a2 as r,V as t,L as n}from"./nodemodule-@vue_runtime-core@3.4.21-Cnn673wu.js";import"./nodemodule-@vue_reactivity@3.4.21-DbkE7Gi6.js";import"./nodemodule-@vue_shared@3.4.21-Ctf17_ps.js";const c={};function s(_,a){const o=t("router-view");return n(),r(o)}const l=e(c,[["render",s]]);export{l as default};

@@ -1,1 +1,0 @@
-import{ad as r}from"./useFlexGapSupport-CiVQ43IU.js";import{U as u,p as t,b8 as a}from"./iconfont-DlnTACa0.js";function b(){const e=u({});let s=null;const n=r();return t(()=>{s=n.value.subscribe(o=>{e.value=o})}),a(()=>{n.value.unsubscribe(s)}),e}export{b as u};

@@ -1,0 +1,1 @@
+import{a as t}from"./iconfont-BCn86eVw.js";const a={getList:r=>t({method:"get",url:"dashboard/list",params:r}),getDetail:r=>t({method:"get",url:"dashboard/detail",params:{id:r}}),remove:r=>t({method:"get",url:"dashboard/remove",params:{id:r}}),add:r=>t({method:"post",url:"dashboard/add",data:r}),update:r=>t({method:"post",url:"dashboard/update",data:r})};export{a as d};
