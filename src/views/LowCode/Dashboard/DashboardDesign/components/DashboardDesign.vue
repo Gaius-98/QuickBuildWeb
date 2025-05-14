@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="container dg-design-container"
-    ref="container"
-    @dragover.prevent.stop
-    @drop.stop="onDrop"
-  >
+  <div class="editor-container" ref="container" @dragover.prevent.stop @drop.stop="onDrop">
     <grid-layout
       :list="dgList"
       class="layout"
@@ -13,7 +8,6 @@
       }"
       :readonly="readonly"
       @item:click="selectItem"
-      @item:change="updateDgItem"
     >
       <template #layout-item="{ item }">
         <div class="comp-container" :style="item.style">
@@ -21,12 +15,14 @@
             v-if="item.type && item.type === 'custom'"
             :is="customComp[item.component]"
             v-bind="transformProps(item.props)"
+            :key="item.id"
           >
           </component>
           <component
             :is="item.component"
             :style-config="item.style"
             :attrs="transformProps(item.props)"
+            :key="item.id"
             v-else
           >
           </component>
@@ -38,24 +34,14 @@
 
 <script lang="ts" setup>
 import { reactive, toRefs, ref, onMounted, watch } from 'vue'
-import { useDgDesignStore } from '../stores/dgDesign'
+import { useDgDesignStore } from '@/stores/dgDesign'
 import { storeToRefs } from 'pinia'
 import { DynamicLoader } from '@/utils/DynamicLoader'
 const COLNUM = 12
 const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
 const { dgList } = storeToRefs(dgStore)
-const {
-  initDgItem,
-  add,
-  selectItem,
-  updateItem,
-  transformProps,
-  setVarPools,
-  updateDgItem,
-  sendDgList,
-  init
-} = dgStore
+const { initDgItem, add, selectItem, transformProps } = dgStore
 const readonly = ref(false)
 const container = ref()
 const clientWidth = ref(0)
@@ -88,33 +74,34 @@ const onDrop = (e: DragEvent) => {
   add(dgItem)
 }
 const customComp = ref<Record<string, any>>({})
-window.addEventListener('message', (event) => {
-  if (event.data.type === 'refresh') {
-    updateItem(event.data.data)
-  } else if (event.data.type === 'add-custom-comp') {
-    const dyLoader = new DynamicLoader([event.data.data])
-    dyLoader.load().then((res) => {
-      Object.keys(res).forEach((compName) => {
-        customComp.value[compName] = res[compName]
-      })
-      console.log('-----------加载完成!---------')
-    })
-  } else if (event.data.type === 'refresh-var') {
-    setVarPools(event.data.data)
-  } else if (event.data.type === 'get-dg') {
-    sendDgList()
-  } else if (event.data.type === 'refresh-all') {
-    init(event.data.data)
-  } else if (event.data.type === 'preview') {
-    readonly.value = true
-  }
-})
+// window.addEventListener('message', (event) => {
+//   console.log(event, 'event')
+//   if (event.data.type === 'refresh') {
+//     updateItem(event.data.data)
+//   } else if (event.data.type === 'add-custom-comp') {
+//     const dyLoader = new DynamicLoader([event.data.data])
+//     dyLoader.load().then((res) => {
+//       Object.keys(res).forEach((compName) => {
+//         customComp.value[compName] = res[compName]
+//       })
+//       console.log('-----------加载完成!---------')
+//     })
+//   } else if (event.data.type === 'refresh-var') {
+//     setVarPools(event.data.data)
+//   } else if (event.data.type === 'get-dg') {
+//     sendDgList()
+//   } else if (event.data.type === 'refresh-all') {
+//     init(event.data.data)
+//   } else if (event.data.type === 'preview') {
+//     readonly.value = true
+//   }
+// })
 onMounted(() => {
   clientWidth.value = container.value.clientWidth
 })
 </script>
 <style scoped lang="scss">
-.container {
+.editor-container {
   width: 100%;
   min-height: 100vh;
   height: auto;

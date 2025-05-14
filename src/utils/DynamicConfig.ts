@@ -76,7 +76,6 @@ export class DynamicConfig {
     processObject(data: any): any {
         const obj = cloneDeep(data);
         if (Array.isArray(obj)) {
-            
             return obj.map(item => this.processObject(item));
         } else if (typeof obj === 'object' && obj !== null) {
             const result: any = {};

@@ -35,7 +35,6 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
     const selectItem = (item:any) =>{
       if(curComp.value.id === item.id) return
       curComp.value = item
-      window.parent.postMessage({type:'select',data:toRaw(item)},window.location.origin)
     }
     const updateItem = (item:any)=>{
        const { id } = item
@@ -44,12 +43,10 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          dgList.value.splice(idx,1,item)
        }
     }
-    const updateDgItem = (data:any) =>{
-      window.parent.postMessage({type:'update-item',data:toRaw(data)},window.location.origin)
-    }
+
     const transformProps = (props:any) =>{
       const dc = new DynamicConfig(AssemblingVariables.value)
-      return dc.processObject(props)
+      return dc.processObject(cloneDeep(props))
     }
     const sendDgList = ()=>{
       createPreviewImg().then((img)=>{
@@ -114,7 +111,6 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
         return transformData
    }
    const updateVariables = () =>{
-     AssemblingVariables.value = transformVar(varPools.value.vars)
     
    }
    const createPreviewImg = async () =>{ 
@@ -134,7 +130,6 @@ export const useDgDesignStore = defineStore('dgDesign', () => {
          transformProps,
          updateVariables,
          setVarPools,
-         updateDgItem,
          sendDgList,
          createPreviewImg,
          init  

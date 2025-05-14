@@ -50,7 +50,6 @@ export default defineConfig({
     rollupOptions:{
       input:{
         main:'./index.html',
-        standalone:'./standalone/standalone.html'
       },
       output:{
         manualChunks(name){

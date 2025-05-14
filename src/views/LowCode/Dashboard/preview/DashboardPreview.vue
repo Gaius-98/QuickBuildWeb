@@ -27,9 +27,9 @@ onMounted(() => {
   }
 })
 onMounted(() => {
-  getContentWindow().then((contentWindow) => {
-    contentWindow.postMessage({ type: 'preview' })
-  })
+  // getContentWindow().then((contentWindow) => {
+  //   // contentWindow.postMessage({ type: 'preview' })
+  // })
 })
 </script>
 <style scoped lang="scss">

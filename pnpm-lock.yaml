@@ -60,8 +60,8 @@ importers:
         specifier: ^1.6.8
         version: 1.9.0
       drag-grid-layout-v3:
-        specifier: ^0.0.14
-        version: 0.0.14(@types/node@20.17.47)(rollup@4.40.2)(typescript@5.4.5)(vite@5.4.19(@types/node@20.17.47)(sass@1.88.0))
+        specifier: ^0.0.15
+        version: 0.0.15(@types/node@20.17.47)(rollup@4.40.2)(typescript@5.4.5)(vite@5.4.19(@types/node@20.17.47)(sass@1.88.0))
       echarts:
         specifier: ^5.5.1
         version: 5.6.0
@@ -1336,8 +1336,8 @@ packages:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
     engines: {node: '>=8'}
 
-  drag-grid-layout-v3@0.0.14:
-    resolution: {integrity: sha512-yFPhRvvjDgi5qvc+s7uP5+HfFXe41mGs6f/JPsanOFbY7RuCklCUqH1UPgUcg9RZzA+h1prKiHtlnTDI97CGUQ==}
+  drag-grid-layout-v3@0.0.15:
+    resolution: {integrity: sha512-0axmUVJJn3IGupllSYqOMf4kAUuXZObCfJ/4pI9mQpkgPhlm2ras49oFJBvMASdtDapkYITgW8A/De1Tiwyypw==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -3847,7 +3847,7 @@ snapshots:
     dependencies:
       is-obj: 2.0.0
 
-  drag-grid-layout-v3@0.0.14(@types/node@20.17.47)(rollup@4.40.2)(typescript@5.4.5)(vite@5.4.19(@types/node@20.17.47)(sass@1.88.0)):
+  drag-grid-layout-v3@0.0.15(@types/node@20.17.47)(rollup@4.40.2)(typescript@5.4.5)(vite@5.4.19(@types/node@20.17.47)(sass@1.88.0)):
     dependencies:
       sass: 1.88.0
       vite-plugin-dts: 4.5.3(@types/node@20.17.47)(rollup@4.40.2)(typescript@5.4.5)(vite@5.4.19(@types/node@20.17.47)(sass@1.88.0))

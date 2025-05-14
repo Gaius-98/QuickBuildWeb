@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="material-data-area">
+    <!-- <div class="material-data-area">
       <div class="title">自定义组件</div>
       <div class="content">
         <div
@@ -39,7 +39,7 @@
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
     <a-modal
       title="添加自定义组件"
       width="800px"
@@ -196,16 +196,7 @@ const onConfirm = () => {
   onAddModules(customCompInfo.value)
   onCancel()
 }
-watch(
-  () => customModules.value,
-  () => {
-    materials.value.customComp = materials.value.customComp.concat(customComps.value)
-    contentWindow?.postMessage({ type: 'add-custom-comp', data: toRaw(customCompInfo.value) })
-  },
-  {
-    deep: true
-  }
-)
+
 const addComponent = () => {
   customCompInfo.value.children.push({
     componentName: '',
@@ -230,10 +221,6 @@ const removeCDNUrl = (url: string) => {
     customCompInfo.value.urls.splice(idx, 1)
   }
 }
-let contentWindow: null | Window = null
-onMounted(() => {
-  contentWindow = (document.querySelector('.standalone-iframe') as HTMLIFrameElement).contentWindow
-})
 </script>
 <style scoped lang="scss">
 .material-area {

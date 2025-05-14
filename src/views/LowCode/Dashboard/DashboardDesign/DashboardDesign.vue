@@ -15,13 +15,14 @@
     <div class="dg-design-container">
       <material-area class="left-part"></material-area>
       <div class="middle-part">
-        <iframe
+        <dashboard-design></dashboard-design>
+        <!-- <iframe
           width="100%"
           height="100%"
           src="/standalone/standalone.html"
           style="border: 0"
           class="standalone-iframe"
-        ></iframe>
+        ></iframe> -->
       </div>
       <material-cfg class="right-part"></material-cfg>
     </div>
@@ -62,8 +63,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useDgDesignStore } from '@/stores/dgDesign'
 import MaterialArea from './components/MaterialArea.vue'
 import MaterialCfg from './components/MaterialCfg.vue'
+import DashboardDesign from './components/DashboardDesign.vue'
 import { reactive, toRefs, ref, computed, onMounted, toRaw, watch } from 'vue'
 import { useReminder } from '@/hooks'
 import { useDashboardDesignStore } from '@/stores/dashboardDesign'
@@ -73,8 +76,7 @@ import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 const dgStore = useDashboardDesignStore()
 const { varPools, dgInfo, loading } = storeToRefs(dgStore)
-let contentWindow: Window
-const { getContentWindow, onSave, getDetail } = dgStore
+const { onSave, getDetail } = dgStore
 window.name = 'dg-design'
 interface Props {
   id?: string
@@ -91,25 +93,10 @@ const onOpenVarPools = () => {
   varOpen.value = true
 }
 const onConfirm = () => {
-  contentWindow.postMessage({ type: 'get-dg' })
+  onSave()
 }
-onMounted(() => {
-  getContentWindow().then((res) => {
-    contentWindow = res
-  })
-})
-const updateVariables = () => {
-  contentWindow.postMessage({ type: 'refresh-var', data: toRaw(varPools.value) })
-}
-watch(
-  () => varPools.value,
-  () => {
-    updateVariables()
-  },
-  {
-    deep: true
-  }
-)
+onMounted(() => {})
+
 const onAddVar = () => {
   varPools.value.vars.push({
     name: '',
@@ -158,11 +145,6 @@ const onPreview = () => {
   })
   window.open(urlCfg.href, '_blank')
 }
-window.addEventListener('message', (e) => {
-  if (e.data.type === 'save') {
-    onSave(e.data.data)
-  }
-})
 </script>
 <style scoped lang="scss">
 .dg-design {

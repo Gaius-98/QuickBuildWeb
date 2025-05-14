@@ -1,8 +1,12 @@
-import { defineStore } from "pinia"
+import { defineStore, storeToRefs } from "pinia"
 import { ref,computed, onMounted, toRaw,nextTick } from 'vue'
 import dashboard from "@/views/LowCode/Dashboard/api/dashboard"
 import type { DashboardInfo,DgCompItem,DgVarPool,DgExtraModuleInfo } from "@/model"
 import { message } from "ant-design-vue"
+import {useDgDesignStore} from './dgDesign'
+const dgStore = useDgDesignStore()
+const { dgList } = storeToRefs(dgStore)
+const { createPreviewImg } = dgStore
 export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
    // #region 增加自定义模块
    const customModules = ref<DgExtraModuleInfo[]>([])
@@ -54,14 +58,14 @@ export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
    // #region 公共部分
 
    const getContentWindow = async () =>{
-    const iframe =   (document.querySelector('.standalone-iframe') as HTMLIFrameElement)
-    const p = new Promise((resolve,reject)=>{
-        iframe.addEventListener('load',()=>{
-            resolve(iframe.contentWindow)
-        })
-    }) 
-    const contentWindow = await p
-    return contentWindow as Window
+    // const iframe =   (document.querySelector('.standalone-iframe') as HTMLIFrameElement)
+    // const p = new Promise((resolve,reject)=>{
+    //     iframe.addEventListener('load',()=>{
+    //         resolve(iframe.contentWindow)
+    //     })
+    // }) 
+    // const contentWindow = await p
+    // return contentWindow as Window
    }
    // #endregion
    
@@ -78,16 +82,18 @@ export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
         id:''
    })
    const loading = ref(false)
-   const onSave = (data:any) =>{
-        dgInfo.value.list = data.list as DgCompItem[]
-        dgInfo.value.img = data.img
+   const onSave = () =>{
+    loading.value = true
+    createPreviewImg().then(res=>{
+        dgInfo.value.list = dgList.value as DgCompItem[]
+        dgInfo.value.img = res
         dgInfo.value.customModules = customModules.value
         dgInfo.value.varPools = varPools.value
         const http = dgInfo.value.id ? dashboard.update : dashboard.add
         if(!dgInfo.value.id){
             delete dgInfo.value.id
         }
-        loading.value = true
+       
         http(dgInfo.value).then(res=>{
             const {code,data,msg} = res
              loading.value = false
@@ -97,6 +103,8 @@ export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
                 message.error('保存失败')
             }
         })
+    })
+
    }
    const getDetail = (id:string) =>{
     loading.value = true
@@ -107,14 +115,15 @@ export const useDashboardDesignStore = defineStore('dashboardDesign',() =>{
             const { customModules:customs,varPools:vars } = dgInfo.value
             customModules.value = customs
             varPools.value = vars
-
-            setTimeout(()=>{
-                 getContentWindow().then(res=>{
-                    res.postMessage({ type: 'refresh-all', data:toRaw(dgInfo.value.list) })
-                    loading.value = false
-                })
+            dgStore.init(dgInfo.value.list)
+            loading.value = false
+            // setTimeout(()=>{
+            //      getContentWindow().then(res=>{
+            //         res.postMessage({ type: 'refresh-all', data:toRaw(dgInfo.value.list) })
+            //         loading.value = false
+            //     })
                 
-            })
+            // })
         }
     })
    }

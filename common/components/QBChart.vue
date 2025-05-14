@@ -3,12 +3,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, toRefs, ref, toRaw, onMounted, watch } from 'vue'
+import { reactive, toRefs, ref, toRaw, onMounted, watch, computed } from 'vue'
 import { init } from 'echarts'
 import type { EChartsType } from 'echarts'
 import { cloneDeep } from 'lodash-es'
 import common from '@/api/common'
 import type { Obj } from '@/model'
+import { isEqual } from 'lodash-es'
 
 interface Props {
   attrs: {
@@ -51,7 +52,7 @@ const getData = async () => {
     chartData.value = []
   }
 }
-const transformOption = () => {
+const transformOption = computed(() => {
   const { dimension, target } = attrs.value
   const options = toRaw(styleConfig.value.option)
   const series = toRaw(styleConfig.value.series)
@@ -67,25 +68,25 @@ const transformOption = () => {
       dimensions: [...dimension, ...target]
     }
   }
-}
+})
 const initEchart = () => {
   if (attrs.value.dataset && lastDataset.value != attrs.value.dataset) {
     getData().then(() => {
       if (evChartInstance) {
         evChartInstance.clear()
-        evChartInstance.setOption(transformOption())
+        evChartInstance.setOption(transformOption.value)
       } else if (QBChart.value) {
         evChartInstance = init(QBChart.value)
-        evChartInstance.setOption(transformOption())
+        evChartInstance.setOption(transformOption.value)
       }
     })
   } else {
     if (evChartInstance) {
       evChartInstance.clear()
-      evChartInstance.setOption(transformOption())
+      evChartInstance.setOption(transformOption.value)
     } else if (QBChart.value) {
       evChartInstance = init(QBChart.value)
-      evChartInstance.setOption(transformOption())
+      evChartInstance.setOption(transformOption.value)
     }
   }
 
@@ -109,7 +110,15 @@ onMounted(() => {
 })
 
 watch(
-  () => [props.styleConfig],
+  () => [attrs.value],
+  (newV, oldV) => {
+    if (!isEqual(newV, oldV)) {
+      initEchart()
+    }
+  }
+)
+watch(
+  () => [styleConfig.value],
   () => {
     initEchart()
   },
