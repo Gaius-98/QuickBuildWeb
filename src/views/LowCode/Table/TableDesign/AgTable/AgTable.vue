@@ -43,7 +43,7 @@ const columns = defineModel<Partial<LCTableColumnCfg>[]>('columns', {
   required: true
 })
 interface Props {
-  columnId: string
+  columnId?: string
   tableData: Record<string, any>[]
   height: number
 }

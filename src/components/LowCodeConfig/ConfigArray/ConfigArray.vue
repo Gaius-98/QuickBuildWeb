@@ -25,8 +25,8 @@ import type { ConfigSchema } from '@/model'
 import ConfigForm from '../ConfigForm/ConfigForm.vue'
 
 interface Props {
-  title: string
-  closable: boolean
+  title?: string
+  closable?: boolean
   schema: ConfigSchema
   data: Record<string, any>[]
 }
