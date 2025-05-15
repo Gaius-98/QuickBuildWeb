@@ -42,9 +42,15 @@ const ROWHEIGHT = 8
 const dgStore = useDgDesignStore()
 const { dgList } = storeToRefs(dgStore)
 const { initDgItem, add, selectItem, transformProps } = dgStore
-const readonly = ref(false)
 const container = ref()
 const clientWidth = ref(0)
+interface Props {
+  readonly?: boolean
+}
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false
+})
+const { readonly } = toRefs(props)
 const onDrop = (e: DragEvent) => {
   const dgType = e.dataTransfer!.getData('material-type')
   let dgItem
@@ -103,18 +109,19 @@ onMounted(() => {
 <style scoped lang="scss">
 .editor-container {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   height: auto;
   background-color: rgba($color: #fafafa, $alpha: 0.5);
-  .layout {
-    height: 100vh;
-  }
-  :deep(.dg-layout-item) {
-    background-color: #fff;
-    &:hover {
-      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  .layout:not(.readonly) {
+    height: 100%;
+    :deep(.dg-layout-item) {
+      background-color: #fff;
+      &:hover {
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+      }
     }
   }
+
   .comp-container {
     box-sizing: border-box;
     width: 100%;

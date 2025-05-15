@@ -60,6 +60,15 @@
       </a-form-item>
     </a-form>
   </a-modal>
+  <a-modal
+    title="预览"
+    v-model:open="previewShow"
+    width="100%"
+    wrap-class-name="full-modal"
+    :footer="null"
+  >
+    <dashboard-design style="height: 500px" :readonly="true"></dashboard-design>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -132,19 +141,20 @@ const onRemoveVar = (variable: { name: string; type: string; defaultValue: any }
     varPools.value.vars.splice(idx, 1)
   }
 }
-const router = useRouter()
 const onPreview = () => {
   if (!dgInfo.value.id) {
     message.warning('请保存后再预览')
   }
-  const urlCfg = router.resolve({
-    path: '/preview-dashboard',
-    query: {
-      id: dgInfo.value.id!
-    }
-  })
-  window.open(urlCfg.href, '_blank')
+  previewShow.value = true
+  // const urlCfg = router.resolve({
+  //   path: '/preview-dashboard',
+  //   query: {
+  //     id: dgInfo.value.id!
+  //   }
+  // })
+  // window.open(urlCfg.href, '_blank')
 }
+const previewShow = ref(false)
 </script>
 <style scoped lang="scss">
 .dg-design {
